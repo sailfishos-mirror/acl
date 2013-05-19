@@ -36,7 +36,7 @@ LDIRT = config.log .dep config.status config.cache confdefs.h conftest* \
 	Logs/* built .census install.* install-dev.* install-lib.* *.gz
 
 LIB_SUBDIRS = include libmisc libacl
-TOOL_SUBDIRS = getfacl setfacl chacl m4 man doc po test examples build debian
+TOOL_SUBDIRS = getfacl setfacl chacl m4 man doc po test examples package debian
 
 SUBDIRS = $(LIB_SUBDIRS) $(TOOL_SUBDIRS)
 

@@ -94,9 +94,9 @@ echo
 echo "== dist, log is $LOGDIR/dist"
 [ ! -f .census ] && touch .census
 if $verbose ; then
-	$MAKE -C build dist 2>&1 | tee $LOGDIR/dist
+	$MAKE -C package dist 2>&1 | tee $LOGDIR/dist
 else
-	$MAKE -C build dist > $LOGDIR/dist 2>&1 || exit 1
+	$MAKE -C package dist > $LOGDIR/dist 2>&1 || exit 1
 	grep '^Wrote:' $LOGDIR/dist | sed -e 's/\.\.\/\.\.\///'
 fi
 
