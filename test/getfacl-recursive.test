@@ -1,5 +1,6 @@
 Tests for proper path recursion
 
+	$ umask 022
 	$ mkdir -p 1/2/3
 	$ mkdir 1/link
 	$ touch 1/link/file
