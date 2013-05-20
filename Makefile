@@ -29,7 +29,7 @@ CONFIGURE = \
 	ltmain.sh m4/libtool.m4 m4/ltoptions.m4 m4/ltsugar.m4 \
 	m4/ltversion.m4 m4/lt~obsolete.m4
 LSRCFILES = \
-	configure.in Makepkgs install-sh exports README VERSION \
+	configure.ac Makepkgs install-sh exports README VERSION \
 	$(CONFIGURE)
 
 LDIRT = config.log .dep config.status config.cache confdefs.h conftest* \
