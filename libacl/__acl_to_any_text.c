@@ -247,6 +247,11 @@ acl_entry_to_any_str(const acl_entry_t entry_d, char *text_p, ssize_t size,
 		    options & TEXT_ALL_EFFECTIVE) {
 			x = (options & TEXT_SMART_INDENT) ?
 				((text_p - orig_text_p)/8) : TABS-1;
+
+			/* use at least one tab for indentation */
+			if (x > (TABS-1))
+				x = (TABS-1);
+
 			strncpy(text_p, tabs+x, size);
 			ADVANCE(TABS-x);
 
