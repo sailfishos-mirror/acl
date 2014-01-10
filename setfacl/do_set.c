@@ -20,6 +20,7 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "config.h"
 #include <stdio.h>
 #include <errno.h>
 #include <sys/acl.h>
@@ -33,10 +34,10 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <ftw.h>
+#include "misc.h"
 #include "sequence.h"
 #include "do_set.h"
 #include "parse.h"
-#include "config.h"
 #include "walk_tree.h"
 
 

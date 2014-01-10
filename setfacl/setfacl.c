@@ -20,6 +20,7 @@
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "config.h"
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -29,13 +30,11 @@
 #include <dirent.h>
 #include <libgen.h>
 #include <getopt.h>
-#include <locale.h>
-#include "config.h"
+#include "misc.h"
 #include "sequence.h"
 #include "parse.h"
 #include "do_set.h"
 #include "walk_tree.h"
-#include "misc.h"
 
 #define POSIXLY_CORRECT_STR "POSIXLY_CORRECT"
 

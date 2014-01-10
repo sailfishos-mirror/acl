@@ -17,6 +17,7 @@
  * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "config.h"
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -29,8 +30,7 @@
 #include <sys/stat.h>
 #include <sys/acl.h>
 #include <acl/libacl.h>
-#include <locale.h>
-#include "config.h"
+#include "misc.h"
 
 static int acl_delete_file (const char * path, acl_type_t type);
 static int list_acl(char *file);

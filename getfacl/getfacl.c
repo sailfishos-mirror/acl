@@ -21,6 +21,7 @@
   USA.
 */
 
+#include "config.h"
 #include <stdio.h>
 #include <errno.h>
 #include <sys/acl.h>
@@ -34,11 +35,9 @@
 #include <dirent.h>
 #include <libgen.h>
 #include <getopt.h>
-#include <locale.h>
-#include "config.h"
+#include "misc.h"
 #include "user_group.h"
 #include "walk_tree.h"
-#include "misc.h"
 
 #define POSIXLY_CORRECT_STR "POSIXLY_CORRECT"
 
