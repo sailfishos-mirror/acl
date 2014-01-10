@@ -37,7 +37,10 @@
 #
 
 use strict;
+use Cwd qw(abs_path);
 use FileHandle;
+use File::Basename qw(basename dirname);
+use File::Path qw(rmtree);
 use Getopt::Std;
 use POSIX qw(isatty setuid getcwd);
 use vars qw($opt_l $opt_v);
@@ -53,8 +56,27 @@ if (isatty(fileno(STDOUT))) {
 	$FAILED = "\033[31m\033[1m" . $FAILED . "\033[m";
 }
 
+# Export this dir to tests so they can access data files if needed.
+$ENV{"TESTDIR"} = abs_path(dirname($0));
+# Add the current dir to PATH so we can find sort-getfattr-output and such.
+$ENV{"PATH"} = $ENV{"TESTDIR"} . ":$ENV{PATH}";
+# Add the parent dir to PATH so we can find the compiled tools.
+$ENV{"PATH"} = dirname(abs_path(dirname($0))) . ":$ENV{PATH}";
 $ENV{"TUSER"} = getpwuid($>);
 $ENV{"TGROUP"} = getgrgid($));
+
+open(TEST_FILE, $ARGV[0]);
+
+# Create a tempdir to run in for parallel test execution.
+my $tmpdir = $ARGV[0] . ".dir";
+rmtree($tmpdir);
+if (!mkdir($tmpdir)) {
+	$tmpdir = getcwd() . "/" . basename($ARGV[0]) . ".dir";
+	rmtree($tmpdir);
+	mkdir($tmpdir) or die "could not create $tmpdir";
+}
+my $pretmpdir = getcwd();
+chdir($tmpdir) or die "could not enter $tmpdir";
 
 sub exec_test($$);
 sub process_test($$$$);
@@ -66,7 +88,7 @@ my $lineno;
 my $width = ($ENV{COLUMNS} || 80) >> 1;
 
 for (;;) {
-  my $line = <>; $lineno++;
+  my $line = <TEST_FILE>; $lineno++;
   if (defined $line) {
     # Substitute %VAR and %{VAR} with environment variables.
     $line =~ s[%(\w+)][$ENV{$1}]eg;
@@ -106,6 +128,11 @@ if (isatty(fileno(STDOUT))) {
 	}
 }
 print $status, "\n";
+
+# Now clean up the testdir.
+chdir($pretmpdir);
+rmtree($tmpdir);
+
 exit $failed ? 1 : 0;
 
 

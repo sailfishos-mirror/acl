@@ -1,7 +1,7 @@
 Test for malformed input to --restore
  https://savannah.nongnu.org/bugs/index.php?28185
 
-	$ cp malformed-restore-double-owner.acl tmp.acl
+	$ cp "%TESTDIR/malformed-restore-double-owner.acl" tmp.acl
 	$ sed -i "s/USER/%TUSER/g" tmp.acl
 	$ sed -i "s/GROUP/%TGROUP/g" tmp.acl
 	$ touch tmp
