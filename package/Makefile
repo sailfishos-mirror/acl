@@ -25,7 +25,7 @@ SRCTAR=$(PKG_NAME)-$(PKG_VERSION).src.tar.gz
 LDIRT = *-manifest *.gz $(TOPDIR)/$(PKG_NAME)-*
 
 # for clean and clobber
-SUBDIRS = tar rpm
+SUBDIRS = tar
 
 # nothing to build here (it's all packaging)
 default install install-dev install-lib:
@@ -56,8 +56,5 @@ dist : default $(MANIFEST)
 	echo === install === && $(MAKE) -C $(TOPDIR) install || exit $$?; \
 	if [ -x $(TAR) ]; then \
 	    ( echo "=== tar ===" && $(MAKEF) -C tar $@ || exit $$? ); \
-	fi; \
-	if [ -x $(RPMBUILD) ]; then \
-	    ( echo "=== rpm ===" && $(MAKEF) -C rpm $@ || exit $$? ); \
 	fi; \
 	test -z "$$KEEP_DIST_ROOT" || rm -rf $$DIST_ROOT; echo Done

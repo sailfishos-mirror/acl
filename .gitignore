@@ -9,11 +9,6 @@
 /acl-*
 /aclocal.m4
 /autom4te.cache/
-/build/rpm/*.rpm
-/build/rpm/acl.spec
-/build/rpm/rpm-*.rc
-/build/rpm/rpmfiles*
-/build/rpm/rpmmacros
 /chacl/chacl
 /config.guess
 /config.log

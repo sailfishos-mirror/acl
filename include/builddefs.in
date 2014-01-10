@@ -54,10 +54,6 @@ MSGFMT		= @msgfmt@
 MSGMERGE	= @msgmerge@
 XGETTEXT	= @xgettext@
 
-RPM		= @rpm@
-RPMBUILD	= @rpmbuild@
-RPM_VERSION	= @rpm_version@
-
 ENABLE_SHARED	= @enable_shared@
 ENABLE_GETTEXT	= @enable_gettext@
 

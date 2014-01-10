@@ -28,7 +28,7 @@ AC_DEFUN([AC_PACKAGE_NEED_UTILITY],
 # Generic macro, sets up all of the global build variables.
 # The following environment variables may be set to override defaults:
 #  CC MAKE LIBTOOL TAR ZIP MAKEDEPEND AWK SED ECHO SORT
-#  MSGFMT MSGMERGE XGETTEXT RPM
+#  MSGFMT MSGMERGE XGETTEXT
 #
 AC_DEFUN([AC_PACKAGE_UTILITIES],
   [ AC_PROG_CC
@@ -92,24 +92,4 @@ AC_DEFUN([AC_PACKAGE_UTILITIES],
 
         AC_DEFINE([ENABLE_GETTEXT], 1, [enable gettext])
     fi
-
-    AC_PATH_PROG(RPM, rpm,, $search_path)
-    rpm=$RPM
-    AC_SUBST(rpm)
-
-    dnl .. and what version is rpm
-    rpm_version=0
-    test -n "$RPM" && test -x "$RPM" && rpm_version=`$RPM --version \
-                        | awk '{print $NF}' | awk -F. '{V=1; print $V}'`
-    AC_SUBST(rpm_version)
-    dnl At some point in rpm 4.0, rpm can no longer build rpms, and
-    dnl rpmbuild is needed (rpmbuild may go way back; not sure)
-    dnl So, if rpm version >= 4.0, look for rpmbuild.  Otherwise build w/ rpm
-    if test $rpm_version -ge 4; then
-        AC_PATH_PROG(RPMBUILD, rpmbuild)
-        rpmbuild=$RPMBUILD
-    else
-        rpmbuild=$RPM
-    fi
-    AC_SUBST(rpmbuild)
   ])
