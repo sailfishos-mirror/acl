@@ -9,8 +9,7 @@ listed in parentheses.
 
 Cry immediately if we are not running as root.
 
-	$ id -u
-	> 0
+	$ require_root
 
 
 First, set up a temporary directory and create a regular file with

@@ -1,6 +1,10 @@
 Ensure setuid bit is restored when the owner changes
  https://bugzilla.redhat.com/show_bug.cgi?id=467936#c7
 
+Cry immediately if we are not running as root.
+
+	$ require_root
+
 	$ touch passwd
 	$ chmod 755 passwd
 	$ chmod u+s passwd
