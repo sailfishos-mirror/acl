@@ -10,8 +10,10 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-DLOCALEDIR=\"$(localedir)\"
 
+pkgconfdir = $(libdir)/pkgconfig
 sysincludedir = $(includedir)/sys
 
+pkgconf_DATA = libacl.pc
 pkginclude_HEADERS =
 sysinclude_HEADERS =
 bin_PROGRAMS =

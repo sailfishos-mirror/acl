@@ -59,6 +59,7 @@ AC_CONFIG_COMMANDS([include/sys],
 	$as_ln_s "$ac_abs_top_srcdir/include" include/sys
 	])
 AC_CONFIG_FILES([
+	libacl.pc
 	Makefile
 	po/Makefile.in
 ])
