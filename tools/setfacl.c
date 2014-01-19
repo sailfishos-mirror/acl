@@ -125,15 +125,15 @@ restore(
 	gid_t gid;
 	mode_t mask, flags;
 	struct do_set_args args = { };
-	int line = 0, backup_line;
+	int lineno = 0, backup_line;
 	int error, status = 0;
 	int chmod_required = 0;
 
 	memset(&st, 0, sizeof(st));
 
 	for(;;) {
-		backup_line = line;
-		error = read_acl_comments(file, &line, &path_p, &uid, &gid,
+		backup_line = lineno;
+		error = read_acl_comments(file, &lineno, &path_p, &uid, &gid,
 					  &flags);
 		if (error < 0) {
 			error = -error;
@@ -168,11 +168,11 @@ restore(
 		                     SEQ_PARSE_WITH_PERM |
 				     SEQ_PARSE_DEFAULT |
 				     SEQ_PARSE_MULTI,
-				     &line, NULL);
+				     &lineno, NULL);
 		if (error != 0) {
 			fprintf(stderr, _("%s: %s: %s in line %d\n"),
 			        progname, xquote(filename, "\n\r"), strerror(errno),
-				line);
+				lineno);
 			status = 1;
 			goto getout;
 		}

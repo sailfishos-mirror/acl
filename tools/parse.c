@@ -407,7 +407,7 @@ fail:
 int
 read_acl_comments(
 	FILE *file,
-	int *line,
+	int *lineno,
 	char **path_p,
 	uid_t *uid_p,
 	gid_t *gid_p,
@@ -439,15 +439,15 @@ read_acl_comments(
 			break;
 		if (c==' ' || c=='\t' || c=='\r' || c=='\n') {
 			if (c=='\n')
-				(*line)++;
+				(*lineno)++;
 			continue;
 		}
 		if (c != '#') {
 			ungetc(c, file);
 			break;
 		}
-		if (line)
-			(*line)++;
+		if (lineno)
+			(*lineno)++;
 
 		if (fgets(linebuf, sizeof(linebuf), file) == NULL)
 			break;
@@ -539,7 +539,7 @@ read_acl_seq(
 	seq_t seq,
 	int seq_cmd,
 	int parse_mode,
-	int *line,
+	int *lineno,
 	int *which)
 {
 	char linebuf[1024];
@@ -552,8 +552,8 @@ read_acl_seq(
 	for(;;) {
 		if (fgets(linebuf, sizeof(linebuf), file) == NULL)
 			break;
-		if (line)
-			(*line)++;
+		if (lineno)
+			(*lineno)++;
 
 		cp = linebuf;
 		SKIP_WS(cp);

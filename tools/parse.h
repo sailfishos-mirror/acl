@@ -61,7 +61,7 @@ parse_acl_seq(
 int
 read_acl_comments(
 	FILE *file,
-	int *line,
+	int *lineno,
 	char **path_p,
 	uid_t *uid_p,
 	gid_t *gid_p,
@@ -72,7 +72,7 @@ read_acl_seq(
 	seq_t seq,
 	int seq_cmd,
 	int parse_mode,
-	int *line,
+	int *lineno,
 	int *which);
 
 
