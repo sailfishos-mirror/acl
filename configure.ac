@@ -15,7 +15,7 @@
 #
 
 AC_INIT([acl], [2.2.53], [acl-devel@nongnu.org])
-AC_CONFIG_AUX_DIR([.])
+AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER([include/config.h])
 AC_PREFIX_DEFAULT(/usr)
