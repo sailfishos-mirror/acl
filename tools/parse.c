@@ -419,9 +419,7 @@ read_acl_comments(
 	  bytes for "# file: ". Not a good solution but for now it is the
 	  best I can do without too much impact on the code. [tw]
 	*/
-	char linebuf[(4*PATH_MAX)+9];
-	char *cp;
-	char *p;
+	char *line, *cp, *p;
 	int comments_read = 0;
 	
 	if (path_p)
@@ -449,19 +447,20 @@ read_acl_comments(
 		if (lineno)
 			(*lineno)++;
 
-		if (fgets(linebuf, sizeof(linebuf), file) == NULL)
+		line = next_line(file);
+		if (line == NULL)
 			break;
 		
 		comments_read = 1;
 
-		p = strrchr(linebuf, '\0');
-		while (p > linebuf &&
+		p = strrchr(line, '\0');
+		while (p > line &&
 		       (*(p-1)=='\r' || *(p-1)=='\n')) {
 		       	p--;
 			*p = '\0';
 		}
 		
-		cp = linebuf;
+		cp = line;
 		SKIP_WS(cp);
 		if (strncmp(cp, "file:", 5) == 0) {
 			cp += 5;
@@ -542,20 +541,18 @@ read_acl_seq(
 	int *lineno,
 	int *which)
 {
-	char linebuf[1024];
+	char *line;
 	const char *cp;
 	cmd_t cmd;
 
 	if (which)
 		*which = -1;
 
-	for(;;) {
-		if (fgets(linebuf, sizeof(linebuf), file) == NULL)
-			break;
+	while ((line = next_line(file))) {
 		if (lineno)
 			(*lineno)++;
 
-		cp = linebuf;
+		cp = line;
 		SKIP_WS(cp);
 		if (*cp == '\0') {
 			if (!(parse_mode & SEQ_PARSE_MULTI))
@@ -588,7 +585,7 @@ read_acl_seq(
 
 fail:
 	if (which)
-		*which = (cp - linebuf);
+		*which = (cp - line);
 	return -1;
 }
 
