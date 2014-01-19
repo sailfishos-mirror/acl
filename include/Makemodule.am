@@ -1,4 +1,4 @@
-aclinclude_HEADERS += \
+pkginclude_HEADERS += \
 	include/libacl.h
 
 sysinclude_HEADERS += \

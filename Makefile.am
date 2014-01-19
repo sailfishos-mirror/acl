@@ -10,10 +10,9 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-DLOCALEDIR=\"$(localedir)\"
 
-aclincludedir = $(includedir)/acl
 sysincludedir = $(includedir)/sys
 
-aclinclude_HEADERS =
+pkginclude_HEADERS =
 sysinclude_HEADERS =
 bin_PROGRAMS =
 lib_LTLIBRARIES =
