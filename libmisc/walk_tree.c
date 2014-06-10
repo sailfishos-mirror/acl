@@ -34,7 +34,7 @@ struct entry_handle {
 	dev_t dev;
 	ino_t ino;
 	DIR *stream;
-	off_t pos;
+	long pos;
 };
 
 struct entry_handle head = {
