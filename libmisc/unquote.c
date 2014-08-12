@@ -22,7 +22,7 @@
 #include <ctype.h>
 #include "misc.h"
 
-char *unquote(char *str)
+char *__acl_unquote(char *str)
 {
 	unsigned char *s, *t;
 

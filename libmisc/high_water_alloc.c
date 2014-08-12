@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include "misc.h"
 
-int high_water_alloc(void **buf, size_t *bufsize, size_t newsize)
+int __acl_high_water_alloc(void **buf, size_t *bufsize, size_t newsize)
 {
 #define CHUNK_SIZE	256
 	/*

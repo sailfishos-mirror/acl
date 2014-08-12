@@ -226,7 +226,7 @@ user_entry:
 			str = get_token(text_p);
 			if (str) {
 				cmd->c_tag = ACL_USER;
-				error = get_uid(unquote(str), &cmd->c_id);
+				error = get_uid(__acl_unquote(str), &cmd->c_id);
 				free(str);
 				if (error) {
 					*text_p = backup;
@@ -245,7 +245,7 @@ user_entry:
 			str = get_token(text_p);
 			if (str) {
 				cmd->c_tag = ACL_GROUP;
-				error = get_gid(unquote(str), &cmd->c_id); 
+				error = get_gid(__acl_unquote(str), &cmd->c_id);
 				free(str);
 				if (error) {
 					*text_p = backup;
@@ -447,7 +447,7 @@ read_acl_comments(
 		if (lineno)
 			(*lineno)++;
 
-		line = next_line(file);
+		line = __acl_next_line(file);
 		if (line == NULL)
 			break;
 		
@@ -465,7 +465,7 @@ read_acl_comments(
 		if (strncmp(cp, "file:", 5) == 0) {
 			cp += 5;
 			SKIP_WS(cp);
-			cp = unquote(cp);
+			cp = __acl_unquote(cp);
 			
 			if (path_p) {
 				if (*path_p)
@@ -482,7 +482,7 @@ read_acl_comments(
 			if (uid_p) {
 				if (*uid_p != ACL_UNDEFINED_ID)
 					goto fail;
-				if (get_uid(unquote(cp), uid_p) != 0)
+				if (get_uid(__acl_unquote(cp), uid_p) != 0)
 					continue;
 			}
 		} else if (strncmp(cp, "group:", 6) == 0) {
@@ -492,7 +492,7 @@ read_acl_comments(
 			if (gid_p) {
 				if (*gid_p != ACL_UNDEFINED_ID)
 					goto fail;
-				if (get_gid(unquote(cp), gid_p) != 0)
+				if (get_gid(__acl_unquote(cp), gid_p) != 0)
 					continue;
 			}
 		} else if (strncmp(cp, "flags:", 6) == 0) {
@@ -548,7 +548,7 @@ read_acl_seq(
 	if (which)
 		*which = -1;
 
-	while ((line = next_line(file))) {
+	while ((line = __acl_next_line(file))) {
 		if (lineno)
 			(*lineno)++;
 

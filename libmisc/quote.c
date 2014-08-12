@@ -23,7 +23,7 @@
 #include <string.h>
 #include "misc.h"
 
-const char *quote(const char *str, const char *quote_chars)
+const char *__acl_quote(const char *str, const char *quote_chars)
 {
 	static char *quoted_str;
 	static size_t quoted_str_len;
@@ -40,7 +40,7 @@ const char *quote(const char *str, const char *quote_chars)
 	if (nonpr == 0)
 		return str;
 
-	if (high_water_alloc((void **)&quoted_str, &quoted_str_len,
+	if (__acl_high_water_alloc((void **)&quoted_str, &quoted_str_len,
 			     (s - (unsigned char *)str) + nonpr * 3 + 1))
 		return NULL;
 	for (s = (unsigned char *)str, q = quoted_str; *s != '\0'; s++) {

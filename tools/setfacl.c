@@ -91,7 +91,7 @@ int promote_warning;
 
 static const char *xquote(const char *str, const char *quote_chars)
 {
-	const char *q = quote(str, quote_chars);
+	const char *q = __acl_quote(str, quote_chars);
 	if (q == NULL) {
 		fprintf(stderr, "%s: %s\n", progname, strerror(errno));
 		exit(1);
@@ -310,7 +310,7 @@ int next_file(const char *arg, seq_t seq)
 	args.seq = seq;
 
 	if (strcmp(arg, "-") == 0) {
-		while ((line = next_line(stdin)))
+		while ((line = __acl_next_line(stdin)))
 			errors = walk_tree(line, walk_flags, 0, do_set, &args);
 		if (!feof(stdin)) {
 			fprintf(stderr, _("%s: Standard input: %s\n"),

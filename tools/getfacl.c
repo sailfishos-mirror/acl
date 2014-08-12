@@ -89,7 +89,7 @@ int opt_numeric;  /* don't convert id's to symbolic names */
 
 static const char *xquote(const char *str, const char *quote_chars)
 {
-	const char *q = quote(str, quote_chars);
+	const char *q = __acl_quote(str, quote_chars);
 	if (q == NULL) {
 		fprintf(stderr, "%s: %s\n", progname, strerror(errno));
 		exit(1);
@@ -717,7 +717,7 @@ int main(int argc, char *argv[])
 	do {
 		if (optind == argc ||
 		    strcmp(argv[optind], "-") == 0) {
-			while ((line = next_line(stdin)) != NULL) {
+			while ((line = __acl_next_line(stdin)) != NULL) {
 				if (*line == '\0')
 					continue;
 

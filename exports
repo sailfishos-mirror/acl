@@ -59,22 +59,14 @@ ACL_1.0 {
 	acl_to_any_text;
 
     local:
-    	# Library internal stuff
+	# Library internal stuff
 	__new_var_obj_p;
 	__new_obj_p_here;
 	__free_obj_p;
 	__check_obj_p;
 	__ext2int_and_check;
-	__acl_reorder_entry_obj_p;
-	__acl_reorder_obj_p;
-	__acl_init_obj;
-	__acl_create_entry_obj;
-	__acl_free_acl_obj;
-	__acl_to_any_text;
+	__acl_*;
 	__apply_mask_to_mode;
-
-	quote;
-	unquote;
 };
 
 ACL_1.1 {

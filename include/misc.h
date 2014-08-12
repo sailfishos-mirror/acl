@@ -29,12 +29,12 @@
 # define hidden /* hidden */
 #endif
 
-hidden int high_water_alloc(void **buf, size_t *bufsize, size_t newsize);
+hidden int __acl_high_water_alloc(void **buf, size_t *bufsize, size_t newsize);
 
-hidden const char *quote(const char *str, const char *quote_chars);
-hidden char *unquote(char *str);
+hidden const char *__acl_quote(const char *str, const char *quote_chars);
+hidden char *__acl_unquote(char *str);
 
-hidden char *next_line(FILE *file);
+hidden char *__acl_next_line(FILE *file);
 
 #ifdef ENABLE_NLS
 # include <libintl.h>
