@@ -20,14 +20,7 @@
 
 #include <stdlib.h>
 
-#include "config.h"
-
-/* Mark library internal functions as hidden */
-#if defined(HAVE_VISIBILITY_ATTRIBUTE)
-# define hidden __attribute__((visibility("hidden")))
-#else
-# define hidden /* hidden */
-#endif
+#include "misc.h"
 
 /* Ugly pointer manipulation */
 

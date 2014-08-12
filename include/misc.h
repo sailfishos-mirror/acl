@@ -18,14 +18,23 @@
 #ifndef __MISC_H
 #define __MISC_H
 
+#include "config.h"
+
 #include <stdio.h>
 
-extern int high_water_alloc(void **buf, size_t *bufsize, size_t newsize);
+/* Mark library internal functions as hidden */
+#if defined(HAVE_VISIBILITY_ATTRIBUTE)
+# define hidden __attribute__((visibility("hidden")))
+#else
+# define hidden /* hidden */
+#endif
 
-extern const char *quote(const char *str, const char *quote_chars);
-extern char *unquote(char *str);
+hidden int high_water_alloc(void **buf, size_t *bufsize, size_t newsize);
 
-extern char *next_line(FILE *file);
+hidden const char *quote(const char *str, const char *quote_chars);
+hidden char *unquote(char *str);
+
+hidden char *next_line(FILE *file);
 
 #ifdef ENABLE_NLS
 # include <libintl.h>
