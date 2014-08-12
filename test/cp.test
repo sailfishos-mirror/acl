@@ -14,7 +14,7 @@ The cp utility should only copy ACLs if `-p' is given.
 	
 	$ rm g
 	$ cp -p f g
-	$ ls -l f | awk -- '{ print $1 }'
+	$ ls -l g | awk -- '{ print $1 }'
 	> -rw-rw-r--+
 	
 	$ mkdir h
