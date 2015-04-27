@@ -20,7 +20,7 @@
 */
 
 #include <unistd.h>
-#include <attr/xattr.h>
+#include <sys/xattr.h>
 #include "libacl.h"
 #include "__acl_to_xattr.h"
 

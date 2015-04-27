@@ -23,14 +23,13 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <attr/xattr.h>
+#include <sys/xattr.h>
 #include <acl/libacl.h>
 #include "libacl.h"
 #include "__acl_from_xattr.h"
 
 #include "byteorder.h"
 #include "acl_ea.h"
-
 
 /* 23.4.16 */
 acl_t

@@ -44,7 +44,6 @@ dnl Automatically increment the revision for every release.
 LT_REVISION=$(echo "${PACKAGE_VERSION}" | tr -d .)
 AC_SUBST(LT_REVISION)
 
-AC_PACKAGE_NEED_ATTR_XATTR_H
 AC_PACKAGE_NEED_ATTR_ERROR_H
 AC_PACKAGE_NEED_GETXATTR_LIBATTR
 

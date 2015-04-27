@@ -20,13 +20,12 @@
 */
 
 #include <unistd.h>
-#include <attr/xattr.h>
+#include <sys/xattr.h>
 #include "libacl.h"
 
 #include "byteorder.h"
 #include "acl_ea.h"
 #include "__acl_extended_file.h"
-
 
 int
 __acl_extended_file(const char *path_p,

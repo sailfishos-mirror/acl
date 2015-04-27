@@ -20,12 +20,11 @@
 */
 
 #include <unistd.h>
-#include <attr/xattr.h>
+#include <sys/xattr.h>
 #include "libacl.h"
 
 #include "byteorder.h"
 #include "acl_ea.h"
-
 
 int
 acl_extended_fd(int fd)

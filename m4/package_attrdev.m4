@@ -12,17 +12,6 @@ dnl GNU General Public License for more details.
 dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
-AC_DEFUN([AC_PACKAGE_NEED_ATTR_XATTR_H],
-  [ AC_CHECK_HEADERS([attr/xattr.h])
-    if test "$ac_cv_header_attr_xattr_h" != "yes"; then
-        echo
-        echo 'FATAL ERROR: attr/xattr.h does not exist.'
-        echo 'Install the extended attributes (attr) development package.'
-        echo 'Alternatively, run "make install-dev" from the attr source.'
-        exit 1
-    fi
-  ])
-
 AC_DEFUN([AC_PACKAGE_NEED_ATTR_ERROR_H],
   [ AC_CHECK_HEADERS([attr/error_context.h])
     if test "$ac_cv_header_attr_error_context_h" != "yes"; then

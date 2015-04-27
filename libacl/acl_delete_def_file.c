@@ -20,11 +20,11 @@
 */
 
 #include <sys/types.h>
-#include <attr/xattr.h>
+#include <sys/xattr.h>
 #include "byteorder.h"
 #include "acl_ea.h"
 #include "config.h"
-
+#include "libacl.h"
 
 /* 23.4.8 */
 int

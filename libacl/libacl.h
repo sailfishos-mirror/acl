@@ -17,7 +17,12 @@
 
 #include <errno.h>
 #include <sys/acl.h>
+#include <errno.h>
 #include "libobj.h"
+
+#ifndef ENOATTR
+# define ENOATTR ENODATA
+#endif
 
 typedef unsigned int permset_t;
 
