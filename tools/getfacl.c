@@ -477,7 +477,7 @@ int do_print(const char *path_p, const struct stat *st, int walk_flags, void *un
 
 	if (opt_skip_base &&
 	    (!acl || acl_equiv_mode(acl, NULL) == 0) && !default_acl)
-		return 0;
+		goto cleanup;
 
 	if (opt_print_acl && opt_print_default_acl)
 		default_prefix = "default:";
