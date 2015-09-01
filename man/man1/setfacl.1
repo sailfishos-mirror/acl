@@ -37,17 +37,17 @@ This utility sets Access Control Lists (ACLs) of files and directories.
 On the command line, a sequence of commands is followed by a sequence of
 files (which in turn can be followed by another sequence of commands, ...).
 
-The options
-.I \-m,
+The
+.I \-m
 and
 .I \-x
-expect an ACL on the command line. Multiple ACL entries are separated
-by comma characters (`,'). The options
-.I \-M,
+options expect an ACL on the command line. Multiple ACL entries are separated
+by comma characters (`,'). The
+.I \-M
 and
 .I \-X
-read an ACL from a file or from standard input. The ACL entry format is described in Section
-ACL ENTRIES.
+options read an ACL from a file or from standard input. The ACL entry format is
+described in Section ACL ENTRIES.
 
 The
 .IR "\-\-set" " and " "\-\-set-file"
@@ -68,7 +68,7 @@ does not exist.  Only ACL entries without the
 field are accepted as parameters, unless POSIXLY_CORRECT is defined.
 
 When reading from files using the 
-.I \-M,
+.I \-M
 and
 .IR \-X
 options, setfacl accepts the output getfacl produces.
