@@ -125,7 +125,7 @@ struct name_list *get_list(const struct stat *st, acl_t acl)
 		return NULL;
 	while (ret > 0) {
 		acl_tag_t e_type;
-		const id_t *id_p;
+		id_t *id_p;
 		const char *name = "";
 		int len;
 
@@ -137,8 +137,10 @@ struct name_list *get_list(const struct stat *st, acl_t acl)
 
 			case ACL_USER:
 				id_p = acl_get_qualifier(ent);
-				if (id_p != NULL)
+				if (id_p != NULL) {
 					name = user_name(*id_p, opt_numeric);
+					acl_free(id_p);
+				}
 				break;
 
 			case ACL_GROUP_OBJ:
@@ -147,8 +149,10 @@ struct name_list *get_list(const struct stat *st, acl_t acl)
 
 			case ACL_GROUP:
 				id_p = acl_get_qualifier(ent);
-				if (id_p != NULL)
+				if (id_p != NULL) {
 					name = group_name(*id_p, opt_numeric);
+					acl_free(id_p);
+				}
 				break;
 		}
 		name = xquote(name, "\t\n\r");
@@ -378,19 +382,24 @@ int do_show(FILE *stream, const char *path_p, const struct stat *st,
 			continue;
 		} else {
 			if (acl_tag == ACL_USER || acl_tag == ACL_GROUP) {
-				id_t  *acl_id_p = NULL, *dacl_id_p = NULL;
-				if (acl_ent)
-					acl_id_p = acl_get_qualifier(acl_ent);
-				if (dacl_ent)
-					dacl_id_p = acl_get_qualifier(dacl_ent);
+				int id_cmp = 0;
+
+				if (acl_ent && dacl_ent) {
+					id_t *acl_id_p = acl_get_qualifier(acl_ent);
+					id_t *dacl_id_p = acl_get_qualifier(dacl_ent);
+
+					id_cmp = (*acl_id_p > *dacl_id_p) -
+						 (*acl_id_p < *dacl_id_p);
+					acl_free(acl_id_p);
+					acl_free(dacl_id_p);
+				}
 				
-				if (acl && (!dacl || *acl_id_p < *dacl_id_p)) {
+				if (acl && (!dacl || id_cmp < 0)) {
 					show_line(stream, &acl_names, acl,
 					          &acl_ent, acl_mask,
 						  NULL, NULL, NULL, NULL);
 					continue;
-				} else if (dacl &&
-					(!acl || *dacl_id_p < *acl_id_p)) {
+				} else if (dacl && (!acl || id_cmp > 0)) {
 					show_line(stream, NULL, NULL, NULL,
 					          NULL, &dacl_names, dacl,
 						  &dacl_ent, dacl_mask);
