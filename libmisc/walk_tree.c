@@ -37,13 +37,13 @@ struct entry_handle {
 	long pos;
 };
 
-struct entry_handle head = {
+static struct entry_handle head = {
 	.next = &head,
 	.prev = &head,
 	/* The other fields are unused. */
 };
-struct entry_handle *closed = &head;
-unsigned int num_dir_handles;
+static struct entry_handle *closed = &head;
+static unsigned int num_dir_handles;
 
 static int walk_tree_visited(dev_t dev, ino_t ino)
 {
