@@ -60,13 +60,7 @@ ACL_1.0 {
 
     local:
 	# Library internal stuff
-	__new_var_obj_p;
-	__new_obj_p_here;
-	__free_obj_p;
-	__check_obj_p;
-	__ext2int_and_check;
-	__acl_*;
-	__apply_mask_to_mode;
+	*;
 };
 
 ACL_1.1 {
