@@ -21,6 +21,7 @@
 /build-aux/
 /config.*
 /configure
+/configure.lineno
 /libtool
 /m4/
 Makefile
