@@ -43,12 +43,12 @@ use File::Basename qw(basename dirname);
 use File::Path qw(rmtree);
 use Getopt::Std;
 use POSIX qw(isatty setuid getcwd);
-use vars qw($opt_l $opt_v);
+use vars qw($opt_l $opt_v $opt_t);
 
 no warnings qw(taint);
 
 $opt_l = ~0;  # a really huge number
-getopts('l:v');
+getopts('l:vt:');
 
 my ($OK, $FAILED) = ("ok", "failed");
 if (isatty(fileno(STDOUT))) {
@@ -63,7 +63,18 @@ $ENV{"PATH"} = $ENV{"TESTDIR"} . ":$ENV{PATH}";
 # Add the parent dir to PATH so we can find the compiled tools.
 $ENV{"PATH"} = dirname(abs_path(dirname($0))) . ":$ENV{PATH}";
 $ENV{"TUSER"} = getpwuid($>);
+if (!defined($ENV{"TUSER"})) {
+	# If the uid isn't found in the private passwd file, just use the
+	# uid directly.
+	$ENV{"TUSER"} = $>;
+}
 $ENV{"TGROUP"} = getgrgid($));
+if (!defined($ENV{"TGROUP"})) {
+	# If the groupid isn't found in the private group file, just use the
+	# gid directly.
+	my @groups = split(/ /, $();
+	$ENV{"TGROUP"} = $groups[0];
+}
 
 open(TEST_FILE, $ARGV[0]);
 
@@ -92,7 +103,7 @@ for (;;) {
   if (defined $line) {
     # Substitute %VAR and %{VAR} with environment variables.
     $line =~ s[%(\w+)][$ENV{$1}]eg;
-    $line =~ s[%{(\w+)}][$ENV{$1}]eg;
+    $line =~ s[%\{(\w+)\}][$ENV{$1}]eg;
   }
   if (defined $line) {
     if ($line =~ s/^\s*< ?//) {
