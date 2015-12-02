@@ -44,11 +44,14 @@ const char *__acl_quote(const char *str, const char *quote_chars)
 			     (s - (unsigned char *)str) + nonpr * 3 + 1))
 		return NULL;
 	for (s = (unsigned char *)str, q = quoted_str; *s != '\0'; s++) {
-		if (*s == '\\' || strchr(quote_chars, *s)) {
+		if (strchr(quote_chars, *s)) {
 			*q++ = '\\';
 			*q++ = '0' + ((*s >> 6)    );
 			*q++ = '0' + ((*s >> 3) & 7);
 			*q++ = '0' + ((*s     ) & 7);
+		} else if (*s == '\\') {
+			*q++ = '\\';
+			*q++ = '\\';
 		} else
 			*q++ = *s;
 	}

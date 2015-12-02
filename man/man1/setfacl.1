@@ -190,7 +190,13 @@ For
 .I uid
 and
 .I gid
-you can specify either a name or a number.
+you can specify either a name or a number.  Character literals may be specified
+with a backslash followed by the 3-digit octal digits corresponding to the
+ASCII code for the character (e.g.,
+.I \e101
+for 'A').  If the name contains a literal backslash followed by 3 digits, the
+backslash must be escaped (i.e.,
+.IR "\e\e" ).
 .PP
 The
 .I perms

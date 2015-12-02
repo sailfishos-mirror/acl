@@ -454,6 +454,45 @@ Dangling symlink test http://savannah.nongnu.org/bugs/?28131
 	> setfacl: d/b: No such file or directory
 	$ rm -R d
 
+Handle escaped literal backslash followed by numeric username
+	$ mkdir d
+	$ touch d/f
+	$ setfacl -m u:domain\\\\12345:rw- d/f
+	$ getfacl --omit-header d/f
+	> user::rw-
+	> user:domain\\12345:rw-
+	> group::rw-
+	> mask::rw-
+	> other::r--
+	> 
+	$ rm -R d
+
+Handle escaped literal backslash
+	$ mkdir d
+	$ touch d/f
+	$ setfacl -m u:domain\\\\user:rw- d/f
+	$ getfacl --omit-header d/f
+	> user::rw-
+	> user:domain\\user:rw-
+	> group::rw-
+	> mask::rw-
+	> other::r--
+	> 
+	$ rm -R d
+
+Handle escaped literal characters by octal code (bin)
+	$ mkdir d
+	$ touch d/f
+	$ setfacl -m u:\\142\\151\\156:rw- d/f
+	$ getfacl --omit-header d/f
+	> user::rw-
+	> user:bin:rw-
+	> group::rw-
+	> mask::rw-
+	> other::r--
+	> 
+	$ rm -R d
+
 Malformed restore file
 
 	$ echo "# owner: root" > f
