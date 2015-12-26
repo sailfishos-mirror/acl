@@ -26,7 +26,7 @@ int
 acl_get_perm(acl_permset_t permset_d, acl_perm_t perm)
 {
 	acl_permset_obj *acl_permset_obj_p = ext2int(acl_permset, permset_d);
-	if (!acl_permset_obj_p || (perm & !(ACL_READ|ACL_WRITE|ACL_EXECUTE)))
+	if (!acl_permset_obj_p || (perm & ~(ACL_READ|ACL_WRITE|ACL_EXECUTE)))
 		return -1;
 	return (acl_permset_obj_p->sperm & perm) != 0;
 }
