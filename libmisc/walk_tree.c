@@ -102,8 +102,8 @@ static int walk_tree_rec(const char *path, int walk_flags,
 	 *      a link and follow_symlinks
 	 */
         if ((flags & WALK_TREE_RECURSIVE) &&
-	   (!(flags & WALK_TREE_SYMLINK) && S_ISDIR(st.st_mode)) ||
-	   ((flags & WALK_TREE_SYMLINK) && follow_symlinks)) {
+	    ((!(flags & WALK_TREE_SYMLINK) && S_ISDIR(st.st_mode)) ||
+	     ((flags & WALK_TREE_SYMLINK) && follow_symlinks))) {
 		struct dirent *entry;
 
 		/*
