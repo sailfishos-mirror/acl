@@ -32,5 +32,9 @@ EOF
 		  ])
    if test $libc_cv_visibility_attribute = yes; then
      AC_DEFINE(HAVE_VISIBILITY_ATTRIBUTE, [], [GCC supports visibility attributes])
+     AC_DEFINE(EXPORT, [__attribute__ ((visibility ("default"))) extern], [Visibility attribute for API symbols])
+     CFLAGS="${CFLAGS} -fvisibility=hidden"
+   else
+     AC_DEFINE(EXPORT, [extern], [Visibility attribute for API symbols])
    fi
   ])
