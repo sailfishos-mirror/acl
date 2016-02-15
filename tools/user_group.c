@@ -21,6 +21,7 @@
   USA.
 */
 
+#include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include "user_group.h"

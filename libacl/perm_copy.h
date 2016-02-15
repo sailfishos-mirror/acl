@@ -36,4 +36,5 @@
 #define HAVE_ACL_SET_FD 1
 #define HAVE_ACL_SET_FILE 1
 
+#include "config.h"
 #include "misc.h"

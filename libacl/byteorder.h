@@ -15,8 +15,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "config.h"
-
 #ifdef WORDS_BIGENDIAN
 # define cpu_to_le16(w16) le16_to_cpu(w16)
 # define le16_to_cpu(w16) ((u_int16_t)((u_int16_t)(w16) >> 8) | \

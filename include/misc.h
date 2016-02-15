@@ -18,8 +18,6 @@
 #ifndef __MISC_H
 #define __MISC_H
 
-#include "config.h"
-
 #include <stdio.h>
 
 /* Mark library internal functions as hidden */
