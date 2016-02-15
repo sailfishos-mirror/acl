@@ -21,7 +21,6 @@
 
 #include "config.h"
 #include <errno.h>
-#include <sys/acl.h>
 #include "libacl.h"
 
 #include "byteorder.h"

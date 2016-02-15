@@ -25,7 +25,6 @@
 #include <string.h>
 #include <pwd.h>
 #include <grp.h>
-#include <acl/libacl.h>
 #include "libacl.h"
 #include "misc.h"
 

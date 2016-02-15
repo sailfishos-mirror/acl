@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <errno.h>
 #include <sys/stat.h>
-#include <acl/libacl.h>
 #include "libacl.h"
 
 

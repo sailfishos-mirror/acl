@@ -25,7 +25,6 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/xattr.h>
-#include <acl/libacl.h>
 #include "libacl.h"
 #include "__acl_from_xattr.h"
 

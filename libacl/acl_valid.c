@@ -22,7 +22,7 @@
 #include "config.h"
 #include <errno.h>
 #include <stdio.h>
-#include <acl/libacl.h>
+#include "libacl.h"
 
 
 /* 23.4.28 */
