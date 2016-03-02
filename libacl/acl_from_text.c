@@ -304,7 +304,10 @@ parse_acl_entry(const char **text_p, acl_t *acl_p)
 create_entry:
 	if (acl_create_entry(acl_p, &entry_d) != 0)
 		return -1;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Waddress"
 	if (acl_copy_entry(entry_d, int2ext(&entry_obj)) != 0)
+#pragma GCC diagnostic pop
 		return -1;
 	return 0;
 
