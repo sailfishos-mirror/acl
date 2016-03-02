@@ -12,7 +12,7 @@ Cry immediately if we are not running as root.
 	$ sg bin
 	$ umask 027
 	$ touch g
-	$ ls -dl g | awk '{print $1}'
+	$ ls -dl g | awk '{print $1}' | sed 's/\\.//g'
 	> -rw-r-----
 
 	$ setfacl -m m:- g
