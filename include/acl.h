@@ -48,8 +48,6 @@ typedef struct __acl_permset_ext *acl_permset_t;
 #define ACL_READ		(0x04)
 #define ACL_WRITE		(0x02)
 #define ACL_EXECUTE		(0x01)
-//#define ACL_ADD		(0x08)
-//#define ACL_DELETE		(0x10)
 
 /* 23.2.5 acl_tag_t values */
 
