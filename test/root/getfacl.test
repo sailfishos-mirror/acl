@@ -7,7 +7,6 @@ Cry immediately if we are not running as root.
 
 	$ umask 022
 	$ mkdir d
-	$ groupadd loooooooooooooooooooooooonggroup
 	$ setfacl -dm group:loooooooooooooooooooooooonggroup:rwx d
 	$ getfacl -cde d
 	> user::rwx
@@ -17,5 +16,4 @@ Cry immediately if we are not running as root.
 	> other::r-x
 	>
 
-	$ groupdel loooooooooooooooooooooooonggroup
 	$ rm -r d
