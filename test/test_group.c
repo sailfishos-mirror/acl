@@ -12,15 +12,15 @@
 static char grfile[PATH_MAX];
 static void setup_grfile() __attribute__((constructor));
 
-void setup_grfile() {
+static void setup_grfile() {
 	snprintf(grfile, sizeof(grfile), "%s/%s", BASEDIR, TEST_GROUP);
 }
 
 #define ALIGN_MASK(x, mask)    (((x) + (mask)) & ~(mask))
 #define ALIGN(x, a)            ALIGN_MASK(x, (typeof(x))(a) - 1)
 
-int test_getgrent_r(FILE *file, struct group *grp, char *buf,
-		    size_t buflen, struct group **result)
+static int test_getgrent_r(FILE *file, struct group *grp, char *buf,
+			   size_t buflen, struct group **result)
 {
 	char *line, *str, *remain;
 	int count, index = 0;
@@ -76,10 +76,10 @@ int test_getgrent_r(FILE *file, struct group *grp, char *buf,
 	return 0;
 }
 
-int test_getgr_match(struct group *grp, char *buf, size_t buflen,
-		     struct group **result,
-		     int (*match)(const struct group *, const void *),
-		     const void *data)
+static int test_getgr_match(struct group *grp, char *buf, size_t buflen,
+			    struct group **result,
+			    int (*match)(const struct group *, const void *),
+			    const void *data)
 {
 	FILE *file;
 	struct group *_result;
@@ -116,12 +116,14 @@ static int match_name(const struct group *grp, const void *data)
 	return !strcmp(grp->gr_name, name);
 }
 
+EXPORT
 int getgrnam_r(const char *name, struct group *grp, char *buf, size_t buflen,
 	       struct group **result)
 {
 	return test_getgr_match(grp, buf, buflen, result, match_name, name);
 }
 
+EXPORT
 struct group *getgrnam(const char *name)
 {
 	static char buf[16384];
@@ -138,12 +140,14 @@ static int match_gid(const struct group *grp, const void *data)
 	return grp->gr_gid == gid;
 }
 
+EXPORT
 int getgrgid_r(gid_t gid, struct group *grp, char *buf, size_t buflen,
 	       struct group **result)
 {
 	return test_getgr_match(grp, buf, buflen, result, match_gid, &gid);
 }
 
+EXPORT
 struct group *getgrgid(gid_t gid)
 {
 	static char buf[16384];

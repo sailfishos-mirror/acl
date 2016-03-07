@@ -12,15 +12,15 @@
 static char pwfile[PATH_MAX];
 static void setup_pwfile() __attribute__((constructor));
 
-void setup_pwfile() {
+static void setup_pwfile() {
 	snprintf(pwfile, sizeof(pwfile), "%s/%s", BASEDIR, TEST_PASSWD);
 }
 
 #define ALIGN_MASK(x, mask)    (((x) + (mask)) & ~(mask))
 #define ALIGN(x, a)            ALIGN_MASK(x, (typeof(x))(a) - 1)
 
-int test_getpwent_r(FILE *file, struct passwd *pwd, char *buf,
-		    size_t buflen, struct passwd **result)
+static int test_getpwent_r(FILE *file, struct passwd *pwd, char *buf,
+			   size_t buflen, struct passwd **result)
 {
 	char *str, *line;
 	int index = 0;
@@ -70,10 +70,10 @@ int test_getpwent_r(FILE *file, struct passwd *pwd, char *buf,
 	return 0;
 }
 
-int test_getpw_match(struct passwd *pwd, char *buf, size_t buflen,
-		     struct passwd **result,
-		     int (*match)(const struct passwd *, const void *),
-		     const void *data)
+static int test_getpw_match(struct passwd *pwd, char *buf, size_t buflen,
+			    struct passwd **result,
+			    int (*match)(const struct passwd *, const void *),
+			    const void *data)
 {
 	FILE *file;
 	struct passwd *_result;
@@ -111,12 +111,14 @@ static int match_name(const struct passwd *pwd, const void *data)
 	return !strcmp(pwd->pw_name, name);
 }
 
+EXPORT
 int getpwnam_r(const char *name, struct passwd *pwd, char *buf, size_t buflen,
 	       struct passwd **result)
 {
 	return test_getpw_match(pwd, buf, buflen, result, match_name, name);
 }
 
+EXPORT
 struct passwd *getpwnam(const char *name)
 {
 	static char buf[16384];
@@ -133,12 +135,14 @@ static int match_uid(const struct passwd *pwd, const void *data)
 	return pwd->pw_uid == uid;
 }
 
+EXPORT
 int getpwuid_r(uid_t uid, struct passwd *pwd, char *buf, size_t buflen,
 	       struct passwd **result)
 {
 	return test_getpw_match(pwd, buf, buflen, result, match_uid, &uid);
 }
 
+EXPORT
 struct passwd *getpwuid(uid_t uid)
 {
 	static char buf[16384];
