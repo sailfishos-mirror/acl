@@ -306,7 +306,7 @@ user_entry:
 		return cmd;
 	}
 
-	for (perm_chars=0; perm_chars<3; perm_chars++, (*text_p)++) {
+	for (perm_chars=0;; perm_chars++, (*text_p)++) {
 		switch(**text_p) {
 			case 'r': /* read */
 				if (cmd->c_perm & CMD_PERM_READ)
@@ -344,8 +344,6 @@ user_entry:
 				return cmd;
 		}
 	}
-	if (perm_chars != 3)
-		goto fail;
 	return cmd;
 
 fail:
