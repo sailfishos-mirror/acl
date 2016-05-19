@@ -200,18 +200,32 @@ backslash must be escaped (i.e.,
 .PP
 The
 .I perms
-field is a combination of characters that indicate the permissions: read
+field is a combination of characters that indicate the read
 .IR (r) ,
 write
 .IR (w) ,
 execute
-.IR (x) ,
-execute only if the file is a directory or already has execute permission
-for some user
-.IR (X) .
-Alternatively, the
+.IR (x)
+permissions.  Dash characters in the
 .I perms
-field can be an octal digit (0\-7).
+field
+.IR (\-)
+are ignored.  The character
+.I X
+stands for the execute permission if the file is a directory or already has
+execute permission for some user.  Alternatively, the
+.I perms
+field can define the permissions numerically, as a bit-wise combination of read
+.IR (4) ,
+write
+.IR (2) ,
+and execute
+.IR (1) .
+Zero
+.I perms
+fields or
+.I perms
+fields that only consist of dashes indicate no permissions.
 .PP
 .SS AUTOMATICALLY CREATED ENTRIES
 Initially, files and directories contain only the three base ACL entries
