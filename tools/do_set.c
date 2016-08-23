@@ -478,8 +478,15 @@ do_set(
 			if (errno == ENOSYS || errno == ENOTSUP) {
 				if (equiv_mode != 0)
 					goto fail;
-				else if (chmod(path_p, mode) != 0)
-					goto fail;
+				else {
+					struct stat st;
+
+					if (stat(path_p, &st) != 0)
+						goto fail;
+					mode |= st.st_mode & 07000;
+					if (chmod(path_p, mode) != 0)
+						goto fail;
+				}
 			} else
 				goto fail;
 		}
