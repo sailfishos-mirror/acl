@@ -30,7 +30,14 @@ cmd_t
 cmd_init(
 	void)
 {
-	return (cmd_t)malloc(sizeof(struct cmd_obj));
+	cmd_t cmd;
+
+	cmd = malloc(sizeof(struct cmd_obj));
+	if (cmd) {
+		cmd->c_tag = ACL_UNDEFINED_TAG;
+		cmd->c_perm = 0;
+	}
+	return cmd;
 }
 
 
