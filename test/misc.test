@@ -8,6 +8,7 @@ two dummy users (bin and daemon) and a dummy group (daemon).
 	$ touch f
 	  
 Only change a base ACL:
+	$ chacl u::rw,g::r,o::- f
 	$ setfacl -m u::r f
 	$ setfacl -m u::rw,u:bin:rw f
 	$ ls -dl f | awk '{print $1}'
