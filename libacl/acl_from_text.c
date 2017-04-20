@@ -307,8 +307,8 @@ create_entry:
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Waddress"
 	if (acl_copy_entry(entry_d, int2ext(&entry_obj)) != 0)
-#pragma GCC diagnostic pop
 		return -1;
+#pragma GCC diagnostic pop
 	return 0;
 
 fail:
