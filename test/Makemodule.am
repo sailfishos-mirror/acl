@@ -3,6 +3,7 @@ XFAIL_TESTS = \
 	test/nfs/nfs-dir.test
 TESTS = \
 	test/cp.test \
+	test/getfacl-lfs.test \
 	test/getfacl-noacl.test \
 	test/getfacl-recursive.test \
 	test/malformed-restore.test \
