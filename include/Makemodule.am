@@ -20,3 +20,5 @@ install-libacl_h: include/libacl.h
 install-acl_h: include/acl.h
 	$(SUBST_INSTALL_HEADER) "$<" "$(DESTDIR)$(sysincludedir)"
 install-data-local: install-libacl_h install-acl_h
+uninstall-local:
+	-rm -f "$(DESTDIR)$(pkgincludedir)/libacl.h" "$(DESTDIR)$(sysincludedir)/acl.h"
