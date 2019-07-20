@@ -9,12 +9,8 @@
 #include <grp.h>
 
 #define TEST_GROUP "test/test.group"
-static char grfile[PATH_MAX];
-static void setup_grfile() __attribute__((constructor));
+static char grfile[] = BASEDIR "/" TEST_GROUP;
 
-static void setup_grfile() {
-	snprintf(grfile, sizeof(grfile), "%s/%s", BASEDIR, TEST_GROUP);
-}
 
 #define ALIGN_MASK(x, mask)    (((x) + (mask)) & ~(mask))
 #define ALIGN(x, a)            ALIGN_MASK(x, (typeof(x))(a) - 1)

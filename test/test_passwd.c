@@ -9,12 +9,7 @@
 #include <pwd.h>
 
 #define TEST_PASSWD "test/test.passwd"
-static char pwfile[PATH_MAX];
-static void setup_pwfile() __attribute__((constructor));
-
-static void setup_pwfile() {
-	snprintf(pwfile, sizeof(pwfile), "%s/%s", BASEDIR, TEST_PASSWD);
-}
+static char pwfile[] = BASEDIR "/" TEST_PASSWD;
 
 #define ALIGN_MASK(x, mask)    (((x) + (mask)) & ~(mask))
 #define ALIGN(x, a)            ALIGN_MASK(x, (typeof(x))(a) - 1)

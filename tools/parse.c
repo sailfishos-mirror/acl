@@ -413,11 +413,6 @@ read_acl_comments(
 	mode_t *flags)
 {
 	int c;
-	/*
-	  Max PATH_MAX bytes even for UTF-8 path names and additional 9
-	  bytes for "# file: ". Not a good solution but for now it is the
-	  best I can do without too much impact on the code. [tw]
-	*/
 	char *line, *cp, *p;
 	int comments_read = 0;
 	
