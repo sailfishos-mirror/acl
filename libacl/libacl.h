@@ -25,6 +25,9 @@
 #ifndef ENOATTR
 # define ENOATTR ENODATA
 #endif
+#ifndef ENODATA
+# define ENODATA ENOATTR
+#endif
 
 typedef unsigned int permset_t;
 
