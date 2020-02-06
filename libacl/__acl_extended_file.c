@@ -2,7 +2,7 @@
   File: __acl_extended_file.c
 
   Copyright (C) 2000, 2011
-  Andreas Gruenbacher, <a.gruenbacher@bestbits.at>
+  Andreas Gruenbacher, <andreas.gruenbacher@gmail.com>
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public

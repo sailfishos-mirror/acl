@@ -2,7 +2,7 @@
   File: acl_from_text.c
 
   Copyright (C) 1999, 2000, 2001
-  Andreas Gruenbacher, <a.gruenbacher@bestbits.at>
+  Andreas Gruenbacher, <andreas.gruenbacher@gmail.com>
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
