@@ -42,7 +42,7 @@ acl_from_mode(mode_t mode)
 
 	acl_obj_p = __acl_init_obj(3);
 	if (!acl_obj_p)
-		goto fail;
+		return NULL;
 
 	entry_obj_p = __acl_create_entry_obj(acl_obj_p);
 	if (!entry_obj_p)

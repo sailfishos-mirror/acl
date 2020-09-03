@@ -47,7 +47,7 @@ acl_copy_int(const void *buf_p)
 	entries = size / sizeof(struct __acl_entry);
 	acl_obj_p = __acl_init_obj(entries);
 	if (acl_obj_p == NULL)
-		goto fail;
+		return NULL;
 	end_p = ext_acl->x_entries + entries;
 	for(; ent_p != end_p; ent_p++) {
 		entry_obj_p = __acl_create_entry_obj(acl_obj_p);
@@ -64,4 +64,3 @@ fail:
 	__acl_free_acl_obj(acl_obj_p);
 	return NULL;
 }
-
