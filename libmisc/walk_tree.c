@@ -48,6 +48,7 @@ struct walk_tree_args {
 	struct entry_handle *closed;
 	unsigned int num_dir_handles;
 	struct stat st;
+	dev_t dev;
 };
 
 static int walk_tree_visited(struct entry_handle *dirs, dev_t dev, ino_t ino)
@@ -80,6 +81,14 @@ static int walk_tree_rec(struct walk_tree_args *args)
 	if (lstat(args->path, &args->st) != 0)
 		return args->func(args->path, NULL, flags | WALK_TREE_FAILED,
 				  args->arg);
+
+	if (flags & WALK_TREE_ONE_FILESYSTEM) {
+		if (args->dev == 0)
+			args->dev = args->st.st_dev;
+		else if (args->st.st_dev != args->dev)
+			return 0;
+	}
+
 	if (S_ISLNK(args->st.st_mode)) {
 		flags |= WALK_TREE_SYMLINK;
 		if ((flags & WALK_TREE_DEREFERENCE) ||
@@ -243,6 +252,7 @@ int walk_tree(const char *path, int walk_flags, unsigned int num,
 	args.func = func;
 	args.arg = arg;
 	args.depth = 0;
+	args.dev = 0;
 
 	return walk_tree_rec(&args);
 }
