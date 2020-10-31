@@ -38,6 +38,14 @@ struct entry_handle {
 	long pos;
 };
 
+struct walk_tree_args {
+	char path[FILENAME_MAX];
+	int walk_flags;
+	int (*func)(const char *, const struct stat *, int, void *);
+	void *arg;
+	int depth;
+};
+
 static struct entry_handle head = {
 	.next = &head,
 	.prev = &head,
@@ -56,15 +64,13 @@ static int walk_tree_visited(dev_t dev, ino_t ino)
 	return 0;
 }
 
-static int walk_tree_rec(const char *path, int walk_flags,
-			 int (*func)(const char *, const struct stat *, int,
-				     void *), void *arg, int depth)
+static int walk_tree_rec(struct walk_tree_args *args)
 {
-	int follow_symlinks = (walk_flags & WALK_TREE_LOGICAL) ||
-			      ((walk_flags & WALK_TREE_DEREFERENCE) &&
-			       !(walk_flags & WALK_TREE_PHYSICAL) &&
-			       depth == 0);
-	int have_dir_stat = 0, flags = walk_flags, err;
+	int follow_symlinks = (args->walk_flags & WALK_TREE_LOGICAL) ||
+			      ((args->walk_flags & WALK_TREE_DEREFERENCE) &&
+			       !(args->walk_flags & WALK_TREE_PHYSICAL) &&
+			       args->depth == 0);
+	int have_dir_stat = 0, flags = args->walk_flags, err;
 	struct entry_handle dir;
 	struct stat st;
 
@@ -73,19 +79,21 @@ static int walk_tree_rec(const char *path, int walk_flags,
 	 * If (walk_flags & WALK_TREE_LOGICAL), traverse all symlinks.
 	 * Otherwise, traverse only top-level symlinks.
 	 */
-	if (depth == 0)
+	if (args->depth == 0)
 		flags |= WALK_TREE_TOPLEVEL;
 
-	if (lstat(path, &st) != 0)
-		return func(path, NULL, flags | WALK_TREE_FAILED, arg);
+	if (lstat(args->path, &st) != 0)
+		return args->func(args->path, NULL, flags | WALK_TREE_FAILED,
+				  args->arg);
 	if (S_ISLNK(st.st_mode)) {
 		flags |= WALK_TREE_SYMLINK;
 		if ((flags & WALK_TREE_DEREFERENCE) ||
 		    ((flags & WALK_TREE_TOPLEVEL) &&
 		     (flags & WALK_TREE_DEREFERENCE_TOPLEVEL))) {
-			if (stat(path, &st) != 0)
-				return func(path, NULL,
-					    flags | WALK_TREE_FAILED, arg);
+			if (stat(args->path, &st) != 0)
+				return args->func(args->path, NULL,
+						  flags | WALK_TREE_FAILED,
+						  args->arg);
 			dir.dev = st.st_dev;
 			dir.ino = st.st_ino;
 			have_dir_stat = 1;
@@ -95,7 +103,7 @@ static int walk_tree_rec(const char *path, int walk_flags,
 		dir.ino = st.st_ino;
 		have_dir_stat = 1;
 	}
-	err = func(path, &st, flags, arg);
+	err = args->func(args->path, &st, flags, args->arg);
 
 	/*
 	 * Recurse if WALK_TREE_RECURSIVE and the path is:
@@ -129,7 +137,7 @@ close_another_dir:
 			num_dir_handles++;
 		}
 
-		dir.stream = opendir(path);
+		dir.stream = opendir(args->path);
 		if (!dir.stream) {
 			if (errno == ENFILE && closed->prev != &head) {
 				/* Ran out of file descriptors. */
@@ -142,14 +150,14 @@ close_another_dir:
 			 * symlink which we didn't follow above.
 			 */
 			if (errno != ENOTDIR && errno != ENOENT)
-				err += func(path, NULL, flags |
-							WALK_TREE_FAILED, arg);
+				err += args->func(args->path, NULL, flags |
+						 WALK_TREE_FAILED, args->arg);
 			return err;
 		}
 
 		/* See walk_tree_visited() comment above... */
 		if (!have_dir_stat) {
-			if (stat(path, &st) != 0)
+			if (stat(args->path, &st) != 0)
 				goto skip_dir;
 			dir.dev = st.st_dev;
 			dir.ino = st.st_ino;
@@ -170,25 +178,29 @@ close_another_dir:
 			if (!strcmp(entry->d_name, ".") ||
 			    !strcmp(entry->d_name, ".."))
 				continue;
-			path_end = strchr(path, 0);
-			if ((path_end - path) + strlen(entry->d_name) + 1 >=
+			path_end = strchr(args->path, 0);
+			if ((path_end - args->path) + strlen(entry->d_name) + 1 >=
 			    FILENAME_MAX) {
 				errno = ENAMETOOLONG;
-				err += func(path, NULL,
-					    flags | WALK_TREE_FAILED, arg);
+				err += args->func(args->path, NULL,
+						  flags | WALK_TREE_FAILED,
+						  args->arg);
 				continue;
 			}
 			*path_end++ = '/';
 			strcpy(path_end, entry->d_name);
-			err += walk_tree_rec(path, walk_flags, func, arg,
-					     depth + 1);
+			args->depth++;
+			err += walk_tree_rec(args);
+			args->depth--;
 			*--path_end = 0;
 			if (!dir.stream) {
 				/* Reopen the directory handle. */
-				dir.stream = opendir(path);
+				dir.stream = opendir(args->path);
 				if (!dir.stream)
-					return err + func(path, NULL, flags |
-						    WALK_TREE_FAILED, arg);
+					return err + args->func(args->path,
+								NULL,
+								flags | WALK_TREE_FAILED,
+								args->arg);
 				seekdir(dir.stream, dir.pos);
 
 				closed = closed->next;
@@ -203,7 +215,8 @@ close_another_dir:
 
 	skip_dir:
 		if (closedir(dir.stream) != 0)
-			err += func(path, NULL, flags | WALK_TREE_FAILED, arg);
+			err += args->func(args->path, NULL,
+					 flags | WALK_TREE_FAILED, args->arg);
 	}
 	return err;
 }
@@ -212,7 +225,7 @@ int walk_tree(const char *path, int walk_flags, unsigned int num,
 	      int (*func)(const char *, const struct stat *, int, void *),
 	      void *arg)
 {
-	char path_copy[FILENAME_MAX];
+	struct walk_tree_args args;
 
 	num_dir_handles = num;
 	if (num_dir_handles < 1) {
@@ -227,6 +240,10 @@ int walk_tree(const char *path, int walk_flags, unsigned int num,
 		errno = ENAMETOOLONG;
 		return func(path, NULL, WALK_TREE_FAILED, arg);
 	}
-	strcpy(path_copy, path);
-	return walk_tree_rec(path_copy, walk_flags, func, arg, 0);
+	strcpy(args.path, path);
+	args.walk_flags = walk_flags;
+	args.func = func;
+	args.arg = arg;
+	args.depth = 0;
+	return walk_tree_rec(&args);
 }
