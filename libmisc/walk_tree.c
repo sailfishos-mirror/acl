@@ -47,6 +47,7 @@ struct walk_tree_args {
 	struct entry_handle dirs;
 	struct entry_handle *closed;
 	unsigned int num_dir_handles;
+	struct stat st;
 };
 
 static int walk_tree_visited(struct entry_handle *dirs, dev_t dev, ino_t ino)
@@ -67,7 +68,6 @@ static int walk_tree_rec(struct walk_tree_args *args)
 			       args->depth == 0);
 	int have_dir_stat = 0, flags = args->walk_flags, err;
 	struct entry_handle dir;
-	struct stat st;
 
 	/*
 	 * If (walk_flags & WALK_TREE_PHYSICAL), do not traverse symlinks.
@@ -77,28 +77,28 @@ static int walk_tree_rec(struct walk_tree_args *args)
 	if (args->depth == 0)
 		flags |= WALK_TREE_TOPLEVEL;
 
-	if (lstat(args->path, &st) != 0)
+	if (lstat(args->path, &args->st) != 0)
 		return args->func(args->path, NULL, flags | WALK_TREE_FAILED,
 				  args->arg);
-	if (S_ISLNK(st.st_mode)) {
+	if (S_ISLNK(args->st.st_mode)) {
 		flags |= WALK_TREE_SYMLINK;
 		if ((flags & WALK_TREE_DEREFERENCE) ||
 		    ((flags & WALK_TREE_TOPLEVEL) &&
 		     (flags & WALK_TREE_DEREFERENCE_TOPLEVEL))) {
-			if (stat(args->path, &st) != 0)
+			if (stat(args->path, &args->st) != 0)
 				return args->func(args->path, NULL,
 						  flags | WALK_TREE_FAILED,
 						  args->arg);
-			dir.dev = st.st_dev;
-			dir.ino = st.st_ino;
+			dir.dev = args->st.st_dev;
+			dir.ino = args->st.st_ino;
 			have_dir_stat = 1;
 		}
-	} else if (S_ISDIR(st.st_mode)) {
-		dir.dev = st.st_dev;
-		dir.ino = st.st_ino;
+	} else if (S_ISDIR(args->st.st_mode)) {
+		dir.dev = args->st.st_dev;
+		dir.ino = args->st.st_ino;
 		have_dir_stat = 1;
 	}
-	err = args->func(args->path, &st, flags, args->arg);
+	err = args->func(args->path, &args->st, flags, args->arg);
 
 	/*
 	 * Recurse if WALK_TREE_RECURSIVE and the path is:
@@ -106,7 +106,7 @@ static int walk_tree_rec(struct walk_tree_args *args)
 	 *      a link and follow_symlinks
 	 */
         if ((flags & WALK_TREE_RECURSIVE) &&
-	    ((!(flags & WALK_TREE_SYMLINK) && S_ISDIR(st.st_mode)) ||
+	    ((!(flags & WALK_TREE_SYMLINK) && S_ISDIR(args->st.st_mode)) ||
 	     ((flags & WALK_TREE_SYMLINK) && follow_symlinks))) {
 		struct dirent *entry;
 
@@ -152,10 +152,10 @@ close_another_dir:
 
 		/* See walk_tree_visited() comment above... */
 		if (!have_dir_stat) {
-			if (stat(args->path, &st) != 0)
+			if (stat(args->path, &args->st) != 0)
 				goto skip_dir;
-			dir.dev = st.st_dev;
-			dir.ino = st.st_ino;
+			dir.dev = args->st.st_dev;
+			dir.ino = args->st.st_ino;
 			if (walk_tree_visited(&args->dirs, dir.dev, dir.ino))
 				goto skip_dir;
 		}
