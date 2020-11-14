@@ -44,21 +44,16 @@ struct walk_tree_args {
 	int (*func)(const char *, const struct stat *, int, void *);
 	void *arg;
 	int depth;
+	struct entry_handle dirs;
+	struct entry_handle *closed;
+	unsigned int num_dir_handles;
 };
 
-static struct entry_handle head = {
-	.next = &head,
-	.prev = &head,
-	/* The other fields are unused. */
-};
-static struct entry_handle *closed = &head;
-static unsigned int num_dir_handles;
-
-static int walk_tree_visited(dev_t dev, ino_t ino)
+static int walk_tree_visited(struct entry_handle *dirs, dev_t dev, ino_t ino)
 {
 	struct entry_handle *i;
 
-	for (i = head.next; i != &head; i = i->next)
+	for (i = dirs->next; i != dirs; i = i->next)
 		if (i->dev == dev && i->ino == ino)
 			return 1;
 	return 0;
@@ -124,24 +119,24 @@ static int walk_tree_rec(struct walk_tree_args *args)
 		 * the directory has been visited afterwards. This saves a
 		 * system call for each non-directory found.
 		 */
-		if (have_dir_stat && walk_tree_visited(dir.dev, dir.ino))
+		if (have_dir_stat && walk_tree_visited(&args->dirs, dir.dev, dir.ino))
 			return err;
 
-		if (num_dir_handles == 0 && closed->prev != &head) {
+		if (args->num_dir_handles == 0 && args->closed->prev != &args->dirs) {
 close_another_dir:
 			/* Close the topmost directory handle still open. */
-			closed = closed->prev;
-			closed->pos = telldir(closed->stream);
-			closedir(closed->stream);
-			closed->stream = NULL;
-			num_dir_handles++;
+			args->closed = args->closed->prev;
+			args->closed->pos = telldir(args->closed->stream);
+			closedir(args->closed->stream);
+			args->closed->stream = NULL;
+			args->num_dir_handles++;
 		}
 
 		dir.stream = opendir(args->path);
 		if (!dir.stream) {
-			if (errno == ENFILE && closed->prev != &head) {
+			if (errno == ENFILE && args->closed->prev != &args->dirs) {
 				/* Ran out of file descriptors. */
-				num_dir_handles = 0;
+				args->num_dir_handles = 0;
 				goto close_another_dir;
 			}
 
@@ -161,16 +156,16 @@ close_another_dir:
 				goto skip_dir;
 			dir.dev = st.st_dev;
 			dir.ino = st.st_ino;
-			if (walk_tree_visited(dir.dev, dir.ino))
+			if (walk_tree_visited(&args->dirs, dir.dev, dir.ino))
 				goto skip_dir;
 		}
 
 		/* Insert into the list of handles. */
-		dir.next = head.next;
-		dir.prev = &head;
+		dir.next = args->dirs.next;
+		dir.prev = &args->dirs;
 		dir.prev->next = &dir;
 		dir.next->prev = &dir;
-		num_dir_handles--;
+		args->num_dir_handles--;
 
 		while ((entry = readdir(dir.stream)) != NULL) {
 			char *path_end;
@@ -203,15 +198,15 @@ close_another_dir:
 								args->arg);
 				seekdir(dir.stream, dir.pos);
 
-				closed = closed->next;
-				num_dir_handles--;
+				args->closed = args->closed->next;
+				args->num_dir_handles--;
 			}
 		}
 
 		/* Remove from the list of handles. */
 		dir.prev->next = dir.next;
 		dir.next->prev = dir.prev;
-		num_dir_handles++;
+		args->num_dir_handles++;
 
 	skip_dir:
 		if (closedir(dir.stream) != 0)
@@ -227,15 +222,18 @@ int walk_tree(const char *path, int walk_flags, unsigned int num,
 {
 	struct walk_tree_args args;
 
-	num_dir_handles = num;
-	if (num_dir_handles < 1) {
+	args.num_dir_handles = num;
+	if (args.num_dir_handles < 1) {
 		struct rlimit rlimit;
 
-		num_dir_handles = 1;
+		args.num_dir_handles = 1;
 		if (getrlimit(RLIMIT_NOFILE, &rlimit) == 0 &&
 		    rlimit.rlim_cur >= 2)
-			num_dir_handles = rlimit.rlim_cur / 2;
+			args.num_dir_handles = rlimit.rlim_cur / 2;
 	}
+	args.dirs.next = &args.dirs;
+	args.dirs.prev = &args.dirs;
+	args.closed = &args.dirs;
 	if (strlen(path) >= FILENAME_MAX) {
 		errno = ENAMETOOLONG;
 		return func(path, NULL, WALK_TREE_FAILED, arg);
@@ -245,5 +243,6 @@ int walk_tree(const char *path, int walk_flags, unsigned int num,
 	args.func = func;
 	args.arg = arg;
 	args.depth = 0;
+
 	return walk_tree_rec(&args);
 }
