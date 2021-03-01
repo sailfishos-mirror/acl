@@ -578,7 +578,7 @@ void help(void)
 #if !POSIXLY_CORRECT
 	} else {
 		printf(_(
-"  -a,  --access           display the file access control list only\n"
+"  -a, --access            display the file access control list only\n"
 "  -d, --default           display the default access control list only\n"
 "  -c, --omit-header       do not display the comment header\n"
 "  -e, --all-effective     print all effective rights\n"
