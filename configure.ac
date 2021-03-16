@@ -43,7 +43,12 @@ AS_IF([test "x$enable_debug" = "xyes"],
 	[CPPFLAGS="$CPPFLAGS -DNDEBUG"])
 
 dnl Automatically increment the revision for every release.
-LT_REVISION=$(echo "${PACKAGE_VERSION}" | tr -d .)
+set -- $(IFS=.; echo ${PACKAGE_VERSION})
+if test $# -ne 3 -o ${#1} -gt 1 -o ${#2} -gt 1 -o ${#3} -gt 2; then
+	echo "This PACKAGE_VERSION breaks LT_REVISION" >&2
+	exit 1
+fi
+LT_REVISION=$(printf "%d%d%02d" "$1" "$2" "$3")
 AC_SUBST(LT_REVISION)
 
 AC_PACKAGE_NEED_ATTR_ERROR_H
