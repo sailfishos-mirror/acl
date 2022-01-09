@@ -13,7 +13,7 @@ acl_to_any_text()
 
   Similar to acl_to_text(), but also allows you to specify:
     - a prefix string that is printed before each ACL entry.
-    - a seperator character that is printed between two ACL entries.
+    - a separator character that is printed between two ACL entries.
     - a set of options (TEXT_* constants).
 
   This function returns the length in characters of the text returned

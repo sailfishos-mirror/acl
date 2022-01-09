@@ -16,7 +16,7 @@
 
 ACL_1.0 {
     global:
-	# POSIX 1003.1e draft stardard 17 functions
+	# POSIX 1003.1e draft standard 17 functions
 	acl_init;
 	acl_dup;
 	acl_free;

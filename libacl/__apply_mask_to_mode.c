@@ -33,7 +33,7 @@ __apply_mask_to_mode(mode_t *mode, acl_t acl)
 	acl_entry_t entry;
 	int entry_id=ACL_FIRST_ENTRY;
 
-	/* A mimimal ACL which has three entries has no mask entry; the
+	/* A minimal ACL which has three entries has no mask entry; the
 	   group file mode permission bits are exact. */
 	if (acl_entries(acl) == 3)
 		return 0;

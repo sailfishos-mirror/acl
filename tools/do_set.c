@@ -444,7 +444,7 @@ do_set(
 		}
 	}
 
-	/* Only directores can have default ACLs */
+	/* Only directories can have default ACLs */
 	if (default_acl && !S_ISDIR(st->st_mode) && (walk_flags & WALK_TREE_RECURSIVE)) {
 		/* In recursive mode, ignore default ACLs for files */
 		acl_free(default_acl);
