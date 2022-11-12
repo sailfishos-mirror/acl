@@ -1,4 +1,4 @@
-tools_ldadd = $(LDADD) libacl.la libmisc.la
+tools_ldadd = libacl.la libmisc.la $(LTLIBINTL)
 
 bin_PROGRAMS += chacl
 chacl_SOURCES = tools/chacl.c
