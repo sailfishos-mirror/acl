@@ -34,7 +34,10 @@ AC_SYS_LARGEFILE
 AM_PROG_AR
 LT_INIT
 
-AM_GNU_GETTEXT_VERSION([0.18.2])
+dnl Minimal version supporting AM_GNU_GETTEXT_REQUIRE_VERSION.
+AM_GNU_GETTEXT_VERSION([0.19.6])
+dnl Require at least the following version, but use the latest available one.
+AM_GNU_GETTEXT_REQUIRE_VERSION([0.19.8])
 AM_GNU_GETTEXT([external])
 
 AC_ARG_ENABLE([debug],
