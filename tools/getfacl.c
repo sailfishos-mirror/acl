@@ -46,7 +46,7 @@
 #endif
 #define POSIXLY_CMD_LINE_OPTIONS "d"
 
-struct option long_options[] = {
+static const struct option long_options[] = {
 #if !POSIXLY_CORRECT
 	{ "access",	0, 0, 'a' },
 	{ "omit-header",	0, 0, 'c' },

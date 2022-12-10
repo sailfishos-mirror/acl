@@ -46,7 +46,7 @@
 #define POSIXLY_CMD_LINE_OPTIONS "-:bkndvhm:M:x:X:"
 #define POSIXLY_CMD_LINE_SPEC "[-bknd] {-m|-M|-x|-X ... } file ..."
 
-struct option long_options[] = {
+static const struct option long_options[] = {
 #if !POSIXLY_CORRECT
 	{ "set",		1, 0, 's' },
 	{ "set-file",		1, 0, 'S' },
