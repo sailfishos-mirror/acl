@@ -427,7 +427,7 @@ Now, chmod should change the group_obj entry
 
 	$ rmdir d
 
-Dangling symlink test http://savannah.nongnu.org/bugs/?28131
+Dangling symlink test https://savannah.nongnu.org/bugs/?28131
 
 	$ mkdir d
 	$ ln -s d/a d/b

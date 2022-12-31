@@ -29,13 +29,13 @@
 
 5. read some or all of the GNU tool chain documentation
    GNU make :
-       http://www.delorie.com/gnu/docs/make/make_toc.html
+       https://www.gnu.org/software/make/manual/
    autoconf :
-    	http://www.delorie.com/gnu/docs/autoconf/autoconf_toc.html
+       https://www.gnu.org/software/autoconf/manual/
    libtool :
-    	http://www.delorie.com/gnu/docs/libtool/libtool_toc.html
+       https://www.gnu.org/software/libtool/manual/
    gcc/g++ :
-    	http://www.delorie.com/gnu/docs/gcc/gcc_toc.html
+       https://gcc.gnu.org/onlinedocs/
 
 6. Makefiles and build environment
    First have a look at some Makefiles
