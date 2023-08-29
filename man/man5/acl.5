@@ -395,6 +395,18 @@ declared in the
 header.  Linux-specific extensions to these functions are declared in the
 .Li <acl/libacl.h>
 header.
+.Sh NOTES
+.Ss DENIED PERMISSIONS AND LINUX USER NAMESPACES
+While ACLs can be used to deny processes permissions based on the groups they
+are in, this is considered bad practice.
+Privileged helpers such as
+.Xr newuidmap 1
+can give unprivileged processes access to the
+.Xr setgroups 2
+system call, which allows them to drop supplementary group membership and
+render restrictions based on that membership ineffective.
+For further details, see
+.Xr user_namespaces 7 .
 .Sh SEE ALSO
 .Xr chmod 1 ,
 .Xr creat 2 ,
