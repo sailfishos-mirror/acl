@@ -332,7 +332,7 @@ int main(int argc, char *argv[])
 {
 	int opt;
 	int saw_files = 0;
-	int status = 0;
+	int status = 0, status2;
 	FILE *file;
 	int which;
 	int lineno;
@@ -555,7 +555,9 @@ int main(int argc, char *argv[])
 					goto synopsis;
 				saw_files = 1;
 
-				status = next_file(optarg, seq);
+				status2 = next_file(optarg, seq);
+				if (status == 0)
+					status = status2;
 				break;
 
 			case 'B':  /* restore ACL backup */
@@ -642,7 +644,9 @@ int main(int argc, char *argv[])
 			goto synopsis;
 		saw_files = 1;
 
-		status = next_file(argv[optind++], seq);
+		status2 = next_file(argv[optind++], seq);
+		if (status == 0)
+			status = status2;
 	}
 	if (!saw_files)
 		goto synopsis;
