@@ -126,64 +126,6 @@ after_token:
 }
 
 
-static int
-get_id(const char *token, id_t *id_p)
-{
-	char *ep;
-	long l;
-	l = strtol(token, &ep, 0);
-	if (*ep != '\0')
-		return -1;
-	if (l < 0) {
-		/*
-		  Negative values are interpreted as 16-bit numbers,
-		  so that id -2 maps to 65534 (nobody/nogroup), etc.
-		*/
-		l &= 0xFFFF;
-	}
-	*id_p = l;
-	return 0;
-}
-
-
-static int
-get_uid(const char *token, uid_t *uid_p)
-{
-	struct passwd *passwd;
-
-	if (get_id(token, uid_p) == 0)
-		return 0;
-	errno = 0;
-	passwd = getpwnam(token);
-	if (passwd) {
-		*uid_p = passwd->pw_uid;
-		return 0;
-	}
-	if (errno == 0)
-		errno = EINVAL;
-	return -1;
-}
-
-
-static int
-get_gid(const char *token, gid_t *gid_p)
-{
-	struct group *group;
-
-	if (get_id(token, (uid_t *)gid_p) == 0)
-		return 0;
-	errno = 0;
-	group = getgrnam(token);
-	if (group) {
-		*gid_p = group->gr_gid;
-		return 0;
-	}
-	if (errno == 0)
-		errno = EINVAL;
-	return -1;
-}
-
-
 /*
 	Parses the next acl entry in text_p.
 

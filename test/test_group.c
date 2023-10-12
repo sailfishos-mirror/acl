@@ -1,4 +1,5 @@
 #include "config.h"
+#include <assert.h>
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
@@ -10,7 +11,6 @@
 
 #define TEST_GROUP "test/test.group"
 static char grfile[] = BASEDIR "/" TEST_GROUP;
-
 
 #define ALIGN_MASK(x, mask)    (((x) + (mask)) & ~(mask))
 #define ALIGN(x, a)            ALIGN_MASK(x, (typeof(x))(a) - 1)
@@ -116,6 +116,16 @@ EXPORT
 int getgrnam_r(const char *name, struct group *grp, char *buf, size_t buflen,
 	       struct group **result)
 {
+	static size_t last_buflen = -1;
+
+	assert(last_buflen == -1 || buflen > last_buflen);
+	if (buflen < 170000) {
+		last_buflen = buflen;
+		*result = NULL;
+		return ERANGE;
+	}
+	last_buflen = -1;
+
 	return test_getgr_match(grp, buf, buflen, result, match_name, name);
 }
 

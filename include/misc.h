@@ -19,6 +19,7 @@
 #define __MISC_H
 
 #include <stdio.h>
+#include <sys/types.h>
 
 /* Mark library internal functions as hidden */
 #if defined(HAVE_VISIBILITY_ATTRIBUTE)
@@ -33,6 +34,10 @@ hidden const char *__acl_quote(const char *str, const char *quote_chars);
 hidden char *__acl_unquote(char *str);
 
 hidden char *__acl_next_line(FILE *file);
+
+hidden int get_id(const char *token, id_t *id_p);
+hidden int get_uid(const char *token, uid_t *uid_p);
+hidden int get_gid(const char *token, gid_t *gid_p);
 
 #ifdef ENABLE_NLS
 # include <libintl.h>
