@@ -76,15 +76,10 @@ struct string_obj_tag;
 typedef struct string_obj_tag string_obj;
 
 /* string object */
-struct __string_ext {
-	char			s_str[0];
-};
 struct string_obj_tag {
 	obj_prefix		o_prefix;
-	struct __string_ext	i;
+	char			s_str[0];
 };
-
-#define sstr i.s_str
 
 /* object creation, destruction, conversion and validation */
 void *__new_var_obj_p(int magic, size_t size) hidden;

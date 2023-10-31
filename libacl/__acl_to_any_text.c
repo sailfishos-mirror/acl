@@ -64,7 +64,7 @@ __acl_to_any_text(acl_t acl, ssize_t *len_p, const char *prefix,
 	FOREACH_ACL_ENTRY(entry_obj_p, acl_obj_p) {
 	repeat:
 		entry_len = acl_entry_to_any_str(int2ext(entry_obj_p),
-		                                 string_obj_p->sstr + len,
+		                                 string_obj_p->s_str + len,
 						 size-len,
 						 int2ext(mask_obj_p),
 						 prefix,
@@ -81,20 +81,20 @@ __acl_to_any_text(acl_t acl, ssize_t *len_p, const char *prefix,
 			goto repeat;
 		} else
 			len += entry_len;
-		string_obj_p->sstr[len] = separator;
+		string_obj_p->s_str[len] = separator;
 		len++;
 	}
 	if (len)
 		len--;
 	if (len && suffix) {
-		strcpy(string_obj_p->sstr + len, suffix);
+		strcpy(string_obj_p->s_str + len, suffix);
 		len += suffix_len;
 	} else
-		string_obj_p->sstr[len] = '\0';
+		string_obj_p->s_str[len] = '\0';
 
 	if (len_p)
 		*len_p = len;
-	return (char *)int2ext(string_obj_p);
+	return string_obj_p ? string_obj_p->s_str : NULL;
 
 fail:
 	free_obj_p(string_obj_p);
