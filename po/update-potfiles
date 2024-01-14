@@ -9,5 +9,5 @@ find \
 	libmisc \
 	tools \
 	-name '*.[ch]' \
-	| grep -v include/config.h
+	| grep -v include/config.h | LC_ALL=C sort
 ) > po/POTFILES.in
