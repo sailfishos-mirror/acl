@@ -94,8 +94,6 @@ static int test_getpw_match(struct passwd *pwd, char *buf, size_t buflen,
 	}
 
 	fclose(file);
-	if (!errno && !*result)
-		errno = ENOENT;
 	if (errno)
 		return -1;
 	return 0;
