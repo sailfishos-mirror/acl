@@ -32,4 +32,9 @@ struct do_set_args {
 extern int do_set(const char *path_p, const struct stat *stat_p, int flags,
 		  void *arg);
 
+/* We need these exported to us. */
+extern const char *progname;
+extern int opt_recalculate;
+extern int opt_test;
+
 #endif  /* __DO_SET_H */

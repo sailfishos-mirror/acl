@@ -40,11 +40,6 @@
 #include "walk_tree.h"
 
 
-extern const char *progname;
-extern int opt_recalculate;
-extern int opt_test;
-extern int print_options;
-
 acl_entry_t
 find_entry(
 	acl_t acl,
