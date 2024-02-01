@@ -1,5 +1,5 @@
 /*
-  File: __apply_mask_to_mode.c
+  File: __acl_apply_mask_to_mode.c
   (Linux Access Control List Management)
 
   Copyright (C) 1999-2002
@@ -27,7 +27,7 @@
     defined (HAVE_ACL_GET_ENTRY) && defined(HAVE_ACL_GET_TAG_TYPE) && \
     defined (HAVE_ACL_GET_PERMSET) && defined(HAVE_ACL_GET_PERM)
 int
-__apply_mask_to_mode(mode_t *mode, acl_t acl)
+__acl_apply_mask_to_mode(mode_t *mode, acl_t acl)
 {
 	acl_entry_t entry;
 	int entry_id=ACL_FIRST_ENTRY;

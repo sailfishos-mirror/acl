@@ -189,7 +189,7 @@ perm_copy_file (const char *src_path, const char *dst_path,
 
 	if (acl_set_file (dst_path, ACL_TYPE_ACCESS, acl) != 0) {
 		int saved_errno = errno;
-		__apply_mask_to_mode(&st.st_mode, acl);
+		__acl_apply_mask_to_mode(&st.st_mode, acl);
 		ret = chmod (dst_path, st.st_mode);
 		if ((errno != ENOSYS && errno != ENOTSUP) ||
 		    acl_entries (acl) != 3) {

@@ -176,7 +176,7 @@ perm_copy_fd (const char *src_path, int src_fd,
 
 	if (acl_set_fd (dst_fd, acl) != 0) {
 		int saved_errno = errno;
-		__apply_mask_to_mode(&st.st_mode, acl);
+		__acl_apply_mask_to_mode(&st.st_mode, acl);
 		ret = fchmod (dst_fd, st.st_mode);
 		if ((errno != ENOSYS && errno != ENOTSUP) ||
 		    acl_entries (acl) != 3) {
