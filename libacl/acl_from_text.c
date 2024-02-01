@@ -154,8 +154,8 @@ parse_acl_entry(const char **text_p, acl_t *acl_p)
 			str = get_token(text_p);
 			if (str) {
 				entry_obj.etag = ACL_USER;
-				error = get_uid(__acl_unquote(str),
-						&entry_obj.eid.qid);
+				error = __acl_get_uid(__acl_unquote(str),
+						      &entry_obj.eid.qid);
 				free(str);
 				if (error) {
 					*text_p = backup;
@@ -173,8 +173,8 @@ parse_acl_entry(const char **text_p, acl_t *acl_p)
 			str = get_token(text_p);
 			if (str) {
 				entry_obj.etag = ACL_GROUP;
-				error = get_gid(__acl_unquote(str),
-						&entry_obj.eid.qid);
+				error = __acl_get_gid(__acl_unquote(str),
+						      &entry_obj.eid.qid);
 				free(str);
 				if (error) {
 					*text_p = backup;

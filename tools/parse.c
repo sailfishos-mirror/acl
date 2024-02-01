@@ -162,7 +162,8 @@ user_entry:
 			str = get_token(text_p);
 			if (str) {
 				cmd->c_tag = ACL_USER;
-				error = get_uid(__acl_unquote(str), &cmd->c_id);
+				error = __acl_get_uid(__acl_unquote(str),
+						      &cmd->c_id);
 				free(str);
 				if (error) {
 					*text_p = backup;
@@ -181,7 +182,8 @@ user_entry:
 			str = get_token(text_p);
 			if (str) {
 				cmd->c_tag = ACL_GROUP;
-				error = get_gid(__acl_unquote(str), &cmd->c_id);
+				error = __acl_get_gid(__acl_unquote(str),
+						      &cmd->c_id);
 				free(str);
 				if (error) {
 					*text_p = backup;
@@ -411,7 +413,7 @@ read_acl_comments(
 			if (uid_p) {
 				if (*uid_p != ACL_UNDEFINED_ID)
 					goto fail;
-				if (get_uid(__acl_unquote(cp), uid_p) != 0)
+				if (__acl_get_uid(__acl_unquote(cp), uid_p) != 0)
 					continue;
 			}
 		} else if (strncmp(cp, "group:", 6) == 0) {
@@ -421,7 +423,7 @@ read_acl_comments(
 			if (gid_p) {
 				if (*gid_p != ACL_UNDEFINED_ID)
 					goto fail;
-				if (get_gid(__acl_unquote(cp), gid_p) != 0)
+				if (__acl_get_gid(__acl_unquote(cp), gid_p) != 0)
 					continue;
 			}
 		} else if (strncmp(cp, "flags:", 6) == 0) {

@@ -35,9 +35,8 @@ hidden char *__acl_unquote(char *str);
 
 hidden char *__acl_next_line(FILE *file);
 
-hidden int get_id(const char *token, id_t *id_p);
-hidden int get_uid(const char *token, uid_t *uid_p);
-hidden int get_gid(const char *token, gid_t *gid_p);
+hidden int __acl_get_uid(const char *token, uid_t *uid_p);
+hidden int __acl_get_gid(const char *token, gid_t *gid_p);
 
 #ifdef ENABLE_NLS
 # include <libintl.h>

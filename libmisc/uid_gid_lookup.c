@@ -28,7 +28,7 @@
 #include "libacl.h"
 #include "misc.h"
 
-int
+static int
 get_id(const char *token, id_t *id_p)
 {
 	char *ep;
@@ -70,7 +70,7 @@ grow_buffer(char **buffer, size_t *bufsize, int type)
 }
 
 int
-get_uid(const char *token, uid_t *uid_p)
+__acl_get_uid(const char *token, uid_t *uid_p)
 {
 	struct passwd passwd, *result = NULL;
 	char *buffer = NULL;
@@ -98,7 +98,7 @@ get_uid(const char *token, uid_t *uid_p)
 
 
 int
-get_gid(const char *token, gid_t *gid_p)
+__acl_get_gid(const char *token, gid_t *gid_p)
 {
 	struct group group, *result = NULL;
 	char *buffer = NULL;
