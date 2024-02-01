@@ -33,6 +33,8 @@
 
 struct stat;
 
+#define walk_tree __acl_walk_tree
+
 extern int walk_tree(const char *path, int walk_flags, unsigned int num,
 		     int (*func)(const char *, const struct stat *, int,
 				 void *), void *arg);
