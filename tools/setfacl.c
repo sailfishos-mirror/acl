@@ -72,20 +72,20 @@ static const struct option long_options[] = {
 };
 
 const char *progname;
-const char *cmd_line_options, *cmd_line_spec;
+static const char *cmd_line_options, *cmd_line_spec;
 
-int walk_flags = WALK_TREE_DEREFERENCE_TOPLEVEL;
+static int walk_flags = WALK_TREE_DEREFERENCE_TOPLEVEL;
 int opt_recalculate;  /* recalculate mask entry (0=default, 1=yes, -1=no) */
-int opt_promote;  /* promote access ACL to default ACL */
+static int opt_promote;  /* promote access ACL to default ACL */
 int opt_test;  /* do not write to the file system.
                       Print what would happen instead. */
 #if POSIXLY_CORRECT
-const int posixly_correct = 1;  /* Posix compatible behavior! */
+static const int posixly_correct = 1;  /* Posix compatible behavior! */
 #else
-int posixly_correct;  /* Posix compatible behavior? */
+static int posixly_correct;  /* Posix compatible behavior? */
 #endif
-int chown_error;
-int promote_warning;
+static int chown_error;
+static int promote_warning;
 
 
 static const char *xquote(const char *str, const char *quote_chars)
@@ -98,7 +98,7 @@ static const char *xquote(const char *str, const char *quote_chars)
 	return q;
 }
 
-int
+static int
 has_any_of_type(
 	cmd_t cmd,
 	acl_type_t acl_type)
@@ -113,7 +113,7 @@ has_any_of_type(
 	
 
 #if !POSIXLY_CORRECT
-int
+static int
 restore(
 	FILE *file,
 	const char *filename)
@@ -260,7 +260,7 @@ fail:
 #endif
 
 
-void help(void)
+static void help(void)
 {
 	printf(_("%s %s -- set file access control lists\n"),
 		progname, VERSION);
@@ -300,7 +300,7 @@ void help(void)
 }
 
 
-int next_file(const char *arg, seq_t seq)
+static int next_file(const char *arg, seq_t seq)
 {
 	char *line;
 	int errors = 0;

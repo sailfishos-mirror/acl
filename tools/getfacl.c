@@ -68,24 +68,24 @@ static const struct option long_options[] = {
 };
 
 const char *progname;
-const char *cmd_line_options;
+static const char *cmd_line_options;
 
-int walk_flags = WALK_TREE_DEREFERENCE_TOPLEVEL;
-int opt_print_acl;
-int opt_print_default_acl;
-int opt_strip_leading_slash = 1;
-int opt_comments = 1;  /* include comments */
-int opt_skip_base;  /* skip files that only have the base entries */
-int opt_tabular;  /* tabular output format (alias `showacl') */
+static int walk_flags = WALK_TREE_DEREFERENCE_TOPLEVEL;
+static int opt_print_acl;
+static int opt_print_default_acl;
+static int opt_strip_leading_slash = 1;
+static int opt_comments = 1;  /* include comments */
+static int opt_skip_base;  /* skip files that only have the base entries */
+static int opt_tabular;  /* tabular output format (alias `showacl') */
 #if POSIXLY_CORRECT
-const int posixly_correct = 1;  /* Posix compatible behavior! */
+static const int posixly_correct = 1;  /* Posix compatible behavior! */
 #else
-int posixly_correct;  /* Posix compatible behavior? */
+static int posixly_correct;  /* Posix compatible behavior? */
 #endif
-int had_errors;
-int absolute_warning;  /* Absolute path warning was issued */
-int print_options = TEXT_SOME_EFFECTIVE;
-int opt_numeric;  /* don't convert id's to symbolic names */
+static int had_errors;
+static int absolute_warning;  /* Absolute path warning was issued */
+static int print_options = TEXT_SOME_EFFECTIVE;
+static int opt_numeric;  /* don't convert id's to symbolic names */
 
 
 static const char *xquote(const char *str, const char *quote_chars)
@@ -103,7 +103,7 @@ struct name_list {
 	char name[0];
 };
 
-void free_list(struct name_list *names)
+static void free_list(struct name_list *names)
 {
 	struct name_list *next;
 
@@ -114,7 +114,7 @@ void free_list(struct name_list *names)
 	}
 }
 
-struct name_list *get_list(const struct stat *st, acl_t acl)
+static struct name_list *get_list(const struct stat *st, acl_t acl)
 {
 	struct name_list *first = NULL, *last = NULL;
 	acl_entry_t ent;
@@ -178,7 +178,7 @@ struct name_list *get_list(const struct stat *st, acl_t acl)
 	return first;
 }
 
-int max_name_length(struct name_list *names)
+static int max_name_length(struct name_list *names)
 {
 	int max_len = 0;
 	while (names != NULL) {
@@ -192,14 +192,14 @@ int max_name_length(struct name_list *names)
 	return max_len;
 }
 
-int names_width;
+static int names_width;
 
 struct acl_perm_def {
 	acl_tag_t	tag;
 	char		c;
 };
 
-struct acl_perm_def acl_perm_defs[] = {
+static const struct acl_perm_def acl_perm_defs[] = {
 	{ ACL_READ,	'r' },
 	{ ACL_WRITE,	'w' },
 	{ ACL_EXECUTE,	'x' },
@@ -208,7 +208,7 @@ struct acl_perm_def acl_perm_defs[] = {
 
 #define ACL_PERMS (sizeof(acl_perm_defs) / sizeof(struct acl_perm_def) - 1)
 
-void acl_perm_str(acl_entry_t entry, char *str)
+static void acl_perm_str(acl_entry_t entry, char *str)
 {
 	acl_permset_t permset;
 	int n;
@@ -221,7 +221,7 @@ void acl_perm_str(acl_entry_t entry, char *str)
 	str[n] = '\0';
 }
 
-void acl_mask_perm_str(acl_t acl, char *str)
+static void acl_mask_perm_str(acl_t acl, char *str)
 {
 	acl_entry_t entry;
 
@@ -241,7 +241,7 @@ void acl_mask_perm_str(acl_t acl, char *str)
 	}
 }
 
-void apply_mask(char *perm, const char *mask)
+static void apply_mask(char *perm, const char *mask)
 {
 	while (*perm) {
 		if (*mask == '-' && *perm >= 'a' && *perm <= 'z')
@@ -252,7 +252,7 @@ void apply_mask(char *perm, const char *mask)
 	}
 }
 
-int show_line(FILE *stream, struct name_list **acl_names,  acl_t acl,
+static int show_line(FILE *stream, struct name_list **acl_names,  acl_t acl,
               acl_entry_t *acl_ent, const char *acl_mask,
               struct name_list **dacl_names, acl_t dacl,
 	      acl_entry_t *dacl_ent, const char *dacl_mask)
@@ -325,7 +325,7 @@ int show_line(FILE *stream, struct name_list **acl_names,  acl_t acl,
 	return 0;
 }
 
-int do_show(FILE *stream, const char *path_p, const struct stat *st,
+static int do_show(FILE *stream, const char *path_p, const struct stat *st,
             acl_t acl, acl_t dacl)
 {
 	struct name_list *acl_names = get_list(st, acl),
@@ -444,7 +444,7 @@ flagstr(mode_t mode)
 	return str;
 }
 
-int do_print(const char *path_p, const struct stat *st, int walk_flags, void *unused)
+static int do_print(const char *path_p, const struct stat *st, int walk_flags, void *unused)
 {
 	const char *default_prefix = NULL;
 	acl_t acl = NULL, default_acl = NULL;
@@ -564,7 +564,7 @@ fail:
 }
 
 
-void help(void)
+static void help(void)
 {
 	printf(_("%s %s -- get file access control lists\n"),
 	       progname, VERSION);

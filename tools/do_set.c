@@ -40,7 +40,7 @@
 #include "walk_tree.h"
 
 
-acl_entry_t
+static acl_entry_t
 find_entry(
 	acl_t acl,
 	acl_tag_t type,
@@ -74,7 +74,7 @@ find_entry(
 	}
 }
 
-int
+static int
 has_execute_perms(
 	acl_t acl)
 {
@@ -95,7 +95,7 @@ has_execute_perms(
 	}
 }
 
-int
+static int
 clone_entry(
 	acl_t from_acl,
 	acl_tag_t from_type,
@@ -116,7 +116,7 @@ clone_entry(
 }
 
 
-void
+static void
 print_test(
 	FILE *file,
 	const char *path_p,
