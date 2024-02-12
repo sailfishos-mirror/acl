@@ -26,26 +26,26 @@
 
 #ifdef LIBACL_DEBUG
 #  define ext2int(T, ext_p) \
-	((T##_obj *)__ext2int_and_check(ext_p, T##_MAGIC, #T))
+	((T##_obj *)__acl_ext2int_and_check(ext_p, T##_MAGIC, #T))
 #else
 #  define ext2int(T, ext_p) \
-	((T##_obj *)__ext2int_and_check(ext_p, T##_MAGIC))
+	((T##_obj *)__acl_ext2int_and_check(ext_p, T##_MAGIC))
 #endif
 
 #define int2ext(int_p) \
 	((int_p) ? &(int_p)->i : NULL)
 #define new_var_obj_p(T, sz) \
-	((T##_obj *)__new_var_obj_p(T##_MAGIC, sizeof(T##_obj) + sz))
+	((T##_obj *)__acl_new_var_obj_p(T##_MAGIC, sizeof(T##_obj) + sz))
 #define realloc_var_obj_p(T, p, sz) \
 	((T##_obj *)realloc(p, sizeof(T##_obj) + sz))
 #define new_obj_p(T) \
 	new_var_obj_p(T, 0)
 #define new_obj_p_here(T, p) \
-	__new_obj_p_here(T##_MAGIC, p)
+	__acl_new_obj_p_here(T##_MAGIC, p)
 #define check_obj_p(T, obj_p) \
-	((T##_obj *)__check_obj_p((obj_prefix *)(obj_p), T##_MAGIC))
+	((T##_obj *)__acl_check_obj_p((obj_prefix *)(obj_p), T##_MAGIC))
 #define free_obj_p(obj_p) \
-	(__free_obj_p((obj_prefix *)(obj_p)))
+	__acl_free_obj_p((obj_prefix *)(obj_p))
 
 
 /* prefix for all objects */
@@ -82,15 +82,15 @@ struct string_obj_tag {
 };
 
 /* object creation, destruction, conversion and validation */
-void *__new_var_obj_p(int magic, size_t size) hidden;
-void __new_obj_p_here(int magic, void *here) hidden;
-void __free_obj_p(obj_prefix *obj_p) hidden;
-obj_prefix *__check_obj_p(obj_prefix *obj_p, int magic) hidden;
+void *__acl_new_var_obj_p(int magic, size_t size) hidden;
+void __acl_new_obj_p_here(int magic, void *here) hidden;
+void __acl_free_obj_p(obj_prefix *obj_p) hidden;
+obj_prefix *__acl_check_obj_p(obj_prefix *obj_p, int magic) hidden;
 #ifdef LIBACL_DEBUG
-obj_prefix *__ext2int_and_check(void *ext_p, int magic,
+obj_prefix *__acl_ext2int_and_check(void *ext_p, int magic,
 				const char *typename) hidden;
 #else
-obj_prefix *__ext2int_and_check(void *ext_p, int magic) hidden;
+obj_prefix *__acl_ext2int_and_check(void *ext_p, int magic) hidden;
 #endif
 
 #endif /* __LIBOBJ_H */
