@@ -91,6 +91,7 @@ __acl_get_uid(const char *token, uid_t *uid_p)
 		if (err == ERANGE)
 			continue;
 		errno = err ? err : EINVAL;
+		break;
 	}
 	free(buffer);
 	return result ? 0 : -1;
