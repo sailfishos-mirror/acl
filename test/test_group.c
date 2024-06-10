@@ -136,7 +136,7 @@ struct group *getgrnam(const char *name)
 	static struct group grp;
 	struct group *result;
 
-	(void) getgrnam_r(name, &grp, buf, sizeof(buf), &result);
+	(void) test_getgr_match(&grp, buf, sizeof buf, &result, match_name, name);
 	return result;
 }
 

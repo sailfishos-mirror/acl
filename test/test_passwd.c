@@ -117,7 +117,7 @@ int getpwnam_r(const char *name, struct passwd *pwd, char *buf, size_t buflen,
 		*result = NULL;
 		return ERANGE;
 	}
-	last_buflen =- 1;
+	last_buflen = -1;
 
 	return test_getpw_match(pwd, buf, buflen, result, match_name, name);
 }
@@ -129,7 +129,7 @@ struct passwd *getpwnam(const char *name)
 	static struct passwd pwd;
 	struct passwd *result;
 
-	(void) getpwnam_r(name, &pwd, buf, sizeof(buf), &result);
+	(void) test_getpw_match(&pwd, buf, sizeof(buf), &result, match_name, name);
 	return result;
 }
 
