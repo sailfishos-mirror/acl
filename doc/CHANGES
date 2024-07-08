@@ -316,7 +316,7 @@ acl 2.1.0 (19 October 2002)
 * Change the devel .rpm and .deb package names so that they now use
   a "lib" prefix.
 * Several packaging changes related to this to ensure upgrades work
-  and depenency information isn't lost.
+  and dependency information isn't lost.
 
 acl 2.0.19 (04 September 2002)
 ==========
