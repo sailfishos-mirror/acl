@@ -440,8 +440,9 @@ Dangling symlink test https://savannah.nongnu.org/bugs/?28131
 	> other::r-x
 	> 
 	$ setfacl -R -m u:bin:rw d
-	$ getfacl -RL d
+	$ getfacl -RL d > /dev/null
 	> getfacl: d/b: No such file or directory
+	$ getfacl -RL d 2> /dev/null
 	> # file: d
 	> # owner: %TUSER
 	> # group: %TGROUP
