@@ -6,5 +6,6 @@ includedir=@includedir@
 Name:		libacl
 Description:	A library for POSIX Access Control Lists
 Version:	@PACKAGE_VERSION@
+License:	LGPL-2.1-or-later
 Cflags:		-I${includedir}
 Libs:		-L${libdir} -lacl
