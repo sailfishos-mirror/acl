@@ -60,6 +60,7 @@ EXPORT acl_t acl_from_mode(mode_t mode);
 EXPORT int acl_equiv_mode(acl_t acl, mode_t *mode_p);
 EXPORT int acl_extended_file(const char *path_p);
 EXPORT int acl_extended_file_nofollow(const char *path_p);
+EXPORT int acl_extended_file_at(int dirfd, const char *path_p, int at_flags);
 EXPORT int acl_extended_fd(int fd);
 EXPORT int acl_entries(acl_t acl);
 EXPORT const char *acl_error(int code);

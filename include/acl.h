@@ -114,10 +114,14 @@ EXPORT char *acl_to_text(acl_t acl, ssize_t *len_p);
 /*=== Object manipulation ===*/
 
 EXPORT int acl_delete_def_file(const char *path_p);
+EXPORT int acl_delete_def_file_at(int dirfd, const char *path_p, int at_flags);
 EXPORT acl_t acl_get_fd(int fd);
 EXPORT acl_t acl_get_file(const char *path_p, acl_type_t type);
+EXPORT acl_t acl_get_file_at(int dirfd, const char *path_p, int at_flags, acl_type_t type);
 EXPORT int acl_set_fd(int fd, acl_t acl);
 EXPORT int acl_set_file(const char *path_p, acl_type_t type, acl_t acl);
+EXPORT int acl_set_file_at(int dirfd, const char *path_p, int at_flags, acl_type_t type,
+			   acl_t acl);
 
 #ifdef __cplusplus
 }

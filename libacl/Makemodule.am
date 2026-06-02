@@ -2,10 +2,10 @@ lib_LTLIBRARIES += libacl.la
 
 # No other library exports version info, otherwise we'd have to add
 # "libacl_" prefix to all these variables.
-LT_CURRENT = 2
+LT_CURRENT = 3
 # The configure script will set this for us automatically.
 #LT_REVISION =
-LT_AGE = 1
+LT_AGE = 2
 LTVERSION = $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
 CFILES = $(POSIX_CFILES) $(LIBACL_CFILES) $(INTERNAL_CFILES) \
@@ -17,8 +17,7 @@ HFILES = \
 	libacl/byteorder.h \
 	libacl/__acl_from_xattr.h \
 	libacl/__acl_to_xattr.h \
-	libacl/perm_copy.h \
-	libacl/__acl_extended_file.h
+	libacl/perm_copy.h
 
 POSIX_CFILES = \
 	libacl/acl_add_perm.c \
@@ -29,6 +28,7 @@ POSIX_CFILES = \
 	libacl/acl_copy_int.c \
 	libacl/acl_create_entry.c \
 	libacl/acl_delete_def_file.c \
+	libacl/acl_delete_def_file_at.c \
 	libacl/acl_delete_entry.c \
 	libacl/acl_delete_perm.c \
 	libacl/acl_dup.c \
@@ -37,6 +37,7 @@ POSIX_CFILES = \
 	libacl/acl_get_entry.c \
 	libacl/acl_get_fd.c \
 	libacl/acl_get_file.c \
+	libacl/acl_get_file_at.c \
 	libacl/acl_get_perm.c \
 	libacl/acl_get_permset.c \
 	libacl/acl_get_qualifier.c \
@@ -44,6 +45,7 @@ POSIX_CFILES = \
 	libacl/acl_init.c \
 	libacl/acl_set_fd.c \
 	libacl/acl_set_file.c \
+	libacl/acl_set_file_at.c \
 	libacl/acl_set_permset.c \
 	libacl/acl_set_qualifier.c \
 	libacl/acl_set_tag_type.c \
@@ -59,10 +61,10 @@ LIBACL_CFILES = \
 	libacl/acl_error.c \
 	libacl/acl_extended_fd.c \
 	libacl/acl_extended_file.c \
+	libacl/acl_extended_file_at.c \
 	libacl/acl_extended_file_nofollow.c \
 	libacl/acl_from_mode.c \
-	libacl/acl_to_any_text.c \
-	libacl/__acl_extended_file.c
+	libacl/acl_to_any_text.c
 
 INTERNAL_CFILES = \
 	libacl/__acl_apply_mask_to_mode.c \

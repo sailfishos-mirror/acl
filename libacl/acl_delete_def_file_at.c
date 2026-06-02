@@ -1,8 +1,9 @@
 /*
-  File: __acl_extended_file.c
+  File: acl_delete_def_file_at.c
 
-  Copyright (C) 2000, 2011
+  Copyright (C) 1999, 2000
   Andreas Gruenbacher, <andreas.gruenbacher@gmail.com>
+  Copyright (C) 2026 Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,29 +20,26 @@
 */
 
 #include "config.h"
-#include <unistd.h>
+#include <sys/types.h>
 #include <sys/xattr.h>
-#include "libacl.h"
+#include <fcntl.h>
 #include "acl_ea.h"
-#include "__acl_extended_file.h"
+#include "xattrat_compat.h"
+#include "libacl.h"
 
 int
-__acl_extended_file(const char *path_p,
-		    ssize_t (*fun)(const char *, const char *,
-				   void *, size_t))
+acl_delete_def_file_at(int dirfd, const char *path_p, int at_flags)
 {
-	int base_size = sizeof(acl_ea_header) + 3 * sizeof(acl_ea_entry);
-	int retval;
+	int error;
 
-	retval = fun(path_p, ACL_EA_ACCESS, NULL, 0);
-	if (retval < 0 && errno != ENOATTR && errno != ENODATA)
+	if (at_flags & ~(AT_EMPTY_PATH | AT_SYMLINK_NOFOLLOW)) {
+		errno = EINVAL;
 		return -1;
-	if (retval > base_size)
-		return 1;
-	retval = fun(path_p, ACL_EA_DEFAULT, NULL, 0);
-	if (retval < 0 && errno != ENOATTR && errno != ENODATA)
+	}
+
+	error = removexattrat(dirfd, path_p, at_flags, ACL_EA_DEFAULT);
+	if (error < 0 && errno != ENOATTR && errno != ENODATA)
 		return -1;
-	if (retval >= base_size)
-		return 1;
 	return 0;
 }
+

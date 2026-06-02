@@ -75,3 +75,12 @@ ACL_1.2 {
 	# Linux specific extensions
 	acl_extended_file_nofollow;
 } ACL_1.1;
+
+ACL_1.3 {
+    global:
+	# Linux specific extensions
+	acl_delete_def_file_at;
+	acl_extended_file_at;
+	acl_get_file_at;
+	acl_set_file_at;
+} ACL_1.2;

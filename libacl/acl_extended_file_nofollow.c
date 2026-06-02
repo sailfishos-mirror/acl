@@ -19,15 +19,12 @@
 */
 
 #include "config.h"
-#include <unistd.h>
-#include <sys/xattr.h>
+#include <fcntl.h>
 #include "libacl.h"
-
-#include "__acl_extended_file.h"
 
 
 int
 acl_extended_file_nofollow(const char *path_p)
 {
-	return __acl_extended_file(path_p, lgetxattr);
+	return acl_extended_file_at(AT_FDCWD, path_p, AT_SYMLINK_NOFOLLOW);
 }
