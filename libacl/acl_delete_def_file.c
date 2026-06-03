@@ -21,7 +21,6 @@
 #include "config.h"
 #include <sys/types.h>
 #include <sys/xattr.h>
-#include "byteorder.h"
 #include "acl_ea.h"
 #include "libacl.h"
 

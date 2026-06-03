@@ -22,8 +22,6 @@
 #include <unistd.h>
 #include <sys/xattr.h>
 #include "libacl.h"
-
-#include "byteorder.h"
 #include "acl_ea.h"
 
 int
