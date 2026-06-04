@@ -32,9 +32,12 @@
 acl_t
 acl_get_file(const char *path_p, acl_type_t type)
 {
-	const size_t size_guess = acl_ea_size(16);
-	char *ext_acl_p = alloca(size_guess);
+	size_t size_guess = acl_ea_size(16);
+	char *onstack_buffer = alloca(size_guess);
+	char *ext_acl_p = onstack_buffer;
 	const char *name;
+	acl_t acl = NULL;
+	int retries = 0;
 	int retval;
 
 	switch(type) {
@@ -46,40 +49,47 @@ acl_get_file(const char *path_p, acl_type_t type)
 			break;
 		default:
 			errno = EINVAL;
-			return NULL;
+			goto out;
 	}
 
-	if (!ext_acl_p)
-		return NULL;
-	retval = getxattr(path_p, name, ext_acl_p, size_guess);
-	if (retval == -1 && errno == ERANGE) {
+	for (;;) {
+		retval = getxattr(path_p, name, ext_acl_p, size_guess);
+		if (retval != -1 || errno != ERANGE)
+			break;
+		if (++retries >= 8)
+			break;
+
 		retval = getxattr(path_p, name, NULL, 0);
-		if (retval > 0) {
-			ext_acl_p = alloca(retval);
-			if (!ext_acl_p)
-				return NULL;
-			retval = getxattr(path_p, name, ext_acl_p, retval);
-		}
+		if (retval <= 0)
+			break;
+		size_guess = retval;
+
+		if (ext_acl_p != onstack_buffer)
+			free(ext_acl_p);
+		ext_acl_p = malloc(size_guess);
+		if (!ext_acl_p)
+			goto out;
 	}
 	if (retval > 0) {
-		acl_t acl = __acl_from_xattr(ext_acl_p, retval);
-		return acl;
+		acl = __acl_from_xattr(ext_acl_p, retval);
 	} else if (retval == 0 || errno == ENOATTR || errno == ENODATA) {
 		struct stat st;
 
 		if (stat(path_p, &st) != 0)
-			return NULL;
+			goto out;
 
 		if (type == ACL_TYPE_DEFAULT) {
 			if (S_ISDIR(st.st_mode))
-				return acl_init(0);
-			else {
+				acl = acl_init(0);
+			else
 				errno = EACCES;
-				return NULL;
-			}
 		} else
-			return acl_from_mode(st.st_mode);
-	} else
-		return NULL;
+			acl = acl_from_mode(st.st_mode);
+	}
+
+out:
+	if (ext_acl_p != onstack_buffer)
+		free(ext_acl_p);
+	return acl;
 }
 

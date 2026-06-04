@@ -32,33 +32,43 @@
 acl_t
 acl_get_fd(int fd)
 {
-	const size_t size_guess = acl_ea_size(16);
-	char *ext_acl_p = alloca(size_guess);
+	size_t size_guess = acl_ea_size(16);
+	char *onstack_buffer = alloca(size_guess);
+	char *ext_acl_p = onstack_buffer;
+	acl_t acl = NULL;
+	int retries = 0;
 	int retval;
 
-	if (!ext_acl_p)
-		return NULL;
-	retval = fgetxattr(fd, ACL_EA_ACCESS, ext_acl_p, size_guess);
-	if (retval == -1 && errno == ERANGE) {
+	for (;;) {
+		retval = fgetxattr(fd, ACL_EA_ACCESS, ext_acl_p, size_guess);
+		if (retval != -1 || errno != ERANGE)
+			break;
+		if (++retries >= 8)
+			break;
+
 		retval = fgetxattr(fd, ACL_EA_ACCESS, NULL, 0);
-		if (retval > 0) {
-			ext_acl_p = alloca(retval);
-			if (!ext_acl_p)
-				return NULL;
-			retval = fgetxattr(fd, ACL_EA_ACCESS, ext_acl_p,retval);
-		}
+		if (retval <= 0)
+			break;
+		size_guess = retval;
+
+		if (ext_acl_p != onstack_buffer)
+			free(ext_acl_p);
+		ext_acl_p = malloc(size_guess);
+		if (!ext_acl_p)
+			goto out;
 	}
 	if (retval > 0) {
-		acl_t acl = __acl_from_xattr(ext_acl_p, retval);
-		return acl;
+		acl = __acl_from_xattr(ext_acl_p, retval);
 	} else if (retval == 0 || errno == ENOATTR || errno == ENODATA) {
 		struct stat st;
 
 		if (fstat(fd, &st) == 0)
-			return acl_from_mode(st.st_mode);
-		else
-			return NULL;
-	} else
-		return NULL;
+			acl = acl_from_mode(st.st_mode);
+	}
+
+out:
+	if (ext_acl_p != onstack_buffer)
+		free(ext_acl_p);
+	return acl;
 }
 
