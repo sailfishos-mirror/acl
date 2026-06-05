@@ -1,6 +1,6 @@
 .\" Access Control Lists manual pages
 .\"
-.\" (C) 2002 Andreas Gruenbacher, <andreas.gruenbacher@gmail.com>
+.\" (C) 2002-2026 Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
 .\"
 .\" This is free documentation; you can redistribute it and/or
 .\" modify it under the terms of the GNU General Public License as
@@ -21,11 +21,12 @@
 .\" License along with this manual.  If not, see
 .\" <http://www.gnu.org/licenses/>.
 .\"
-.Dd March 23, 2002
+.Dd June 5, 2026
 .Dt ACL_DELETE_DEF_FILE 3
 .Os "Linux ACL"
 .Sh NAME
-.Nm acl_delete_def_file
+.Nm acl_delete_def_file ,
+.Nm acl_delete_def_file_at
 .Nd delete a default ACL by filename
 .Sh LIBRARY
 Linux Access Control Lists library (libacl, \-lacl).
@@ -33,7 +34,15 @@ Linux Access Control Lists library (libacl, \-lacl).
 .In sys/types.h
 .In sys/acl.h
 .Ft int
-.Fn acl_delete_def_file "const char *path_p"
+.Fo acl_delete_def_file
+.Fa "const char *path_p"
+.Fc
+.Ft int
+.Fo acl_delete_def_file_at
+.Fa "int dirfd"
+.Fa "const char *path_p"
+.Fa "int at_flags"
+.Fc
 .Sh DESCRIPTION
 The
 .Fn acl_delete_def_file
@@ -49,22 +58,108 @@ If the argument
 is not a directory, then the function fails. It is no error if the directory whose pathname is pointed to by the argument
 .Va path_p
 does not have a default ACL.
+.Ss Fn acl_delete_def_file_at
+The
+.Fn acl_delete_def_file_at
+function operates in exactly the same way as
+.Fn acl_delete_def_file ,
+except for the differences described here.
+.Pp
+If the pathname given in
+.Va path_p
+is relative, then it is interpreted relative to the directory referred to by the file descriptor
+.Va dirfd
+(rather than relative to the current working directory of the calling process, as is done by
+.Fn acl_delete_def_file ) .
+.Pp
+If
+.Va path_p
+is relative and
+.Va dirfd
+is the special value
+.Dv AT_FDCWD ,
+then
+.Va path_p
+is interpreted relative to the current working directory of the calling process (like
+.Fn acl_delete_def_file ) .
+.Pp
+If
+.Va path_p
+is absolute, then
+.Va dirfd
+is ignored.
+.Pp
+The
+.Va at_flags
+argument can either be 0, or include one or more of the following flags ORed:
+.Bl -tag
+.It Dv AT_EMPTY_PATH
+If
+.Va path_p
+is an empty string, operate on the file referred to by
+.Va dirfd
+(which may have been obtained using the
+.Xr open 2
+.Dv O_PATH
+flag). In this case,
+.Va dirfd
+can refer to any type of file, not just a directory.
+.It Dv AT_SYMLINK_NOFOLLOW
+If
+.Va path_p
+refers to a symbolic link, do not dereference it: instead, fail the operation
+and set the global variable
+.Va errno
+to
+.Er ENOTSUP .
+This indicates that the symbolic link cannot have ACLs.
+.El
 .Sh RETURN VALUE
-.Rv -std acl_delete_def_file
+.Rv -std acl_delete_def_file acl_delete_def_file_at
 .Sh ERRORS
 If any of the following conditions occur, the
 .Fn acl_delete_def_file
-function returns the value
+and
+.Fn acl_delete_def_file_at
+functions return the value
 .Li -1
-and and sets
+and set
 .Va errno
 to the corresponding value:
 .Bl -tag -width Er
+.It Bq Er EBADF
+The argument
+.Va path_p
+is relative but the argument
+.Va dirfd
+is neither
+.Dv AT_FDCWD
+nor a valid file descriptor.
 .It Bq Er EINVAL
 The file referred to by
 .Va path_p
 is not a directory.
+.Pp
+An invalid flag was specified in the
+.Va at_flags
+argument.
+.It Bq Er ENOTDIR
+A component of the path prefix is not a directory.
+.Pp
+The argument
+.Va path_p
+is relative and the argument
+.Va dirfd
+is a file descriptor referring to a file other than a directory.
 .It Bq Er ENOTSUP
+The argument
+.Va at_flags
+includes the flag
+.Dv AT_SYMLINK_NOFOLLOW
+and
+.Va path_p
+is a symbolic link.
+.Pp
 The file system on which the file identified by
 .Va path_p
 is located does not support ACLs, or ACLs are disabled.
@@ -75,6 +170,10 @@ This function requires modification of a file system which is currently read-onl
 .El
 .Sh STANDARDS
 IEEE Std 1003.1e draft 17 (\(lqPOSIX.1e\(rq, abandoned)
+.Pp
+Function
+.Fn acl_delete_def_file_at
+is a Linux specific extension.
 .Sh SEE ALSO
 .Xr acl_get_file 3 ,
 .Xr acl_set_file 3 ,

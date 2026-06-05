@@ -21,7 +21,7 @@
 .\" License along with this manual.  If not, see
 .\" <http://www.gnu.org/licenses/>.
 .\"
-.Dd March 23, 2002
+.Dd June 5, 2026
 .Dt ACL 5
 .Os "Linux ACL"
 .Sh NAME
@@ -462,7 +462,7 @@ For further details, see
 .Ss POSIX 1003.1e FUNCTIONS BY AVAILABILITY
 The first group of functions is supported on most systems with POSIX-like
 access control lists, while the second group is supported on fewer systems.
-For applications that will be ported the second group is best avoided.
+For applications that will be ported, the second group is best avoided.
 .Pp
 .Xr acl_delete_def_file 3 ,
 .Xr acl_dup 3 ,
@@ -498,14 +498,18 @@ These non-portable extensions are available on Linux systems.
 .Pp
 .Xr acl_check 3 ,
 .Xr acl_cmp 3 ,
+.Xr acl_delete_def_file_at 3 ,
 .Xr acl_entries 3 ,
 .Xr acl_equiv_mode 3 ,
 .Xr acl_error 3 ,
 .Xr acl_extended_fd 3 ,
 .Xr acl_extended_file 3 ,
+.Xr acl_extended_file_at 3 ,
 .Xr acl_extended_file_nofollow 3 ,
 .Xr acl_from_mode 3 ,
+.Xr acl_get_file_at 3 ,
 .Xr acl_get_perm 3 ,
+.Xr acl_set_file_at 3 ,
 .Xr acl_to_any_text 3
 .Sh AUTHOR
 Andreas Gruenbacher, <andreas.gruenbacher@gmail.com>

@@ -1,6 +1,6 @@
 .\" Access Control Lists manual pages
 .\"
-.\" (C) 2002 Andreas Gruenbacher, <andreas.gruenbacher@gmail.com>
+.\" (C) 2002-2026 Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
 .\"
 .\" This is free documentation; you can redistribute it and/or
 .\" modify it under the terms of the GNU General Public License as
@@ -21,11 +21,12 @@
 .\" License along with this manual.  If not, see
 .\" <http://www.gnu.org/licenses/>.
 .\"
-.Dd March 23, 2002
+.Dd June 5, 2026
 .Dt ACL_SET_FILE 3
 .Os "Linux ACL"
 .Sh NAME
-.Nm acl_set_file
+.Nm acl_set_file ,
+.Nm acl_set_file_at
 .Nd set an ACL by filename
 .Sh LIBRARY
 Linux Access Control Lists library (libacl, \-lacl).
@@ -33,7 +34,19 @@ Linux Access Control Lists library (libacl, \-lacl).
 .In sys/types.h
 .In sys/acl.h
 .Ft int
-.Fn acl_set_file "const char *path_p" "acl_type_t type" "acl_t acl"
+.Fo acl_set_file
+.Fa "const char *path_p"
+.Fa "acl_type_t type"
+.Fa "acl_t acl"
+.Fc
+.Ft int
+.Fo acl_set_file_at
+.Fa "int dirfd"
+.Fa "const char *path_p"
+.Fa "int at_flags"
+.Fa "acl_type_t type"
+.Fa "acl_t acl"
+.Fc
 .Sh DESCRIPTION
 The
 .Fn acl_set_file
@@ -53,11 +66,15 @@ with
 .Va path_p
 is being set. If the
 .Va type
-parameter is ACL_TYPE_ACCESS, the access ACL of
+parameter is
+.Dv ACL_TYPE_ACCESS ,
+the access ACL of
 .Va path_p
 shall be set. If the
 .Va type
-parameter is ACL_TYPE_DEFAULT, the default ACL of
+parameter is
+.Dv ACL_TYPE_DEFAULT ,
+the default ACL of
 .Va path_p
 shall be set. If the argument
 .Va type
@@ -71,9 +88,13 @@ parameter must reference a valid ACL according to the rules described on the
 .Xr acl_valid 3
 manual page if the
 .Va type
-parameter is ACL_TYPE_ACCESS, and must either reference a valid ACL or an ACL with zero ACL entries if the
+parameter is
+.Dv ACL_TYPE_ACCESS ,
+and must either reference a valid ACL or an ACL with zero ACL entries if the
 .Va type
-parameter is ACL_TYPE_DEFAULT. If the
+parameter is
+.Dv ACL_TYPE_DEFAULT .
+If the
 .Va acl
 parameter references an empty ACL, then the
 .Fn acl_set_file
@@ -81,14 +102,75 @@ function removes any default ACL associated with the directory referred to
 by the
 .Va path_p
 parameter.
+.Ss Fn acl_set_file_at
+The
+.Fn acl_set_file_at
+function operates in exactly the same way as
+.Fn acl_set_file ,
+except for the differences described here.
+.Pp
+If the pathname given in
+.Va path_p
+is relative, then it is interpreted relative to the directory referred to by the file descriptor
+.Va dirfd
+(rather than relative to the current working directory of the calling process, as is done by
+.Fn acl_set_file ) .
+.Pp
+If
+.Va path_p
+is relative and
+.Va dirfd
+is the special value
+.Dv AT_FDCWD ,
+then
+.Va path_p
+is interpreted relative to the current working directory of the calling process (like
+.Fn acl_set_file ) .
+.Pp
+If
+.Va path_p
+is absolute, then
+.Va dirfd
+is ignored.
+.Pp
+The
+.Va at_flags
+argument can either be 0, or include one or more of the following flags ORed:
+.Bl -tag
+.It Dv AT_EMPTY_PATH
+If
+.Va path_p
+is an empty string, operate on the file referred to by
+.Va dirfd
+(which may have been obtained using the
+.Xr open 2
+.Dv O_PATH
+flag). In this case,
+.Va dirfd
+can refer to any type of file, not just a directory, and the behavior of
+.Fn acl_set_file_at
+is similar to that of
+.Fn acl_set_fd .
+.It Dv AT_SYMLINK_NOFOLLOW
+If
+.Va path_p
+refers to a symbolic link, do not dereference it: instead, fail the operation
+and set the global variable
+.Va errno
+to
+.Er ENOTSUP .
+This indicates that the symbolic link cannot have ACLs.
+.El
 .Sh RETURN VALUE
-.Rv -std acl_set_file
+.Rv -std acl_set_file acl_set_file_at
 .Sh ERRORS
 If any of the following conditions occur, the
 .Fn acl_set_file
-function returns
+and
+.Fn acl_set_file_at
+functions return
 .Li -1
-and sets
+and set
 .Va errno
 to the corresponding value:
 .Bl -tag -width Er
@@ -100,6 +182,14 @@ Argument
 .Va type
 specifies a type of ACL that cannot be associated with
 .Va path_p .
+.It Bq Er EBADF
+The argument
+.Va path_p
+is relative but the argument
+.Va dirfd
+is neither
+.Dv AT_FDCWD
+nor a valid file descriptor.
 .It Bq Er EINVAL
 The argument
 .Va acl
@@ -111,13 +201,22 @@ can obtain.
 .Pp
 The
 .Va type
-parameter is not ACL_TYPE_ACCESS or ACL_TYPE_DEFAULT.
+parameter is not
+.Dv ACL_TYPE_ACCESS
+or
+.Dv ACL_TYPE_DEFAULT .
 .Pp
 The
 .Va type
-parameter is ACL_TYPE_DEFAULT, but the file referred to by
+parameter is
+.Dv ACL_TYPE_DEFAULT ,
+but the file referred to by
 .Va path_p
 is not a directory.
+.Pp
+An invalid flag was specified in the
+.Va at_flags
+argument.
 .It Bq Er ENAMETOOLONG
 The length of the argument
 .Va path_p
@@ -130,7 +229,21 @@ points to an empty string.
 The directory or file system that would contain the new ACL cannot be extended or the file system is out of file allocation resources.
 .It Bq Er ENOTDIR
 A component of the path prefix is not a directory.
+.Pp
+The argument
+.Va path_p
+is relative and the argument
+.Va dirfd
+is a file descriptor referring to a file other than a directory.
 .It Bq Er ENOTSUP
+The argument
+.Va at_flags
+includes the flag
+.Dv AT_SYMLINK_NOFOLLOW
+and
+.Va path_p
+is a symbolic link.
+.Pp
 The file identified by
 .Va path_p 
 cannot be associated with the ACL because the file system on which the file
@@ -149,12 +262,18 @@ when the
 .Va acl
 parameter refers to an empty ACL and the
 .Va type
-parameter is ACL_TYPE_DEFAULT is an extension in the Linux implementation, in order that all values returned by
+parameter is
+.Dv ACL_TYPE_DEFAULT
+is an extension in the Linux implementation, in order that all values returned by
 .Fn acl_get_file
 can be passed to
 .Fn acl_set_file .
 The POSIX.1e function for removing a default ACL is
 .Fn acl_delete_def_file .
+.Pp
+Function
+.Fn acl_get_file_at
+is a Linux specific extension.
 .Sh SEE ALSO
 .Xr acl_delete_def_file 3 ,
 .Xr acl_get_file 3 ,
