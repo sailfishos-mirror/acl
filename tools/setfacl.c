@@ -84,8 +84,6 @@ static const int posixly_correct = 1;  /* Posix compatible behavior! */
 #else
 static int posixly_correct;  /* Posix compatible behavior? */
 #endif
-static int chown_error;
-static int promote_warning;
 
 
 static const char *xquote(const char *str, const char *quote_chars)
