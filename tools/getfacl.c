@@ -252,7 +252,7 @@ static void apply_mask(char *perm, const char *mask)
 	}
 }
 
-static int show_line(FILE *stream, struct name_list **acl_names,  acl_t acl,
+static int show_line(struct name_list **acl_names,  acl_t acl,
               acl_entry_t *acl_ent, const char *acl_mask,
               struct name_list **dacl_names, acl_t dacl,
 	      acl_entry_t *dacl_ent, const char *dacl_mask)
@@ -309,10 +309,10 @@ static int show_line(FILE *stream, struct name_list **acl_names,  acl_t acl,
 			apply_mask(dacl_perm, dacl_mask);
 	}
 
-	fprintf(stream, "%-5s  %*s  %*s  %*s\n",
-	        tag, -names_width, name,
-	        -(int)ACL_PERMS, acl_perm,
-		-(int)ACL_PERMS, dacl_perm);
+	printf("%-5s  %*s  %*s  %*s\n",
+	       tag, -names_width, name,
+	       -(int)ACL_PERMS, acl_perm,
+	       -(int)ACL_PERMS, dacl_perm);
 
 	if (acl_names) {
 		acl_get_entry(acl, ACL_NEXT_ENTRY, acl_ent);
@@ -325,7 +325,7 @@ static int show_line(FILE *stream, struct name_list **acl_names,  acl_t acl,
 	return 0;
 }
 
-static int do_show(FILE *stream, const char *path_p, const struct stat *st,
+static int do_show(const char *path_p, const struct stat *st,
             acl_t acl, acl_t dacl)
 {
 	struct name_list *acl_names = get_list(st, acl),
@@ -364,7 +364,7 @@ static int do_show(FILE *stream, const char *path_p, const struct stat *st,
 		if (ret < 0)
 			return ret;
 	}
-	fprintf(stream, "# file: %s\n", xquote(path_p, "\n\r"));
+	printf("# file: %s\n", xquote(path_p, "\n\r"));
 	while (acl_names != NULL || dacl_names != NULL) {
 		acl_tag_t acl_tag, dacl_tag;
 
@@ -374,11 +374,11 @@ static int do_show(FILE *stream, const char *path_p, const struct stat *st,
 			acl_get_tag_type(dacl_ent, &dacl_tag);
 
 		if (acl && (!dacl || acl_tag < dacl_tag)) {
-			show_line(stream, &acl_names, acl, &acl_ent, acl_mask,
+			show_line(&acl_names, acl, &acl_ent, acl_mask,
 			          NULL, NULL, NULL, NULL);
 			continue;
 		} else if (dacl && (!acl || dacl_tag < acl_tag)) {
-			show_line(stream, NULL, NULL, NULL, NULL,
+			show_line(NULL, NULL, NULL, NULL,
 			          &dacl_names, dacl, &dacl_ent, dacl_mask);
 			continue;
 		} else {
@@ -396,18 +396,18 @@ static int do_show(FILE *stream, const char *path_p, const struct stat *st,
 				}
 				
 				if (acl && (!dacl || id_cmp < 0)) {
-					show_line(stream, &acl_names, acl,
+					show_line(&acl_names, acl,
 					          &acl_ent, acl_mask,
 						  NULL, NULL, NULL, NULL);
 					continue;
 				} else if (dacl && (!acl || id_cmp > 0)) {
-					show_line(stream, NULL, NULL, NULL,
+					show_line(NULL, NULL, NULL,
 					          NULL, &dacl_names, dacl,
 						  &dacl_ent, dacl_mask);
 					continue;
 				}
 			}
-			show_line(stream, &acl_names,  acl,  &acl_ent, acl_mask,
+			show_line(&acl_names,  acl,  &acl_ent, acl_mask,
 				  &dacl_names, dacl, &dacl_ent, dacl_mask);
 		}
 	}
@@ -510,7 +510,7 @@ static int do_print(const char *path_p, const struct stat *st, int walk_flags, v
 	}
 
 	if (opt_tabular)  {
-		if (do_show(stdout, path_p, st, acl, default_acl) != 0)
+		if (do_show(path_p, st, acl, default_acl) != 0)
 			goto fail;
 	} else {
 		if (opt_comments) {
