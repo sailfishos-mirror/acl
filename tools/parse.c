@@ -36,10 +36,11 @@
 #include "parse.h"
 #include "misc.h"
 
-#define SKIP_WS(x) ({ \
-	while (*(x)==' ' || *(x)=='\t' || *(x)=='\n' || *(x)=='\r') \
-		(x)++; \
-	})
+#define SKIP_WS(x) \
+	do {\
+		while (*(x)==' ' || *(x)=='\t' || *(x)=='\n' || *(x)=='\r') \
+			(x)++; \
+	} while (0)
 
 
 static int
