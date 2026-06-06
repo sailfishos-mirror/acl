@@ -23,9 +23,6 @@
 #include <sys/stat.h>
 #include "libacl.h"
 
-#if defined(HAVE_ACL_ENTRIES) && \
-    defined (HAVE_ACL_GET_ENTRY) && defined(HAVE_ACL_GET_TAG_TYPE) && \
-    defined (HAVE_ACL_GET_PERMSET) && defined(HAVE_ACL_GET_PERM)
 int
 __acl_apply_mask_to_mode(mode_t *mode, acl_t acl)
 {
@@ -62,6 +59,3 @@ __acl_apply_mask_to_mode(mode_t *mode, acl_t acl)
 	*mode &= ~S_IRWXG;
 	return 1;
 }
-#endif
-
-
