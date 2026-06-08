@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <getopt.h>
 #include <libgen.h>
 #include <stdio.h>
@@ -34,8 +35,10 @@
 
 static int acl_delete_file (const char * path, acl_type_t type);
 static int list_acl(char *file);
-static int set_acl(acl_t acl, acl_t dacl, const char *fname);
-static int walk_dir(acl_t acl, acl_t dacl, const char *fname);
+static int set_acl(acl_t acl, acl_t dacl, int dirfd, const char *dname,
+		   const char *fname, unsigned int depth);
+static int walk_dir(acl_t acl, acl_t dacl, int dirfd, const char *dname,
+		    const char *fname, unsigned int depth);
 
 static char *program;
 static int rflag;
@@ -197,7 +200,7 @@ main(int argc, char *argv[])
 
 	/* place acls on files */
 	for (; optind < argc; optind++)
-		failed += set_acl(acl, dacl, argv[optind]);
+		failed += set_acl(acl, dacl, AT_FDCWD, "", argv[optind], 0);
 
 	if (acl)
 		acl_free(acl);
@@ -221,7 +224,8 @@ acl_delete_file(const char *path, acl_type_t type)
 		acl_entry_t entry;
 		acl_tag_t tag;
 
-		acl = acl_get_file(path, ACL_TYPE_ACCESS);
+		acl = acl_get_file_at(AT_FDCWD, path, AT_SYMLINK_NOFOLLOW,
+				      ACL_TYPE_ACCESS);
 		if (!acl)
 			return -1;
 		error = acl_get_entry(acl, ACL_FIRST_ENTRY, &entry);
@@ -237,9 +241,12 @@ acl_delete_file(const char *path, acl_type_t type)
 			error = acl_get_entry(acl, ACL_NEXT_ENTRY, &entry);
 		}
 		if (!error)
-			error = acl_set_file(path, ACL_TYPE_ACCESS, acl);
+			error = acl_set_file_at(AT_FDCWD, path,
+						AT_SYMLINK_NOFOLLOW,
+						ACL_TYPE_ACCESS, acl);
 	} else
-		error = acl_delete_def_file(path);
+		error = acl_delete_def_file_at(AT_FDCWD, path,
+					       AT_SYMLINK_NOFOLLOW);
 	return(error);
 }
 
@@ -292,63 +299,102 @@ list_acl(char *file)
 }
 
 static int
-set_acl(acl_t acl, acl_t dacl, const char *fname)
+set_acl(acl_t acl, acl_t dacl, int dirfd, const char *dname, const char *fname,
+	unsigned int depth)
 {
+	static char *aname;
 	int failed = 0;
 
+	if (aname) {
+		free(aname);
+		aname = NULL;
+	}
+	if (asprintf(&aname, "%s%s", dname, fname) == -1) {
+		fprintf(stderr, _("%s: malloc failed: %s\n"),
+			program, strerror(errno));
+		exit(1);
+	}
+
 	if (rflag)
-		failed += walk_dir(acl, dacl, fname);
+		failed += walk_dir(acl, dacl, dirfd, dname, fname, depth);
 
 	/* set regular acl */
-	if (acl && acl_set_file(fname, ACL_TYPE_ACCESS, acl) == -1) {
-		fprintf(stderr, _("%s: cannot set access acl on \"%s\": %s\n"),
-			program, fname, strerror(errno));
-		failed++;
+	if (acl && acl_set_file_at(dirfd, fname, AT_SYMLINK_NOFOLLOW,
+				   ACL_TYPE_ACCESS, acl) == -1) {
+		int saved_errno = errno;
+		struct stat st;
+
+		if (!depth || errno != ENOTSUP ||
+		    fstatat(dirfd, fname, &st, AT_SYMLINK_NOFOLLOW) == -1 ||
+		    !S_ISLNK(st.st_mode)) {
+			fprintf(stderr, _("%s: cannot set access acl on \"%s\": %s\n"),
+				program, aname, strerror(saved_errno));
+			failed++;
+		}
 	}
 	/* set default acl */
-	if (dacl && acl_set_file(fname, ACL_TYPE_DEFAULT, dacl) == -1) {
-		fprintf(stderr, _("%s: cannot set default acl on \"%s\": %s\n"),
-			program, fname, strerror(errno));
-		failed++;
+	if (dacl && acl_set_file_at(dirfd, fname, AT_SYMLINK_NOFOLLOW,
+				    ACL_TYPE_DEFAULT, dacl) == -1) {
+		int saved_errno = errno;
+		struct stat st;
+
+		if (!depth || errno != ENOTSUP ||
+		    fstatat(dirfd, fname, &st, AT_SYMLINK_NOFOLLOW) == -1 ||
+		    !S_ISLNK(st.st_mode)) {
+			fprintf(stderr, _("%s: cannot set default acl on \"%s\": %s\n"),
+				program, aname, strerror(saved_errno));
+			failed++;
+		}
 	}
 
 	return(failed);
 }
 
 static int
-walk_dir(acl_t acl, acl_t dacl, const char *fname)
+walk_dir(acl_t acl, acl_t dacl, int dirfd, const char *dname, const char *fname,
+	 unsigned int depth)
 {
 	int failed = 0;
 	DIR *dir;
 	struct dirent *d;
-	char *name;
+	char *dname2;
+	int fd;
 
-	if ((dir = opendir(fname)) == NULL) {
-		if (errno != ENOTDIR) {
-			fprintf(stderr, _("%s: opendir failed: %s\n"),
+	depth++;
+
+	fd = openat(dirfd, fname, O_DIRECTORY | O_NOFOLLOW);
+	if (fd == -1) {
+		if (errno != ENOTDIR && errno != ELOOP) {
+			fprintf(stderr, _("%s: openat failed: %s\n"),
 				program, strerror(errno));
 			return(1);
 		}
 		return(0);	/* got a file, not an error */
 	}
+	if ((dir = fdopendir(fd)) == NULL) {
+		fprintf(stderr, _("%s: opendir failed: %s\n"),
+			program, strerror(errno));
+		return(1);
+	}
+
+	dname2 = malloc(strlen(dname) + strlen(fname) + 2);
+	if (dname2 == NULL) {
+		fprintf(stderr, _("%s: malloc failed: %s\n"),
+			program, strerror(errno));
+		exit(1);
+	}
+	sprintf(dname2, "%s%s/", dname, fname);
 
 	while ((d = readdir(dir)) != NULL) {
 		/* skip "." and ".." entries */
 		if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0)
 			continue;
 		
-		name = malloc(strlen(fname) + strlen(d->d_name) + 2);
-		if (name == NULL) {
-			fprintf(stderr, _("%s: malloc failed: %s\n"),
-				program, strerror(errno));
-			exit(1);
-		}
-		sprintf(name, "%s/%s", fname, d->d_name);
-
-		failed += set_acl(acl, dacl, name);
-		free(name);
+		failed += set_acl(acl, dacl, fd, dname2, d->d_name, depth);
 	}
 	closedir(dir);
+
+	free(dname2);
 
 	return(failed);
 }
