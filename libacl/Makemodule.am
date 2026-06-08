@@ -65,11 +65,11 @@ LIBACL_CFILES = \
 	libacl/__acl_extended_file.c
 
 INTERNAL_CFILES = \
+	libacl/__acl_apply_mask_to_mode.c \
 	libacl/__acl_from_xattr.c \
 	libacl/__acl_reorder_obj_p.c \
 	libacl/__acl_to_any_text.c \
 	libacl/__acl_to_xattr.c \
-	libacl/__apply_mask_to_mode.c \
 	libacl/__libobj.c
 
 libacl_la_DEPENDENCIES = exports libmisc.la
