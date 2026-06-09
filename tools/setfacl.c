@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -33,7 +34,7 @@
 #include "sequence.h"
 #include "parse.h"
 #include "do_set.h"
-#include "old_walk_tree.h"
+#include "walk_tree.h"
 
 #define POSIXLY_CORRECT_STR "POSIXLY_CORRECT"
 
@@ -74,7 +75,7 @@ static const struct option long_options[] = {
 const char *progname;
 static const char *cmd_line_options, *cmd_line_spec;
 
-static int walk_flags = WALK_TREE_DEREFERENCE_TOPLEVEL;
+static enum walk_flags walk_flags = 0;
 int opt_recalculate;  /* recalculate mask entry (0=default, 1=yes, -1=no) */
 static int opt_promote;  /* promote access ACL to default ACL */
 int opt_test;  /* do not write to the file system.
@@ -182,7 +183,7 @@ restore(
 		}
 
 		args.mode = 0;
-		error = do_set(path_p, &st, 0, &args);
+		error = do_set(AT_FDCWD, "", path_p, DT_UNKNOWN, WALK_TREE_PHYSICAL, &args);
 		if (error != 0) {
 			status = 1;
 			goto resume;
@@ -310,14 +311,14 @@ static int next_file(const char *arg, seq_t seq)
 
 	if (strcmp(arg, "-") == 0) {
 		while ((line = __acl_next_line(stdin)))
-			errors = old_walk_tree(line, walk_flags, 0, do_set, &args);
+			errors = walk_tree(line, walk_flags, do_set, &args);
 		if (!feof(stdin)) {
 			fprintf(stderr, _("%s: Standard input: %s\n"),
 				progname, strerror(errno));
 			errors = 1;
 		}
 	} else {
-		errors = old_walk_tree(arg, walk_flags, 0, do_set, &args);
+		errors = walk_tree(arg, walk_flags, do_set, &args);
 	}
 	return errors ? 1 : 0;
 }
@@ -590,14 +591,13 @@ int main(int argc, char *argv[])
 				break;
 
 			case 'L':  /* follow symlinks */
-				walk_flags |= WALK_TREE_LOGICAL | WALK_TREE_DEREFERENCE;
+				walk_flags |= WALK_TREE_LOGICAL;
 				walk_flags &= ~WALK_TREE_PHYSICAL;
 				break;
 
 			case 'P':  /* do not follow symlinks */
 				walk_flags |= WALK_TREE_PHYSICAL;
-				walk_flags &= ~(WALK_TREE_LOGICAL | WALK_TREE_DEREFERENCE |
-						WALK_TREE_DEREFERENCE_TOPLEVEL);
+				walk_flags &= ~WALK_TREE_LOGICAL;
 				break;
 
 			case 't':  /* test mode */
@@ -614,7 +614,7 @@ int main(int argc, char *argv[])
 				status = 0;
 				goto cleanup;
 
-			case ':':  /* option missing */
+			case ':':  /* argument missing */
 			case '?':  /* unknown option */
 			default:
 				goto synopsis;

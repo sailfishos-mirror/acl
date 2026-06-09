@@ -23,14 +23,15 @@
 #define __DO_SET_H
 
 #include "sequence.h"
+#include "walk_tree.h"
 
 struct do_set_args {
 	seq_t seq;
 	mode_t mode;
 };
 
-extern int do_set(const char *path_p, const struct stat *stat_p, int flags,
-		  void *arg);
+extern int do_set(int dirfd, const char *dirname, const char *pathname,
+		  unsigned char dirtype, enum walk_flags flags, void *arg);
 
 /* We need these exported to us. */
 extern const char *progname;

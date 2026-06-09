@@ -31,13 +31,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <dirent.h>
 #include <ftw.h>
 #include "misc.h"
 #include "sequence.h"
 #include "do_set.h"
 #include "parse.h"
-#include "old_walk_tree.h"
+#include "walk_tree.h"
 
 
 static acl_entry_t
@@ -119,7 +120,7 @@ clone_entry(
 static void
 print_test(
 	FILE *file,
-	const char *path_p,
+	const char *fullname,
 	const struct stat *st,
 	const acl_t acl,
 	const acl_t default_acl)
@@ -129,7 +130,7 @@ print_test(
 	acl_text = acl_to_any_text(acl, NULL, ',', TEXT_ABBREVIATE);
 	default_acl_text =
 		acl_to_any_text(default_acl, "d:", ',', TEXT_ABBREVIATE);
-	fprintf(file, "%s: %s,%s\n", path_p,
+	fprintf(file, "%s: %s,%s\n", fullname,
 		acl_text ? acl_text : "*",
 		default_acl_text ? default_acl_text : "*");
 	acl_free(acl_text);
@@ -162,7 +163,9 @@ set_perm(
 
 static int
 retrieve_acl(
-	const char *path_p,
+	int dirfd,
+	const char *pathname,
+	int at_flags,
 	acl_type_t type,
 	const struct stat *st,
 	acl_t *old_acl,
@@ -172,7 +175,7 @@ retrieve_acl(
 		return 0;
 	*acl = NULL;
 	if (type == ACL_TYPE_ACCESS || S_ISDIR(st->st_mode)) {
-		*old_acl = acl_get_file(path_p, type);
+		*old_acl = acl_get_file_at(dirfd, pathname, at_flags, type);
 		if (*old_acl == NULL && (errno == ENOSYS || errno == ENOTSUP)) {
 			if (type == ACL_TYPE_DEFAULT)
 				*old_acl = acl_init(0);
@@ -246,18 +249,23 @@ remove_extended_entries(
 
 
 #define RETRIEVE_ACL(type) do { \
-	error = retrieve_acl(path_p, type, st, old_xacl, xacl); \
+	error = retrieve_acl(dirfd, pathname, at_flags, type, &st, \
+			     old_xacl, xacl); \
 	if (error) \
 		goto fail; \
 	} while(0)
 
 int
 do_set(
-	const char *path_p,
-	const struct stat *st,
-	int walk_flags,
+	int dirfd,
+	const char *dirname,
+	const char *pathname,
+	unsigned char dirtype,
+	enum walk_flags walk_flags,
 	void *arg)
 {
+	static char *__fullname;
+	const char *fullname;
 	struct do_set_args *args = arg;
 	acl_t old_acl = NULL, old_default_acl = NULL;
 	acl_t acl = NULL, default_acl = NULL;
@@ -269,9 +277,23 @@ do_set(
 	char *acl_text;
 	int acl_modified = 0, default_acl_modified = 0;
 	int acl_mask_provided = 0, default_acl_mask_provided = 0;
+	struct stat st;
+	int at_flags;
+
+	if (*dirname) {
+		free(__fullname);
+		__fullname = NULL;
+		if (asprintf(&__fullname, "%s%s", dirname, pathname) == -1) {
+			fprintf(stderr, "%s: %s", progname, strerror(errno));
+			return 1;
+		}
+		fullname = __fullname;
+	} else
+		fullname = pathname;
 
 	if (walk_flags & WALK_TREE_FAILED) {
-		fprintf(stderr, "%s: %s: %s\n", progname, path_p, strerror(errno));
+		fprintf(stderr, "%s: %s: %s\n", progname, fullname,
+			strerror(errno));
 		return 1;
 	}
 
@@ -280,10 +302,22 @@ do_set(
 	 * skip symlinks altogether, and when doing a half-logical walk, we
 	 * skip all non-toplevel symlinks. 
 	 */
-	if ((walk_flags & WALK_TREE_SYMLINK) &&
-	    ((walk_flags & WALK_TREE_PHYSICAL) ||
-	     !(walk_flags & (WALK_TREE_TOPLEVEL | WALK_TREE_LOGICAL))))
+
+	at_flags = AT_SYMLINK_NOFOLLOW;
+	if ((walk_flags & WALK_TREE_LOGICAL) ||
+	    ((walk_flags & WALK_TREE_TOPLEVEL) &&
+	     !(walk_flags & WALK_TREE_PHYSICAL)))
+		at_flags = 0;
+
+	if (dirtype == DT_LNK && (at_flags & AT_SYMLINK_NOFOLLOW))
 		return 0;
+
+	if (fstatat(dirfd, pathname, &st, at_flags) != 0)
+		goto fail;
+	if (S_ISLNK(st.st_mode)) {
+		errno = ELOOP;
+		goto fail;
+	}
 
 	/* Execute the commands in seq (read ACLs on demand) */
 	error = seq_get_cmd(args->seq, SEQ_FIRST_CMD, &cmd);
@@ -311,7 +345,7 @@ do_set(
 		/* Check for `X', and replace with `x' as appropriate. */
 		if (perm & CMD_PERM_COND_EXECUTE) {
 			perm &= ~CMD_PERM_COND_EXECUTE;
-			if (S_ISDIR(st->st_mode) || has_execute_perms(*xacl))
+			if (S_ISDIR(st.st_mode) || has_execute_perms(*xacl))
 				perm |= CMD_PERM_EXECUTE;
 		}
 
@@ -402,8 +436,9 @@ do_set(
 		if (error > 0) {
 			acl_text = acl_to_any_text(acl, NULL, ',', 0);
 			fprintf(stderr, _("%s: %s: Malformed access ACL "
-				"`%s': %s at entry %d\n"), progname, path_p,
-				acl_text, acl_error(error), which_entry+1);
+				"`%s': %s at entry %d\n"), progname,
+				fullname, acl_text, acl_error(error),
+				which_entry+1);
 			acl_free(acl_text);
 			errors++;
 			goto cleanup;
@@ -430,7 +465,7 @@ do_set(
 			acl_text = acl_to_any_text(default_acl, NULL, ',', 0);
 			fprintf(stderr, _("%s: %s: Malformed default ACL "
 			                  "`%s': %s at entry %d\n"),
-				progname, path_p, acl_text,
+				progname, fullname, acl_text,
 				acl_error(error), which_entry+1);
 			acl_free(acl_text);
 			errors++;
@@ -439,7 +474,7 @@ do_set(
 	}
 
 	/* Only directories can have default ACLs */
-	if (default_acl && !S_ISDIR(st->st_mode) && (walk_flags & WALK_TREE_RECURSIVE)) {
+	if (default_acl && !S_ISDIR(st.st_mode) && (walk_flags & WALK_TREE_RECURSIVE)) {
 		/* In recursive mode, ignore default ACLs for files */
 		acl_free(default_acl);
 		default_acl = NULL;
@@ -458,7 +493,7 @@ do_set(
 
 	/* update the file system */
 	if (opt_test) {
-		print_test(stdout, path_p, st,
+		print_test(stdout, fullname, &st,
 		           acl, default_acl);
 		goto cleanup;
 	}
@@ -468,17 +503,15 @@ do_set(
 
 		equiv_mode = acl_equiv_mode(acl, &mode);
 
-		if (acl_set_file(path_p, ACL_TYPE_ACCESS, acl) != 0) {
+		if (acl_set_file_at(dirfd, pathname, at_flags, ACL_TYPE_ACCESS,
+				    acl) != 0) {
 			if (errno == ENOSYS || errno == ENOTSUP) {
 				if (equiv_mode != 0)
 					goto fail;
 				else {
-					struct stat st;
-
-					if (stat(path_p, &st) != 0)
-						goto fail;
 					mode |= st.st_mode & 07000;
-					if (chmod(path_p, mode) != 0)
+					if (fchmodat(dirfd, pathname, mode,
+						     at_flags) != 0)
 						goto fail;
 				}
 			} else
@@ -487,21 +520,23 @@ do_set(
 		args->mode = mode;
 	}
 	if (default_acl) {
-		if (S_ISDIR(st->st_mode)) {
+		if (S_ISDIR(st.st_mode)) {
 			if (acl_entries(default_acl) == 0) {
-				if (acl_delete_def_file(path_p) != 0 &&
+				if (acl_delete_def_file_at(dirfd, pathname,
+							   at_flags) != 0 &&
 				    errno != ENOSYS && errno != ENOTSUP)
 					goto fail;
 			} else {
-				if (acl_set_file(path_p, ACL_TYPE_DEFAULT,
-						 default_acl) != 0)
+				if (acl_set_file_at(dirfd, pathname, at_flags,
+						    ACL_TYPE_DEFAULT,
+						    default_acl) != 0)
 					goto fail;
 			}
 		} else {
 			if (acl_entries(default_acl) != 0) {
 				fprintf(stderr, _("%s: %s: Only directories "
 						"can have default ACLs\n"),
-					progname, path_p);
+					progname, fullname);
 				errors++;
 				goto cleanup;
 			}
@@ -522,7 +557,8 @@ cleanup:
 	return errors;
 	
 fail:
-	fprintf(stderr, "%s: %s: %s\n", progname, path_p, strerror(errno));
+	fprintf(stderr, "%s: %s: %s\n", progname, fullname,
+		strerror(errno));
 	errors++;
 	goto cleanup;
 }
