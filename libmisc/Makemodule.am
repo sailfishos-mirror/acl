@@ -9,7 +9,6 @@ libmisc_la_SOURCES = \
 	libmisc/high_water_alloc.c \
 	libmisc/listxattrat_compat.c \
 	libmisc/next_line.c \
-	libmisc/old_walk_tree.c \
 	libmisc/proc-self-fd.c \
 	libmisc/quote.c \
 	libmisc/walk_tree.c \
