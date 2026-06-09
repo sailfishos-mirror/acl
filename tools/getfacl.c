@@ -4,6 +4,7 @@
 
   Copyright (C) 1999-2002
   Andreas Gruenbacher, <andreas.gruenbacher@gmail.com>
+  Copyright 2026 Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
  	
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -30,6 +31,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -37,7 +39,7 @@
 #include <getopt.h>
 #include "misc.h"
 #include "user_group.h"
-#include "old_walk_tree.h"
+#include "walk_tree.h"
 
 #define POSIXLY_CORRECT_STR "POSIXLY_CORRECT"
 
@@ -70,7 +72,7 @@ static const struct option long_options[] = {
 const char *progname;
 static const char *cmd_line_options;
 
-static int walk_flags = WALK_TREE_DEREFERENCE_TOPLEVEL;
+static enum walk_flags walk_flags = 0;
 static int opt_print_acl;
 static int opt_print_default_acl;
 static int opt_strip_leading_slash = 1;
@@ -325,8 +327,8 @@ static int show_line(struct name_list **acl_names,  acl_t acl,
 	return 0;
 }
 
-static int do_show(const char *path_p, const struct stat *st,
-            acl_t acl, acl_t dacl)
+static int do_show(const char *fullname, const struct stat *st,
+		   acl_t acl, acl_t dacl)
 {
 	struct name_list *acl_names = get_list(st, acl),
 	                 *first_acl_name = acl_names;
@@ -364,7 +366,7 @@ static int do_show(const char *path_p, const struct stat *st,
 		if (ret < 0)
 			return ret;
 	}
-	printf("# file: %s\n", xquote(path_p, "\n\r"));
+	printf("# file: %s\n", xquote(fullname, "\n\r"));
 	while (acl_names != NULL || dacl_names != NULL) {
 		acl_tag_t acl_tag, dacl_tag;
 
@@ -423,11 +425,11 @@ static int do_show(const char *path_p, const struct stat *st,
  * of the file PATH_P.
  */
 static acl_t
-acl_get_file_mode(const char *path_p)
+acl_get_from_file_mode_at(int dirfd, const char *pathname, int at_flags)
 {
 	struct stat st;
 
-	if (stat(path_p, &st) != 0)
+	if (fstatat(dirfd, pathname, &st, at_flags) != 0)
 		return NULL;
 	return acl_from_mode(st.st_mode);
 }
@@ -444,15 +446,32 @@ flagstr(mode_t mode)
 	return str;
 }
 
-static int do_print(const char *path_p, const struct stat *st, int walk_flags, void *unused)
+static int do_print(int dirfd, const char *dirname, const char *pathname,
+		    unsigned char dirtype, enum walk_flags walk_flags,
+		    void *unused)
 {
+	static char *__fullname;
+	const char *fullname;
 	const char *default_prefix = NULL;
 	acl_t acl = NULL, default_acl = NULL;
+	struct stat st;
+	int at_flags;
 	int error = 0;
 
+	if (*dirname) {
+		free(__fullname);
+		__fullname = NULL;
+		if (asprintf(&__fullname, "%s%s", dirname, pathname) == -1) {
+			fprintf(stderr, "%s: %s", progname, strerror(errno));
+			return 1;
+		}
+		fullname = __fullname;
+	} else
+		fullname = pathname;
+
 	if (walk_flags & WALK_TREE_FAILED) {
-		fprintf(stderr, "%s: %s: %s\n", progname, xquote(path_p, "\n\r"),
-			strerror(errno));
+		fprintf(stderr, "%s: %s: %s\n", progname,
+			xquote(fullname, "\n\r"), strerror(errno));
 		return 1;
 	}
 
@@ -461,21 +480,37 @@ static int do_print(const char *path_p, const struct stat *st, int walk_flags, v
 	 * skip symlinks altogether, and when doing a half-logical walk, we
 	 * skip all non-toplevel symlinks. 
 	 */
-	if ((walk_flags & WALK_TREE_SYMLINK) &&
-	    ((walk_flags & WALK_TREE_PHYSICAL) ||
-	     !(walk_flags & (WALK_TREE_TOPLEVEL | WALK_TREE_LOGICAL))))
-		return 0;
+	at_flags = AT_SYMLINK_NOFOLLOW;
+	if ((walk_flags & WALK_TREE_LOGICAL) ||
+	    ((walk_flags & WALK_TREE_TOPLEVEL) &&
+	     !(walk_flags & WALK_TREE_PHYSICAL)))
+	       at_flags = 0;
+
+	if (dirtype == DT_LNK && (at_flags & AT_SYMLINK_NOFOLLOW))
+		goto cleanup;
+
+	if (fstatat(dirfd, pathname, &st, at_flags) != 0)
+		goto fail;
+	if (S_ISLNK(st.st_mode)) {
+		if (!(walk_flags & WALK_TREE_TOPLEVEL))
+			goto cleanup;
+		errno = ELOOP;
+		goto fail;
+	}
 
 	if (opt_print_acl) {
-		acl = acl_get_file(path_p, ACL_TYPE_ACCESS);
+		acl = acl_get_file_at(dirfd, pathname, at_flags,
+				      ACL_TYPE_ACCESS);
 		if (acl == NULL && (errno == ENOSYS || errno == ENOTSUP))
-			acl = acl_get_file_mode(path_p);
+			acl = acl_get_from_file_mode_at(dirfd, pathname,
+							at_flags);
 		if (acl == NULL)
 			goto fail;
 	}
 
-	if (opt_print_default_acl && S_ISDIR(st->st_mode)) {
-		default_acl = acl_get_file(path_p, ACL_TYPE_DEFAULT);
+	if (opt_print_default_acl && S_ISDIR(st.st_mode)) {
+		default_acl = acl_get_file_at(dirfd, pathname, at_flags,
+					      ACL_TYPE_DEFAULT);
 		if (default_acl == NULL) {
 			if (errno != ENOSYS && errno != ENOTSUP)
 				goto fail;
@@ -493,34 +528,30 @@ static int do_print(const char *path_p, const struct stat *st, int walk_flags, v
 		default_prefix = "default:";
 
 	if (opt_strip_leading_slash) {
-		if (*path_p == '/') {
+		if (*fullname == '/') {
 			if (!absolute_warning) {
 				fprintf(stderr, _("%s: Removing leading "
 					"'/' from absolute path names\n"),
-				        progname);
+					progname);
 				absolute_warning = 1;
 			}
-			while (*path_p == '/')
-				path_p++;
-		} else if (*path_p == '.' && *(path_p+1) == '/')
-			while (*++path_p == '/')
-				/* nothing */ ;
-		if (*path_p == '\0')
-			path_p = ".";
+			while (*fullname == '/')
+				fullname++;
+		}
 	}
 
 	if (opt_tabular)  {
-		if (do_show(path_p, st, acl, default_acl) != 0)
+		if (do_show(fullname, &st, acl, default_acl) != 0)
 			goto fail;
 	} else {
 		if (opt_comments) {
-			printf("# file: %s\n", xquote(path_p, "\n\r"));
+			printf("# file: %s\n", xquote(fullname, "\n\r"));
 			printf("# owner: %s\n",
-			       xquote(user_name(st->st_uid, opt_numeric), " \t\n\r"));
+			       xquote(user_name(st.st_uid, opt_numeric), " \t\n\r"));
 			printf("# group: %s\n",
-			       xquote(group_name(st->st_gid, opt_numeric), " \t\n\r"));
-			if ((st->st_mode & (S_ISVTX | S_ISUID | S_ISGID)) && !posixly_correct)
-				printf("# flags: %s\n", flagstr(st->st_mode));
+			       xquote(group_name(st.st_gid, opt_numeric), " \t\n\r"));
+			if ((st.st_mode & (S_ISVTX | S_ISUID | S_ISGID)) && !posixly_correct)
+				printf("# flags: %s\n", flagstr(st.st_mode));
 		}
 		if (acl != NULL) {
 			char *acl_text = acl_to_any_text(acl, NULL, '\n',
@@ -557,8 +588,7 @@ cleanup:
 	return error;
 
 fail:
-	fprintf(stderr, "%s: %s: %s\n", progname, xquote(path_p, "\n\r"),
-		strerror(errno));
+	fprintf(stderr, "%s: %s: %s\n", progname, fullname, strerror(errno));
 	error = -1;
 	goto cleanup;
 }
@@ -589,7 +619,7 @@ static void help(void)
 "  -P, --physical          physical walk, do not follow symbolic links\n"
 "  -t, --tabular           use tabular output format\n"
 "  -n, --numeric           print numeric user/group identifiers\n"
-"      --one-file-system   skip files on different filesystems\n"
+"      --one-file-system   don't descend into directories on other filesystems\n"
 "  -p, --absolute-names    don't strip leading '/' in pathnames\n"));
 	}
 #endif
@@ -666,7 +696,7 @@ int main(int argc, char *argv[])
 			case 'L':  /* follow all symlinks */
 				if (posixly_correct)
 					goto synopsis;
-				walk_flags |= WALK_TREE_LOGICAL | WALK_TREE_DEREFERENCE;
+				walk_flags |= WALK_TREE_LOGICAL;
 				walk_flags &= ~WALK_TREE_PHYSICAL;
 				break;
 
@@ -674,8 +704,7 @@ int main(int argc, char *argv[])
 				if (posixly_correct)
 					goto synopsis;
 				walk_flags |= WALK_TREE_PHYSICAL;
-				walk_flags &= ~(WALK_TREE_LOGICAL | WALK_TREE_DEREFERENCE |
-						WALK_TREE_DEREFERENCE_TOPLEVEL);
+				walk_flags &= ~WALK_TREE_LOGICAL;
 				break;
 
 			case 's':  /* skip files with only base entries */
@@ -713,7 +742,7 @@ int main(int argc, char *argv[])
 				help();
 				return 0;
 
-			case ':':  /* option missing */
+			case ':':  /* argument missing */
 			case '?':  /* unknown option */
 			default:
 				goto synopsis;
@@ -736,7 +765,7 @@ int main(int argc, char *argv[])
 				if (*line == '\0')
 					continue;
 
-				had_errors += old_walk_tree(line, walk_flags, 0,
+				had_errors += walk_tree(line, walk_flags,
 							do_print, NULL);
 			}
 			if (!feof(stdin)) {
@@ -745,7 +774,7 @@ int main(int argc, char *argv[])
 				had_errors++;
 			}
 		} else
-			had_errors += old_walk_tree(argv[optind], walk_flags, 0,
+			had_errors += walk_tree(argv[optind], walk_flags,
 						do_print, NULL);
 		optind++;
 	} while (optind < argc);
