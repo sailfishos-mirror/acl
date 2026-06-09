@@ -12,6 +12,7 @@ libmisc_la_SOURCES = \
 	libmisc/old_walk_tree.c \
 	libmisc/proc-self-fd.c \
 	libmisc/quote.c \
+	libmisc/walk_tree.c \
 	libmisc/removexattrat_compat.c \
 	libmisc/setxattrat_compat.c \
 	libmisc/uid_gid_lookup.c \
