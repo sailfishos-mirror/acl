@@ -1,5 +1,5 @@
 /*
-  File: walk_tree.c
+  File: old_walk_tree.c
 
   Copyright (C) 2007 Andreas Gruenbacher <a.gruenbacher@computer.org>
 
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <errno.h>
 
-#include "walk_tree.h"
+#include "old_walk_tree.h"
 
 struct entry_handle {
 	struct entry_handle *prev, *next;
@@ -225,7 +225,7 @@ close_another_dir:
 	return err;
 }
 
-int walk_tree(const char *path, int walk_flags, unsigned int num,
+int old_walk_tree(const char *path, int walk_flags, unsigned int num,
 	      int (*func)(const char *, const struct stat *, int, void *),
 	      void *arg)
 {

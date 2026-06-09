@@ -37,7 +37,7 @@
 #include "sequence.h"
 #include "do_set.h"
 #include "parse.h"
-#include "walk_tree.h"
+#include "old_walk_tree.h"
 
 
 static acl_entry_t

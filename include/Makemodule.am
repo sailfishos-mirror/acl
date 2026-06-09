@@ -4,8 +4,8 @@ noinst_HEADERS += \
 	include/acl_ea.h \
 	include/fchmodat_compat.h \
 	include/misc.h \
+	include/old_walk_tree.h \
 	include/visibility-hidden.h \
-	include/walk_tree.h \
 	include/xattrat.h \
 	include/xattrat_compat.h
 

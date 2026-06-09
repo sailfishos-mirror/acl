@@ -33,7 +33,7 @@
 #include "sequence.h"
 #include "parse.h"
 #include "do_set.h"
-#include "walk_tree.h"
+#include "old_walk_tree.h"
 
 #define POSIXLY_CORRECT_STR "POSIXLY_CORRECT"
 
@@ -310,14 +310,14 @@ static int next_file(const char *arg, seq_t seq)
 
 	if (strcmp(arg, "-") == 0) {
 		while ((line = __acl_next_line(stdin)))
-			errors = walk_tree(line, walk_flags, 0, do_set, &args);
+			errors = old_walk_tree(line, walk_flags, 0, do_set, &args);
 		if (!feof(stdin)) {
 			fprintf(stderr, _("%s: Standard input: %s\n"),
 				progname, strerror(errno));
 			errors = 1;
 		}
 	} else {
-		errors = walk_tree(arg, walk_flags, 0, do_set, &args);
+		errors = old_walk_tree(arg, walk_flags, 0, do_set, &args);
 	}
 	return errors ? 1 : 0;
 }

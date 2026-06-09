@@ -1,5 +1,5 @@
 /*
-  File: walk_tree.h
+  File: old_walk_tree.h
 
   Copyright (C) 2007 Andreas Gruenbacher <a.gruenbacher@computer.org>
 
@@ -35,7 +35,7 @@ struct stat;
 
 #define walk_tree __acl_walk_tree
 
-extern int walk_tree(const char *path, int walk_flags, unsigned int num,
+extern int old_walk_tree(const char *path, int walk_flags, unsigned int num,
 		     int (*func)(const char *, const struct stat *, int,
 				 void *), void *arg);
 

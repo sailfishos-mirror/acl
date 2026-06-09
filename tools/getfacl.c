@@ -37,7 +37,7 @@
 #include <getopt.h>
 #include "misc.h"
 #include "user_group.h"
-#include "walk_tree.h"
+#include "old_walk_tree.h"
 
 #define POSIXLY_CORRECT_STR "POSIXLY_CORRECT"
 
@@ -736,7 +736,7 @@ int main(int argc, char *argv[])
 				if (*line == '\0')
 					continue;
 
-				had_errors += walk_tree(line, walk_flags, 0,
+				had_errors += old_walk_tree(line, walk_flags, 0,
 							do_print, NULL);
 			}
 			if (!feof(stdin)) {
@@ -745,7 +745,7 @@ int main(int argc, char *argv[])
 				had_errors++;
 			}
 		} else
-			had_errors += walk_tree(argv[optind], walk_flags, 0,
+			had_errors += old_walk_tree(argv[optind], walk_flags, 0,
 						do_print, NULL);
 		optind++;
 	} while (optind < argc);
