@@ -30,7 +30,10 @@ acl_delete_entry(acl_t acl, acl_entry_t entry_d)
 	acl_entry_obj *entry_obj_p = ext2int(acl_entry, entry_d);
 	if (!acl_obj_p || !entry_obj_p)
 		return -1;
-
+	if (entry_obj_p->econtainer != acl_obj_p) {
+		errno = EINVAL;
+		return -1;
+	}
 
 	if (acl_obj_p->acurr == entry_obj_p)
 		acl_obj_p->acurr = acl_obj_p->acurr->eprev;
