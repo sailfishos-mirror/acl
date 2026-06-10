@@ -213,7 +213,9 @@ restore(
 		}
 
 		mask = S_ISUID | S_ISGID | S_ISVTX;
-		if (chmod_required || ((st.st_mode & mask) != (flags & mask))) {
+		if (!opt_test &&
+		    (chmod_required ||
+		     ((st.st_mode & mask) != (flags & mask)))) {
 			if (!args.mode)
 				args.mode = st.st_mode;
 			args.mode &= (S_IRWXU | S_IRWXG | S_IRWXO);
