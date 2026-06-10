@@ -27,8 +27,12 @@ int
 acl_delete_perm(acl_permset_t permset_d, acl_perm_t perm)
 {
 	acl_permset_obj *acl_permset_obj_p = ext2int(acl_permset, permset_d);
-	if (!acl_permset_obj_p || (perm & ~(ACL_READ|ACL_WRITE|ACL_EXECUTE)))
+	if (!acl_permset_obj_p)
+	       return -1;
+	if ((perm & ~(ACL_READ|ACL_WRITE|ACL_EXECUTE))) {
+		errno = EINVAL;
 		return -1;
+	}
 	acl_permset_obj_p->sperm &= ~perm;
 	return 0;
 }
