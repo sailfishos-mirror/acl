@@ -25,23 +25,44 @@
 #include <pwd.h>
 #include <grp.h>
 #include <unistd.h>
+#include <ctype.h>
 #include "libacl.h"
 #include "misc.h"
 
 static int
 get_id(const char *token, id_t *id_p)
 {
+	int negative = 0;
+	unsigned long l;
 	char *ep;
-	long l;
-	l = strtol(token, &ep, 0);
+
+	while (isspace(*token))
+		token++;
+	if (*token == '-') {
+		negative = 1;
+		token++;
+	}
+	if (!*token) {
+		errno = EINVAL;
+		return -1;
+	}
+	l = strtoul(token, &ep, 0);
 	if (*ep != '\0')
 		return -1;
-	if (l < 0) {
+	if (negative) {
 		/*
 		  Negative values are interpreted as 16-bit numbers
 		  so that id -2 maps to 65534 (nobody/nogroup), etc.
 		*/
-		l &= 0xFFFF;
+		if (l > 0x7FFF) {
+			errno = ERANGE;
+			return -1;
+		}
+		l = -l & 0xFFFF;
+	}
+	if ((uid_t)(gid_t)l != l || l == ACL_UNDEFINED_ID) {
+		errno = ERANGE;
+		return -1;
 	}
 	*id_p = l;
 	return 0;
