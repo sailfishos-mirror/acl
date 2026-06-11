@@ -1,20 +1,22 @@
+TEST_EXTENSIONS = .run
+
 XFAIL_TESTS = \
-	test/nfs/nfsacl.test \
-	test/nfs/nfs-dir.test
+	test/nfs/nfsacl.run \
+	test/nfs/nfs-dir.run
 TESTS = \
-	test/cp.test \
-	test/getfacl-lfs.test \
-	test/getfacl-noacl.test \
-	test/getfacl-recursive.test \
-	test/malformed-restore.test \
-	test/misc.test \
-	test/sbits-restore.test \
-	test/setfacl-X.test \
-	test/utf8-filenames.test \
-	test/root/getfacl.test \
-	test/root/permissions.test \
-	test/root/restore.test \
-	test/root/setfacl.test \
+	test/cp.run \
+	test/getfacl-lfs.run \
+	test/getfacl-noacl.run \
+	test/getfacl-recursive.run \
+	test/malformed-restore.run \
+	test/misc.run \
+	test/sbits-restore.run \
+	test/setfacl-X.run \
+	test/utf8-filenames.run \
+	test/root/getfacl.run \
+	test/root/permissions.run \
+	test/root/restore.run \
+	test/root/setfacl.run \
 	$(XFAIL_TESTS)
 
 EXTRA_DIST += \
@@ -34,5 +36,7 @@ libtestlookup_la_CFLAGS = -DBASEDIR=\"$(abs_srcdir)\"
 libtestlookup_la_LDFLAGS = -rpath $(abs_builddir)
 
 # Make sure translations don't break tests when matching output.
-AM_TESTS_ENVIRONMENT = PATH="$(abs_top_builddir):$$PATH"; export LC_MESSAGES=C;
-TEST_LOG_COMPILER = $(srcdir)/test/runwrapper
+AM_TESTS_ENVIRONMENT = \
+	export LC_MESSAGES=C; \
+	PATH="$(abs_top_builddir):$$PATH";
+RUN_LOG_COMPILER = $(srcdir)/test/runwrapper
