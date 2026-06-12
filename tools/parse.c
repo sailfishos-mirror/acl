@@ -36,6 +36,12 @@
 #include "parse.h"
 #include "misc.h"
 
+#define SKIP_WS1(x) \
+	do { \
+		if (*(x)==' ' || *(x)=='\t' || *(x)=='\n' || *(x)=='\r') \
+			(x)++; \
+	} while (0)
+
 #define SKIP_WS(x) \
 	do {\
 		while (*(x)==' ' || *(x)=='\t' || *(x)=='\n' || *(x)=='\r') \
@@ -396,7 +402,7 @@ read_acl_comments(
 		SKIP_WS(cp);
 		if (strncmp(cp, "file:", 5) == 0) {
 			cp += 5;
-			SKIP_WS(cp);
+			SKIP_WS1(cp);
 			cp = __acl_unquote(cp);
 			
 			if (path_p) {
