@@ -3,6 +3,7 @@ noinst_HEADERS += \
 	include/acl.h \
 	include/acl_ea.h \
 	include/misc.h \
+	include/visibility-hidden.h \
 	include/walk_tree.h
 
 SUBST_INSTALL_HEADER = \
