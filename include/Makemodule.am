@@ -4,7 +4,8 @@ noinst_HEADERS += \
 	include/acl_ea.h \
 	include/misc.h \
 	include/visibility-hidden.h \
-	include/walk_tree.h
+	include/walk_tree.h \
+	include/xattrat.h
 
 SUBST_INSTALL_HEADER = \
 	subst_install_header() { \
