@@ -5,7 +5,8 @@ noinst_HEADERS += \
 	include/misc.h \
 	include/visibility-hidden.h \
 	include/walk_tree.h \
-	include/xattrat.h
+	include/xattrat.h \
+	include/xattrat_compat.h
 
 SUBST_INSTALL_HEADER = \
 	subst_install_header() { \

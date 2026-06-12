@@ -1,9 +1,17 @@
 noinst_LTLIBRARIES += libmisc.la
 
+noinst_HEADERS += \
+	libmisc/proc-self-fd.h
+
 libmisc_la_SOURCES = \
+	libmisc/getxattrat_compat.c \
 	libmisc/high_water_alloc.c \
+	libmisc/listxattrat_compat.c \
 	libmisc/next_line.c \
+	libmisc/proc-self-fd.c \
 	libmisc/quote.c \
+	libmisc/removexattrat_compat.c \
+	libmisc/setxattrat_compat.c \
 	libmisc/uid_gid_lookup.c \
 	libmisc/unquote.c \
 	libmisc/walk_tree.c
