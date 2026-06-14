@@ -459,7 +459,7 @@ Dangling symlink test https://savannah.nongnu.org/bugs/?28131
 Handle escaped literal backslash followed by numeric username
 	$ mkdir d
 	$ touch d/f
-	$ setfacl -m u:domain\\\\12345:rw- d/f
+	$ setfacl -m 'u:domain\\\\12345:rw-' d/f
 	$ getfacl --omit-header d/f
 	> user::rw-
 	> user:domain\\12345:rw-
@@ -472,7 +472,7 @@ Handle escaped literal backslash followed by numeric username
 Handle escaped literal backslash
 	$ mkdir d
 	$ touch d/f
-	$ setfacl -m u:domain\\\\user:rw- d/f
+	$ setfacl -m 'u:domain\\\\user:rw-' d/f
 	$ getfacl --omit-header d/f
 	> user::rw-
 	> user:domain\\user:rw-
