@@ -20,9 +20,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <errno.h>
 #include "libacl.h"
+#include "fchmodat_compat.h"
 
 #define ERROR_CONTEXT_MACROS
 #include <attr/error_context.h>
@@ -38,7 +40,7 @@ set_acl_fd (char const *path, int fd, mode_t mode, struct error_context *ctx)
 		return -1;
 	}
 
-	if (acl_set_fd (fd, acl) != 0) {
+	if (acl_set_file_at (fd, "", AT_EMPTY_PATH, ACL_TYPE_ACCESS, acl) != 0) {
 		ret = -1;
 		if (errno == ENOTSUP || errno == ENOSYS) {
 			(void) acl_free (acl);
@@ -53,7 +55,7 @@ set_acl_fd (char const *path, int fd, mode_t mode, struct error_context *ctx)
 	return ret;
 
 chmod_only:
-	ret = fchmod (fd, mode);
+	ret = fchmodat (fd, "", mode, AT_EMPTY_PATH);
 	if (ret != 0) {
 		const char *qpath = quote (ctx, path);
 		error (ctx, _("setting permissions for %s"), qpath);
@@ -81,7 +83,7 @@ perm_copy_fd (const char *src_path, int src_fd,
 		quote_free (ctx, qpath);
 		return -1;
 	}
-	acl = acl_get_fd (src_fd);
+	acl = acl_get_file_at (src_fd, "", AT_EMPTY_PATH, ACL_TYPE_ACCESS);
 	if (acl == NULL) {
 		ret = -1;
 		if (errno == ENOSYS || errno == ENOTSUP)
@@ -94,10 +96,10 @@ perm_copy_fd (const char *src_path, int src_fd,
 		return ret;
 	}
 
-	if (acl_set_fd (dst_fd, acl) != 0) {
+	if (acl_set_file_at (dst_fd, "", AT_EMPTY_PATH, ACL_TYPE_ACCESS, acl) != 0) {
 		int saved_errno = errno;
 		__acl_apply_mask_to_mode(&st.st_mode, acl);
-		ret = fchmod (dst_fd, st.st_mode);
+		ret = fchmodat (dst_fd, "", st.st_mode, AT_EMPTY_PATH);
 		if ((errno != ENOSYS && errno != ENOTSUP) ||
 		    acl_entries (acl) != 3) {
 			const char *qpath = quote (ctx, dst_path);
@@ -108,6 +110,26 @@ perm_copy_fd (const char *src_path, int src_fd,
 		}
 	}
 	(void) acl_free (acl);
+
+	if (ret == 0 && S_ISDIR (st.st_mode)) {
+		acl = acl_get_file_at (src_fd, "", AT_EMPTY_PATH, ACL_TYPE_DEFAULT);
+		if (acl == NULL) {
+			const char *qpath = quote (ctx, src_path);
+			error (ctx, "%s", qpath);
+			quote_free (ctx, qpath);
+			return -1;
+		}
+		if (acl_entries(acl) == 0)
+			ret = acl_delete_def_file_at(dst_fd, "", AT_EMPTY_PATH);
+		else
+			ret = acl_set_file_at (dst_fd, "", AT_EMPTY_PATH, ACL_TYPE_DEFAULT, acl);
+		if (ret != 0) {
+			const char *qpath = quote (ctx, dst_path);
+			error (ctx, _("preserving permissions for %s"), qpath);
+			quote_free (ctx, qpath);
+		}
+		(void) acl_free(acl);
+	}
 	return ret;
 }
 
