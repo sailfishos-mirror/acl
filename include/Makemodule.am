@@ -2,6 +2,7 @@ noinst_HEADERS += \
 	include/libacl.h \
 	include/acl.h \
 	include/acl_ea.h \
+	include/fchmodat_compat.h \
 	include/misc.h \
 	include/visibility-hidden.h \
 	include/walk_tree.h \

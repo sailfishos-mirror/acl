@@ -4,6 +4,7 @@ noinst_HEADERS += \
 	libmisc/proc-self-fd.h
 
 libmisc_la_SOURCES = \
+	libmisc/fchmodat_compat.c \
 	libmisc/getxattrat_compat.c \
 	libmisc/high_water_alloc.c \
 	libmisc/listxattrat_compat.c \
