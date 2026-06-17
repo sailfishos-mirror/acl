@@ -53,13 +53,18 @@ The
 .Fn acl_extended_file
 function returns
 .Li 1
-if the file or directory referred to by the argument
+if the file or directory whose pathname is given in
 .Va path_p
 is associated with an extended access ACL, or if the directory referred to by
 .Va path_p
 is associated with a default ACL. The function returns
 .Li 0
 if the file has neither an extended access ACL nor a default ACL.
+If
+.Va path_p
+is a symbolic link,
+.Fn acl_extended_file
+returns information about the file or directory the link refers to.
 .Pp
 An extended ACL is an ACL that contains entries other than the three
 required entries of tag types ACL_USER_OBJ, ACL_GROUP_OBJ and ACL_OTHER.

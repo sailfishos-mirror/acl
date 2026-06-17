@@ -46,8 +46,13 @@ Linux Access Control Lists library (libacl, \-lacl).
 .Sh DESCRIPTION
 The
 .Fn acl_delete_def_file
-function deletes a default ACL from the directory whose pathname is pointed to by the argument
+function deletes a default ACL from the directory whose pathname is given in
 .Va path_p .
+If
+.Va path_p
+is a symbolic link,
+.Fn acl_delete_def_file
+operates on the directory the link refers to.
 .Pp
 The effective user ID of the process must match the owner of the file or
 directory or the process must have the CAP_FOWNER capability for the

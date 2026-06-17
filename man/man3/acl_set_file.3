@@ -52,8 +52,13 @@ The
 .Fn acl_set_file
 function associates an access ACL with a file or directory, or
 associates a default ACL with a directory. The pathname for the file or
-directory is pointed to by the argument
+directory is given in the argument
 .Va path_p .
+If
+.Va path_p
+is a symbolic link,
+.Fn acl_set_file
+operates on the file or directory the link refers to.
 .Pp
 The effective user ID of the process must match the owner of the file or
 directory or the process must have the CAP_FOWNER capability for the

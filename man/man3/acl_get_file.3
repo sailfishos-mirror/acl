@@ -48,8 +48,16 @@ Linux Access Control Lists library (libacl, \-lacl).
 .Sh DESCRIPTION
 The
 .Fn acl_get_file
-function retrieves the access ACL associated with a file or directory, or the default ACL associated with a directory. The pathname for the file or directory is pointed to by the argument
+function retrieves the access ACL associated with a file or directory, or the
+default ACL associated with a directory. The pathname for the file or directory
+is given in the argument
 .Va path_p .
+If
+.Va path_p
+is a symbolic link,
+.Fn acl_get_file
+returns information about the file or directory the link refers to.
+.Pp
 The ACL is placed into working storage and
 .Fn acl_get_file
 returns a pointer to that storage.
