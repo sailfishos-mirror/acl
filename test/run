@@ -199,8 +199,9 @@ sub su($) {
   my ($login, $pass, $uid, $gid) = getpwnam($user)
     or return [ "su: user $user does not exist\n" ];
   my @groups = ();
-  my $fh = new FileHandle("/etc/group")
-    or return [ "opening /etc/group: $!\n" ];
+  my $groupfile = ($ENV{TESTLOOKUP} || '/etc') . '/group';
+  my $fh = new FileHandle($groupfile)
+    or return [ "opening $groupfile: $!\n" ];
   while (<$fh>) {
     chomp;
     my ($group, $passwd, $gid, $users) = split /:/;

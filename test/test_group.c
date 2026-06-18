@@ -8,9 +8,6 @@
 #include <limits.h>
 #include <grp.h>
 
-#define TEST_GROUP "test/test.group"
-static char grfile[] = BASEDIR "/" TEST_GROUP;
-
 #define ALIGN_MASK(x, mask)    (((x) + (mask)) & ~(mask))
 #define ALIGN(x, a)            ALIGN_MASK(x, (typeof(x))(a) - 1)
 
@@ -76,8 +73,19 @@ static int test_getgr_match(struct group *grp, char *buf, size_t buflen,
 			    int (*match)(const struct group *, const void *),
 			    const void *data)
 {
+	static char *grfile;
 	FILE *file;
 	struct group *_result;
+
+	if (!grfile) {
+		const char *testlookup = getenv("TESTLOOKUP");
+		if (!testlookup)
+			testlookup = "/etc";
+		if (asprintf(&grfile, "%s/group", testlookup) == -1) {
+			fprintf(stderr, "%s: %s\n", __func__, strerror(errno));
+			return -1;
+		}
+	}
 
 	*result = NULL;
 

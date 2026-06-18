@@ -8,9 +8,6 @@
 #include <limits.h>
 #include <pwd.h>
 
-#define TEST_PASSWD "test/test.passwd"
-static char pwfile[] = BASEDIR "/" TEST_PASSWD;
-
 #define ALIGN_MASK(x, mask)    (((x) + (mask)) & ~(mask))
 #define ALIGN(x, a)            ALIGN_MASK(x, (typeof(x))(a) - 1)
 
@@ -70,11 +67,21 @@ static int test_getpw_match(struct passwd *pwd, char *buf, size_t buflen,
 			    int (*match)(const struct passwd *, const void *),
 			    const void *data)
 {
+	static char *pwfile;
 	FILE *file;
 	struct passwd *_result;
 
 	*result = NULL;
 
+	if (!pwfile) {
+		const char *testlookup = getenv("TESTLOOKUP");
+		if (!testlookup)
+			testlookup = "/etc";
+		if (asprintf(&pwfile, "%s/passwd", testlookup) == -1) {
+			fprintf(stderr, "%s: %s\n", __func__, strerror(errno));
+			return -1;
+		}
+	}
 	file = fopen(pwfile, "r");
 	if (!file) {
 		fprintf(stderr, "Failed to open %s\n", pwfile);
