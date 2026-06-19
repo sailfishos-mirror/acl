@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: acl-2.1.2\n"
 "Report-Msgid-Bugs-To: acl-devel@nongnu.org\n"
-"POT-Creation-Date: 2021-03-02 11:07+0100\n"
+"POT-Creation-Date: 2026-06-25 19:10+0200\n"
 "PO-Revision-Date: 2003-01-23 00:08GMT\n"
 "Last-Translator: Andreas Grünbacher <a.gruenbacher@computer.org>\n"
 "Language-Team:  <de@li.org>\n"
@@ -28,187 +28,290 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libacl/acl_error.c:33
+#: libacl/acl_error.c:32
 msgid "Multiple entries of same type"
 msgstr "Mehrere Einträge gleichen Typs"
 
-#: libacl/acl_error.c:35
+#: libacl/acl_error.c:34
 msgid "Duplicate entries"
 msgstr "Doppelte Einträge"
 
-#: libacl/acl_error.c:37
+#: libacl/acl_error.c:36
 msgid "Missing or wrong entry"
 msgstr "Fehlender oder falscher Eintrag"
 
-#: libacl/acl_error.c:39
+#: libacl/acl_error.c:38
 msgid "Invalid entry type"
 msgstr "Ungültiger Eintragstyp"
 
-#: libacl/perm_copy_fd.c:124 libacl/perm_copy_fd.c:136
-#: libacl/perm_copy_fd.c:198 libacl/perm_copy_file.c:124
-#: libacl/perm_copy_file.c:139 libacl/perm_copy_file.c:150
-#: libacl/perm_copy_file.c:235
+#: libacl/perm_copy_fd.c:50 libacl/perm_copy_fd.c:61 libacl/perm_copy_file.c:48
+#: libacl/perm_copy_file.c:57 libacl/perm_copy_file.c:67
 #, c-format
 msgid "setting permissions for %s"
 msgstr "Setzen der Zugriffsrechte für %s"
 
-#: libacl/perm_copy_fd.c:186 libacl/perm_copy_file.c:199
-#: libacl/perm_copy_file.c:224
+#: libacl/perm_copy_fd.c:107 libacl/perm_copy_fd.c:128
+#: libacl/perm_copy_file.c:112 libacl/perm_copy_file.c:133
 #, c-format
 msgid "preserving permissions for %s"
 msgstr "Erhalten der Zugriffsrechte für %s"
 
-#: tools/chacl.c:46
+#: tools/chacl.c:49
 #, c-format
 msgid "Usage:\n"
 msgstr "Verwendung:\n"
 
-#: tools/chacl.c:47
+#: tools/chacl.c:50
 #, c-format
 msgid "\t%s acl pathname...\n"
 msgstr "\t%s acl pfadname...\n"
 
-#: tools/chacl.c:48
+#: tools/chacl.c:51
 #, c-format
 msgid "\t%s -b acl dacl pathname...\n"
 msgstr "\t%s -b acl dacl pfadname...\n"
 
-#: tools/chacl.c:49
+#: tools/chacl.c:52
 #, c-format
 msgid "\t%s -d dacl pathname...\n"
 msgstr "\t%s -d dacl pfadname...\n"
 
-#: tools/chacl.c:50
+#: tools/chacl.c:53
 #, c-format
 msgid "\t%s -R pathname...\n"
 msgstr "\t%s -R pfadname...\n"
 
-#: tools/chacl.c:51
+#: tools/chacl.c:54
 #, c-format
 msgid "\t%s -D pathname...\n"
 msgstr "\t%s -D pfadname...\n"
 
-#: tools/chacl.c:52
+#: tools/chacl.c:55
 #, c-format
 msgid "\t%s -B pathname...\n"
 msgstr "\t%s -B pfadname...\n"
 
-#: tools/chacl.c:53
+#: tools/chacl.c:56
 #, c-format
 msgid "\t%s -l pathname...\t[not IRIX compatible]\n"
 msgstr "\t%s -l pfadname...\t[nicht IRIX-kompatibel]\n"
 
-#: tools/chacl.c:55
+#: tools/chacl.c:58
 #, c-format
 msgid "\t%s -r pathname...\t[not IRIX compatible]\n"
 msgstr "\t%s -r pfadname...\t[nicht IRIX-kompatibel]\n"
 
-#: tools/chacl.c:146
+#: tools/chacl.c:149
 #, c-format
 msgid "%s: error removing access acl on \"%s\": %s\n"
 msgstr "%s: Fehler beim Entfernen der Zugriffs-ACL von \"%s\": %s\n"
 
-#: tools/chacl.c:153
+#: tools/chacl.c:156
 #, c-format
 msgid "%s: error removing default acl on \"%s\": %s\n"
 msgstr "%s: Fehler beim Entfernen der Vorgabe-ACL von \"%s\": %s\n"
 
-#: tools/chacl.c:172 tools/chacl.c:191
+#: tools/chacl.c:175 tools/chacl.c:194
 #, c-format
 msgid "%s: access ACL '%s': %s at entry %d\n"
 msgstr "%s: Zugriffs-ACL '%s': %s bei Eintrag %d\n"
 
-#: tools/chacl.c:259
+#: tools/chacl.c:266
 #, c-format
 msgid "%s: cannot get access ACL on '%s': %s\n"
 msgstr "%s: Kann Zugriffs-ACL von '%s' nicht ermitteln: %s\n"
 
-#: tools/chacl.c:265
+#: tools/chacl.c:272
 #, c-format
 msgid "%s: cannot get default ACL on '%s': %s\n"
 msgstr "%s: Kann Vorgabe-ACL von '%s' nicht ermitteln: %s\n"
 
-#: tools/chacl.c:271
+#: tools/chacl.c:278
 #, c-format
 msgid "%s: cannot get access ACL text on '%s': %s\n"
 msgstr "%s: Kann den Text zur Zugriffs-ACL von '%s' nicht ermitteln: %s\n"
 
-#: tools/chacl.c:278
+#: tools/chacl.c:285
 #, c-format
 msgid "%s: cannot get default ACL text on '%s': %s\n"
 msgstr "%s: Kann den Text zur Vorgabe-ACL von '%s' nicht ermitteln: %s\n"
 
-#: tools/chacl.c:304
-#, c-format
-msgid "%s: cannot set access acl on \"%s\": %s\n"
-msgstr "%s: Kann die Zugriffs-ACL von \"%s\" nicht setzen: %s\n"
-
-#: tools/chacl.c:310
-#, c-format
-msgid "%s: cannot set default acl on \"%s\": %s\n"
-msgstr "%s: Kann die Vorgabe-ACL von \"%s\" nicht setzen: %s\n"
-
-#: tools/chacl.c:328
-#, c-format
-msgid "%s: opendir failed: %s\n"
-msgstr "%s: opendir ist fehlgeschlagen: %s\n"
-
-#: tools/chacl.c:342
+#: tools/chacl.c:313 tools/chacl.c:382
 #, c-format
 msgid "%s: malloc failed: %s\n"
 msgstr "%s: malloc ist fehlgeschlagen: %s\n"
 
-#: tools/do_set.c:410
+#: tools/chacl.c:330
+#, fuzzy, c-format
+#| msgid "%s: cannot set access acl on \"%s\": %s\n"
+msgid "%s: cannot set access acl on \"%s\": %s\n"
+msgstr "%s: Kann die Zugriffs-ACL von \"%s\" nicht setzen: %s\n"
+
+#: tools/chacl.c:344
+#, fuzzy, c-format
+#| msgid "%s: cannot set default acl on \"%s\": %s\n"
+msgid "%s: cannot set default acl on \"%s\": %s\n"
+msgstr "%s: Kann die Vorgabe-ACL von \"%s\" nicht setzen: %s\n"
+
+#: tools/chacl.c:368
+#, fuzzy, c-format
+#| msgid "%s: opendir failed: %s\n"
+msgid "%s: openat failed: %s\n"
+msgstr "%s: opendir ist fehlgeschlagen: %s\n"
+
+#: tools/chacl.c:375
+#, c-format
+msgid "%s: opendir failed: %s\n"
+msgstr "%s: opendir ist fehlgeschlagen: %s\n"
+
+#: tools/do_set.c:435
 #, c-format
 msgid "%s: %s: Malformed access ACL `%s': %s at entry %d\n"
 msgstr "%s: %s: Ungültige Zugriffs-ACL `%s': %s bei Eintrag %d\n"
 
-#: tools/do_set.c:437
+#: tools/do_set.c:463
 #, c-format
 msgid "%s: %s: Malformed default ACL `%s': %s at entry %d\n"
 msgstr "%s: %s: Ungültige Vorgabe-ACL `%s': %s bei Eintrag %d\n"
 
-#: tools/do_set.c:508
+#: tools/do_set.c:533
 #, c-format
 msgid "%s: %s: Only directories can have default ACLs\n"
 msgstr "%s: %s: Nur Verzeichnisse können Vorgabe-ACLs haben\n"
 
-#: tools/setfacl.c:147
+#: tools/getfacl.c:532
+#, c-format
+msgid "%s: Removing leading '/' from absolute path names\n"
+msgstr "%s: Entferne führende '/' von absoluten Pfadnamen\n"
+
+#: tools/getfacl.c:598
+#, c-format
+msgid "%s %s -- get file access control lists\n"
+msgstr "%s %s -- Datei-Zugriffskontrollisten (ACLs) anzeigen\n"
+
+#: tools/getfacl.c:600 tools/getfacl.c:785
+#, c-format
+msgid "Usage: %s [-%s] file ...\n"
+msgstr "Aufruf: %s [-%s] datei ...\n"
+
+#: tools/getfacl.c:606
+#, c-format
+msgid "  -d, --default           display the default access control list\n"
+msgstr "  -d, --default            Die Vorgabe-ACL ausgeben\n"
+
+#: tools/getfacl.c:610
+#, fuzzy, c-format
+#| msgid ""
+#| "  -a, --access            display the file access control list only\n"
+#| "  -d, --default           display the default access control list only\n"
+#| "  -c, --omit-header       do not display the comment header\n"
+#| "  -e, --all-effective     print all effective rights\n"
+#| "  -E, --no-effective      print no effective rights\n"
+#| "  -s, --skip-base         skip files that only have the base entries\n"
+#| "  -R, --recursive         recurse into subdirectories\n"
+#| "  -L, --logical           logical walk, follow symbolic links\n"
+#| "  -P, --physical          physical walk, do not follow symbolic links\n"
+#| "  -t, --tabular           use tabular output format\n"
+#| "  -n, --numeric           print numeric user/group identifiers\n"
+#| "      --one-file-system   skip files on different filesystems\n"
+#| "  -p, --absolute-names    don't strip leading '/' in pathnames\n"
+msgid ""
+"  -a, --access            display the file access control list only\n"
+"  -d, --default           display the default access control list only\n"
+"  -c, --omit-header       do not display the comment header\n"
+"  -e, --all-effective     print all effective rights\n"
+"  -E, --no-effective      print no effective rights\n"
+"  -s, --skip-base         skip files that only have the base entries\n"
+"  -R, --recursive         recurse into subdirectories\n"
+"  -L, --logical           logical walk, follow symbolic links\n"
+"  -P, --physical          physical walk, do not follow symbolic links\n"
+"  -t, --tabular           use tabular output format\n"
+"  -n, --numeric           print numeric user/group identifiers\n"
+"      --one-file-system   don't descend into directories on other "
+"filesystems\n"
+"  -p, --absolute-names    don't strip leading '/' in pathnames\n"
+msgstr ""
+"  -a, --access             Nur die Zugriffs-ACL ausgeben\n"
+"  -d, --default            Nur die Vorgabe-ACL ausgeben\n"
+"  -c, --omit-header        Keine Datei-Kommentare ausgeben\n"
+"  -e, --all-effective      Alle Effektivrechte-Kommentare ausgeben\n"
+"  -E, --no-effective       Keine Effektivrechte-Kommentare ausgeben\n"
+"  -s, --skip-base          Überspringe Dateien mit Basiseinträgen\n"
+"  -R, --recursive          In Unterverzeichnisse wechseln\n"
+"  -L, --logical            Symbolische Links verfolgen\n"
+"  -P, --physical           Symbolische Links nicht verfolgen\n"
+"  -t, --tabular            Tabellarisches Ausgabeformat verwenden\n"
+"  -n, --numeric            Numerische Benutzer-/Gruppenkennungen ausgeben\n"
+"      --one-file-system    Dateien auf anderen Dateisystemen überspringen\n"
+"  -p, --absolute-names     Führende '/' in Pfadnamen nicht entfernen\n"
+
+#: tools/getfacl.c:626 tools/setfacl.c:385
+#, c-format
+msgid ""
+"  -v, --version           print version and exit\n"
+"  -h, --help              this help text\n"
+msgstr ""
+"  -v, --version            Die Version ausgeben und beenden\n"
+"  -h, --help               Diese Hilfe\n"
+
+#: tools/getfacl.c:772 tools/setfacl.c:402
+#, c-format
+msgid "%s: Standard input: %s\n"
+msgstr "%s: Standardeingabe: %s\n"
+
+#: tools/getfacl.c:787 tools/setfacl.c:798
+#, c-format
+msgid "Try `%s --help' for more information.\n"
+msgstr "Weiterführende Informationen mit `%s --help'.\n"
+
+#: tools/setfacl.c:155
 #, c-format
 msgid "%s: %s: No filename found in line %d, aborting\n"
 msgstr "%s: %s: Kein Dateiname in Zeile %d gefunden; Abbruch\n"
 
-#: tools/setfacl.c:152
+#: tools/setfacl.c:160
 #, c-format
 msgid "%s: No filename found in line %d of standard input, aborting\n"
 msgstr "%s: Kein Dateiname in Zeile %d der Standardeingabe gefunden; Abbruch\n"
 
-#: tools/setfacl.c:173
+#: tools/setfacl.c:181
 #, c-format
 msgid "%s: %s: %s in line %d\n"
 msgstr "%s: %s: %s in Zeile %d\n"
 
-#: tools/setfacl.c:205
+#: tools/setfacl.c:192
+#, c-format
+msgid ""
+"Warning: option --restore=file is unsafe without option -P (--physical) as "
+"it traverses symbolic links in pathnames\n"
+msgstr ""
+
+#: tools/setfacl.c:228
+#, c-format
+msgid "%s: lookup of directory %s without following symlinks: %s\n"
+msgstr ""
+
+#: tools/setfacl.c:274
 #, c-format
 msgid "%s: %s: Cannot change owner/group: %s\n"
 msgstr "%s: %s: Kann Besitzer/Gruppe nicht ändern: %s\n"
 
-#: tools/setfacl.c:224
+#: tools/setfacl.c:296
 #, c-format
 msgid "%s: %s: Cannot change mode: %s\n"
 msgstr "%s: %s: Kann Modus nicht ändern: %s\n"
 
-#: tools/setfacl.c:266
+#: tools/setfacl.c:346
 #, c-format
 msgid "%s %s -- set file access control lists\n"
 msgstr "%s %s -- Datei-Zugriffskontrollisten (ACLs) ändern\n"
 
-#: tools/setfacl.c:268 tools/setfacl.c:653
+#: tools/setfacl.c:348 tools/setfacl.c:796
 #, c-format
 msgid "Usage: %s %s\n"
 msgstr "Verwendung: %s %s\n"
 
-#: tools/setfacl.c:271
+#: tools/setfacl.c:357
 #, c-format
 msgid ""
 "  -m, --modify=acl        modify the current ACL(s) of file(s)\n"
@@ -225,7 +328,7 @@ msgstr ""
 "  -b, --remove-all         Alle erweiterten ACL-Einträge entfernen\n"
 "  -k, --remove-default     Vorgabe-ACL entfernen\n"
 
-#: tools/setfacl.c:280
+#: tools/setfacl.c:366
 #, c-format
 msgid ""
 "      --set=acl           set the ACL of file(s), replacing the current ACL\n"
@@ -236,7 +339,7 @@ msgstr ""
 "      --set-file=datei     Lies die ACL-Einträge aus datei\n"
 "      --mask               Effektive Rechte nicht neu berechnen\n"
 
-#: tools/setfacl.c:286
+#: tools/setfacl.c:372
 #, c-format
 msgid ""
 "  -n, --no-mask           don't recalculate the effective rights mask\n"
@@ -245,7 +348,7 @@ msgstr ""
 "  -n, --no-mask            Effektive Rechte nicht neu berechnen\n"
 "  -d, --default            Bearbeite die Vorgabe-ACL\n"
 
-#: tools/setfacl.c:291
+#: tools/setfacl.c:377
 #, c-format
 msgid ""
 "  -R, --recursive         recurse into subdirectories\n"
@@ -260,92 +363,32 @@ msgstr ""
 "      --restore=datei      ACLs wiederherstellen (Umkehr von `getfacl -R')\n"
 "      --test               Testmodus (ACLs werden nicht verändert)\n"
 
-#: tools/setfacl.c:299 tools/getfacl.c:597
-#, c-format
-msgid ""
-"  -v, --version           print version and exit\n"
-"  -h, --help              this help text\n"
-msgstr ""
-"  -v, --version            Die Version ausgeben und beenden\n"
-"  -h, --help               Diese Hilfe\n"
-
-#: tools/setfacl.c:316 tools/getfacl.c:743
-#, c-format
-msgid "%s: Standard input: %s\n"
-msgstr "%s: Standardeingabe: %s\n"
-
-#: tools/setfacl.c:452
+#: tools/setfacl.c:559
 #, c-format
 msgid "%s: Option -%c incomplete\n"
 msgstr "%s: Option -%c unvollständig\n"
 
-#: tools/setfacl.c:457
+#: tools/setfacl.c:564
 #, c-format
 msgid "%s: Option -%c: %s near character %d\n"
 msgstr "%s: Option -%c: %s bei Zeichen %d\n"
 
-#: tools/setfacl.c:533
+#: tools/setfacl.c:643
 #, c-format
 msgid "%s: %s in line %d of file %s\n"
 msgstr "%s: %s in Zeile %d der Datei %s\n"
 
-#: tools/setfacl.c:541
+#: tools/setfacl.c:651
 #, c-format
 msgid "%s: %s in line %d of standard input\n"
 msgstr "%s: %s in Zeile %d der Standardeingabe\n"
 
-#: tools/setfacl.c:655 tools/getfacl.c:758
-#, c-format
-msgid "Try `%s --help' for more information.\n"
-msgstr "Weiterführende Informationen mit `%s --help'.\n"
+#, fuzzy, c-format
+#~| msgid "Usage: %s %s\n"
+#~ msgid "%s: %s\n"
+#~ msgstr "Verwendung: %s %s\n"
 
-#: tools/getfacl.c:498
-#, c-format
-msgid "%s: Removing leading '/' from absolute path names\n"
-msgstr "%s: Entferne führende '/' von absoluten Pfadnamen\n"
-
-#: tools/getfacl.c:569
-#, c-format
-msgid "%s %s -- get file access control lists\n"
-msgstr "%s %s -- Datei-Zugriffskontrollisten (ACLs) anzeigen\n"
-
-#: tools/getfacl.c:571 tools/getfacl.c:756
-#, c-format
-msgid "Usage: %s [-%s] file ...\n"
-msgstr "Aufruf: %s [-%s] datei ...\n"
-
-#: tools/getfacl.c:577
-#, c-format
-msgid "  -d, --default           display the default access control list\n"
-msgstr "  -d, --default            Die Vorgabe-ACL ausgeben\n"
-
-#: tools/getfacl.c:581
-#, c-format
-msgid ""
-"  -a, --access            display the file access control list only\n"
-"  -d, --default           display the default access control list only\n"
-"  -c, --omit-header       do not display the comment header\n"
-"  -e, --all-effective     print all effective rights\n"
-"  -E, --no-effective      print no effective rights\n"
-"  -s, --skip-base         skip files that only have the base entries\n"
-"  -R, --recursive         recurse into subdirectories\n"
-"  -L, --logical           logical walk, follow symbolic links\n"
-"  -P, --physical          physical walk, do not follow symbolic links\n"
-"  -t, --tabular           use tabular output format\n"
-"  -n, --numeric           print numeric user/group identifiers\n"
-"      --one-file-system   skip files on different filesystems\n"
-"  -p, --absolute-names    don't strip leading '/' in pathnames\n"
-msgstr ""
-"  -a, --access             Nur die Zugriffs-ACL ausgeben\n"
-"  -d, --default            Nur die Vorgabe-ACL ausgeben\n"
-"  -c, --omit-header        Keine Datei-Kommentare ausgeben\n"
-"  -e, --all-effective      Alle Effektivrechte-Kommentare ausgeben\n"
-"  -E, --no-effective       Keine Effektivrechte-Kommentare ausgeben\n"
-"  -s, --skip-base          Überspringe Dateien mit Basiseinträgen\n"
-"  -R, --recursive          In Unterverzeichnisse wechseln\n"
-"  -L, --logical            Symbolische Links verfolgen\n"
-"  -P, --physical           Symbolische Links nicht verfolgen\n"
-"  -t, --tabular            Tabellarisches Ausgabeformat verwenden\n"
-"  -n, --numeric            Numerische Benutzer-/Gruppenkennungen ausgeben\n"
-"      --one-file-system    Dateien auf anderen Dateisystemen überspringen\n"
-"  -p, --absolute-names     Führende '/' in Pfadnamen nicht entfernen\n"
+#, fuzzy, c-format
+#~| msgid "Usage: %s %s\n"
+#~ msgid "%s: %s: %s\n"
+#~ msgstr "Verwendung: %s %s\n"

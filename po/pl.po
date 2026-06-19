@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: acl-2.3.1\n"
 "Report-Msgid-Bugs-To: acl-devel@nongnu.org\n"
-"POT-Creation-Date: 2021-03-16 07:43+0100\n"
+"POT-Creation-Date: 2026-06-25 19:10+0200\n"
 "PO-Revision-Date: 2022-05-20 22:03+0200\n"
 "Last-Translator: Jakub Bogusz <qboosh@pld-linux.org>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
@@ -28,305 +28,194 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libacl/acl_error.c:33
+#: libacl/acl_error.c:32
 msgid "Multiple entries of same type"
 msgstr "Wiele pozycji tego samego typu"
 
-#: libacl/acl_error.c:35
+#: libacl/acl_error.c:34
 msgid "Duplicate entries"
 msgstr "Powtórzone pozycje"
 
-#: libacl/acl_error.c:37
+#: libacl/acl_error.c:36
 msgid "Missing or wrong entry"
 msgstr "Brakująca lub błędna pozycja"
 
-#: libacl/acl_error.c:39
+#: libacl/acl_error.c:38
 msgid "Invalid entry type"
 msgstr "Nieprawidłowy typ pozycji"
 
-#: libacl/perm_copy_fd.c:124 libacl/perm_copy_fd.c:136
-#: libacl/perm_copy_fd.c:198 libacl/perm_copy_file.c:124
-#: libacl/perm_copy_file.c:139 libacl/perm_copy_file.c:150
-#: libacl/perm_copy_file.c:235
+#: libacl/perm_copy_fd.c:50 libacl/perm_copy_fd.c:61 libacl/perm_copy_file.c:48
+#: libacl/perm_copy_file.c:57 libacl/perm_copy_file.c:67
 #, c-format
 msgid "setting permissions for %s"
 msgstr "ustawianie uprawnień dla %s"
 
-#: libacl/perm_copy_fd.c:186 libacl/perm_copy_file.c:199
-#: libacl/perm_copy_file.c:224
+#: libacl/perm_copy_fd.c:107 libacl/perm_copy_fd.c:128
+#: libacl/perm_copy_file.c:112 libacl/perm_copy_file.c:133
 #, c-format
 msgid "preserving permissions for %s"
 msgstr "zachowywanie uprawnień dla %s"
 
-#: tools/chacl.c:46
+#: tools/chacl.c:49
 #, c-format
 msgid "Usage:\n"
 msgstr "Składnia:\n"
 
-#: tools/chacl.c:47
+#: tools/chacl.c:50
 #, c-format
 msgid "\t%s acl pathname...\n"
 msgstr "\t%s acl ścieżka...\n"
 
-#: tools/chacl.c:48
+#: tools/chacl.c:51
 #, c-format
 msgid "\t%s -b acl dacl pathname...\n"
 msgstr "\t%s -b acl dacl ścieżka...\n"
 
-#: tools/chacl.c:49
+#: tools/chacl.c:52
 #, c-format
 msgid "\t%s -d dacl pathname...\n"
 msgstr "\t%s -d dacl ścieżka...\n"
 
-#: tools/chacl.c:50
+#: tools/chacl.c:53
 #, c-format
 msgid "\t%s -R pathname...\n"
 msgstr "\t%s -R ścieżka...\n"
 
-#: tools/chacl.c:51
+#: tools/chacl.c:54
 #, c-format
 msgid "\t%s -D pathname...\n"
 msgstr "\t%s -D ścieżka...\n"
 
-#: tools/chacl.c:52
+#: tools/chacl.c:55
 #, c-format
 msgid "\t%s -B pathname...\n"
 msgstr "\t%s -B ścieżka...\n"
 
-#: tools/chacl.c:53
+#: tools/chacl.c:56
 #, c-format
 msgid "\t%s -l pathname...\t[not IRIX compatible]\n"
 msgstr "\t%s -l ścieżka...\t[niekompatybilne z IRIX-em]\n"
 
-#: tools/chacl.c:55
+#: tools/chacl.c:58
 #, c-format
 msgid "\t%s -r pathname...\t[not IRIX compatible]\n"
 msgstr "\t%s -r ścieżka...\t[niekompatybilne z IRIX-em]\n"
 
-#: tools/chacl.c:146
+#: tools/chacl.c:149
 #, c-format
 msgid "%s: error removing access acl on \"%s\": %s\n"
 msgstr "%s: błąd przy usuwaniu dostępowego acl dla \"%s\": %s\n"
 
-#: tools/chacl.c:153
+#: tools/chacl.c:156
 #, c-format
 msgid "%s: error removing default acl on \"%s\": %s\n"
 msgstr "%s: błąd przy usuwaniu domyślnego acl dla \"%s\": %s\n"
 
-#: tools/chacl.c:172 tools/chacl.c:191
+#: tools/chacl.c:175 tools/chacl.c:194
 #, c-format
 msgid "%s: access ACL '%s': %s at entry %d\n"
 msgstr "%s: dostępowe ACL '%s': %s na pozycji %d\n"
 
-#: tools/chacl.c:259
+#: tools/chacl.c:266
 #, c-format
 msgid "%s: cannot get access ACL on '%s': %s\n"
 msgstr "%s: nie można odczytać dostępowego ACL dla '%s': %s\n"
 
-#: tools/chacl.c:265
+#: tools/chacl.c:272
 #, c-format
 msgid "%s: cannot get default ACL on '%s': %s\n"
 msgstr "%s: nie można odczytać domyślnego ACL dla '%s': %s\n"
 
-#: tools/chacl.c:271
+#: tools/chacl.c:278
 #, c-format
 msgid "%s: cannot get access ACL text on '%s': %s\n"
 msgstr "%s: nie można odczytać dostępowego tekstu ACL dla '%s': %s\n"
 
-#: tools/chacl.c:278
+#: tools/chacl.c:285
 #, c-format
 msgid "%s: cannot get default ACL text on '%s': %s\n"
 msgstr "%s: nie można odczytać domyślnego tekstu ACL dla '%s': %s\n"
 
-#: tools/chacl.c:304
-#, c-format
-msgid "%s: cannot set access acl on \"%s\": %s\n"
-msgstr "%s: nie można ustawić dostępowego acl dla \"%s\": %s\n"
-
-#: tools/chacl.c:310
-#, c-format
-msgid "%s: cannot set default acl on \"%s\": %s\n"
-msgstr "%s: nie można ustawić domyślnego acl dla \"%s\": %s\n"
-
-#: tools/chacl.c:328
-#, c-format
-msgid "%s: opendir failed: %s\n"
-msgstr "%s: opendir nie powiodło się: %s\n"
-
-#: tools/chacl.c:342
+#: tools/chacl.c:313 tools/chacl.c:382
 #, c-format
 msgid "%s: malloc failed: %s\n"
 msgstr "%s: malloc nie powiódł się: %s\n"
 
-#: tools/do_set.c:410
+#: tools/chacl.c:330
+#, fuzzy, c-format
+#| msgid "%s: cannot set access acl on \"%s\": %s\n"
+msgid "%s: cannot set access acl on \"%s\": %s\n"
+msgstr "%s: nie można ustawić dostępowego acl dla \"%s\": %s\n"
+
+#: tools/chacl.c:344
+#, fuzzy, c-format
+#| msgid "%s: cannot set default acl on \"%s\": %s\n"
+msgid "%s: cannot set default acl on \"%s\": %s\n"
+msgstr "%s: nie można ustawić domyślnego acl dla \"%s\": %s\n"
+
+#: tools/chacl.c:368
+#, fuzzy, c-format
+#| msgid "%s: opendir failed: %s\n"
+msgid "%s: openat failed: %s\n"
+msgstr "%s: opendir nie powiodło się: %s\n"
+
+#: tools/chacl.c:375
+#, c-format
+msgid "%s: opendir failed: %s\n"
+msgstr "%s: opendir nie powiodło się: %s\n"
+
+#: tools/do_set.c:435
 #, c-format
 msgid "%s: %s: Malformed access ACL `%s': %s at entry %d\n"
 msgstr "%s: %s: Źle sformułowane dostępowe ACL `%s': %s na pozycji %d\n"
 
-#: tools/do_set.c:437
+#: tools/do_set.c:463
 #, c-format
 msgid "%s: %s: Malformed default ACL `%s': %s at entry %d\n"
 msgstr "%s: %s: Źle sformułowane domyślne ACL `%s': %s na pozycji %d\n"
 
-#: tools/do_set.c:508
+#: tools/do_set.c:533
 #, c-format
 msgid "%s: %s: Only directories can have default ACLs\n"
 msgstr "%s: %s: Tylko katalogi mogą mieć domyślne ACL-e\n"
 
-#: tools/setfacl.c:147
-#, c-format
-msgid "%s: %s: No filename found in line %d, aborting\n"
-msgstr "%s: %s: Nie znaleziono nazwy pliku w linii %d, przerwanie pracy\n"
-
-#: tools/setfacl.c:152
-#, c-format
-msgid "%s: No filename found in line %d of standard input, aborting\n"
-msgstr ""
-"%s: Nie znaleziono nazwy pliku w linii %d standardowego wejścia, przerwanie "
-"pracy\n"
-
-#: tools/setfacl.c:173
-#, c-format
-msgid "%s: %s: %s in line %d\n"
-msgstr "%s: %s: %s w linii %d\n"
-
-#: tools/setfacl.c:205
-#, c-format
-msgid "%s: %s: Cannot change owner/group: %s\n"
-msgstr "%s: %s: Nie można zmienić właściciela/grupy: %s\n"
-
-#: tools/setfacl.c:224
-#, c-format
-msgid "%s: %s: Cannot change mode: %s\n"
-msgstr "%s: %s: Nie można zmienić uprawnień: %s\n"
-
-#: tools/setfacl.c:266
-#, c-format
-msgid "%s %s -- set file access control lists\n"
-msgstr "%s %s -- ustawianie list kontroli dostępu do plików (ACL-i)\n"
-
-#: tools/setfacl.c:268 tools/setfacl.c:653
-#, c-format
-msgid "Usage: %s %s\n"
-msgstr "Składnia: %s %s\n"
-
-#: tools/setfacl.c:271
-#, c-format
-msgid ""
-"  -m, --modify=acl        modify the current ACL(s) of file(s)\n"
-"  -M, --modify-file=file  read ACL entries to modify from file\n"
-"  -x, --remove=acl        remove entries from the ACL(s) of file(s)\n"
-"  -X, --remove-file=file  read ACL entries to remove from file\n"
-"  -b, --remove-all        remove all extended ACL entries\n"
-"  -k, --remove-default    remove the default ACL\n"
-msgstr ""
-"  -m, --modify=acl        zmiana aktualnego(ych) ACL(-i) pliku(ów)\n"
-"  -M, --modify-file=plik  odczyt z pliku pozycji ACL do zmodyfikowania\n"
-"  -x, --remove=acl        usunięcie wpisów z ACL(-i) pliku(ów)\n"
-"  -X, --remove-file=plik  odczyt z pliku pozycji ACL do usunięcia\n"
-"  -b, --remove-all        usunięcie wszystkich rozszerzonych pozycji ACL\n"
-"  -k, --remove-default    usunięcie domyślnego ACL\n"
-
-#: tools/setfacl.c:280
-#, c-format
-msgid ""
-"      --set=acl           set the ACL of file(s), replacing the current ACL\n"
-"      --set-file=file     read ACL entries to set from file\n"
-"      --mask              do recalculate the effective rights mask\n"
-msgstr ""
-"      --set=acl           ustawienie ACL pliku(ów), zastępując aktualne\n"
-"      --set-file=plik     odczytanie z pliku pozycji ACL do ustawienia\n"
-"      --mask              przeliczenie maski efektywnych uprawnień\n"
-
-#: tools/setfacl.c:286
-#, c-format
-msgid ""
-"  -n, --no-mask           don't recalculate the effective rights mask\n"
-"  -d, --default           operations apply to the default ACL\n"
-msgstr ""
-"  -n, --no-mask           nieprzeliczanie maski efektywnych uprawnień\n"
-"  -d, --default           wykonywanie operacji na domyślnym ACL\n"
-
-#: tools/setfacl.c:291
-#, c-format
-msgid ""
-"  -R, --recursive         recurse into subdirectories\n"
-"  -L, --logical           logical walk, follow symbolic links\n"
-"  -P, --physical          physical walk, do not follow symbolic links\n"
-"      --restore=file      restore ACLs (inverse of `getfacl -R')\n"
-"      --test              test mode (ACLs are not modified)\n"
-msgstr ""
-"  -R, --recursive         rekurencyjne wchodzenie do katalogów\n"
-"  -L, --logical           przechodzenie logiczne, podążanie za dowiązaniami\n"
-"                            symbolicznymi\n"
-"  -P, --physical          przechodzenie fizyczne, niepodążanie za "
-"dowiązaniami\n"
-"                            symbolicznymi\n"
-"      --restore=plik      odtworzenie ACL-i (odwrotność `getfacl -R')\n"
-"      --test              tryb testowy (ACL-e nie są modyfikowane)\n"
-
-#: tools/setfacl.c:299 tools/getfacl.c:597
-#, c-format
-msgid ""
-"  -v, --version           print version and exit\n"
-"  -h, --help              this help text\n"
-msgstr ""
-"  -v, --version           wyświetlenie informacji o wersji i zakończenie\n"
-"  -h, --help              ten tekst pomocy\n"
-
-#: tools/setfacl.c:316 tools/getfacl.c:743
-#, c-format
-msgid "%s: Standard input: %s\n"
-msgstr "%s: Standardowe wejście: %s\n"
-
-#: tools/setfacl.c:452
-#, c-format
-msgid "%s: Option -%c incomplete\n"
-msgstr "%s: Opcja -%c niekompletna\n"
-
-#: tools/setfacl.c:457
-#, c-format
-msgid "%s: Option -%c: %s near character %d\n"
-msgstr "%s: Opcja -%c: %s obok znaku %d\n"
-
-#: tools/setfacl.c:533
-#, c-format
-msgid "%s: %s in line %d of file %s\n"
-msgstr "%s: %s w linii %d pliku %s\n"
-
-#: tools/setfacl.c:541
-#, c-format
-msgid "%s: %s in line %d of standard input\n"
-msgstr "%s: %s w linii %d standardowego wejścia\n"
-
-#: tools/setfacl.c:655 tools/getfacl.c:758
-#, c-format
-msgid "Try `%s --help' for more information.\n"
-msgstr "`%s --help' wyświetli więcej informacji.\n"
-
-#: tools/getfacl.c:498
+#: tools/getfacl.c:532
 #, c-format
 msgid "%s: Removing leading '/' from absolute path names\n"
 msgstr "%s: Usunięcie wiodącego '/' ze ścieżek bezwzględnych\n"
 
-#: tools/getfacl.c:569
+#: tools/getfacl.c:598
 #, c-format
 msgid "%s %s -- get file access control lists\n"
 msgstr "%s %s -- odczyt list kontroli dostępu do plików (ACL-i)\n"
 
-#: tools/getfacl.c:571 tools/getfacl.c:756
+#: tools/getfacl.c:600 tools/getfacl.c:785
 #, c-format
 msgid "Usage: %s [-%s] file ...\n"
 msgstr "Składnia: %s [-%s] plik ...\n"
 
-#: tools/getfacl.c:577
+#: tools/getfacl.c:606
 #, c-format
 msgid "  -d, --default           display the default access control list\n"
 msgstr ""
 "  -d, --default           wyświetlenie domyślnej listy kontroli dostępu\n"
 
-#: tools/getfacl.c:581
-#, c-format
+#: tools/getfacl.c:610
+#, fuzzy, c-format
+#| msgid ""
+#| "  -a, --access            display the file access control list only\n"
+#| "  -d, --default           display the default access control list only\n"
+#| "  -c, --omit-header       do not display the comment header\n"
+#| "  -e, --all-effective     print all effective rights\n"
+#| "  -E, --no-effective      print no effective rights\n"
+#| "  -s, --skip-base         skip files that only have the base entries\n"
+#| "  -R, --recursive         recurse into subdirectories\n"
+#| "  -L, --logical           logical walk, follow symbolic links\n"
+#| "  -P, --physical          physical walk, do not follow symbolic links\n"
+#| "  -t, --tabular           use tabular output format\n"
+#| "  -n, --numeric           print numeric user/group identifiers\n"
+#| "      --one-file-system   skip files on different filesystems\n"
+#| "  -p, --absolute-names    don't strip leading '/' in pathnames\n"
 msgid ""
 "  -a, --access            display the file access control list only\n"
 "  -d, --default           display the default access control list only\n"
@@ -339,7 +228,8 @@ msgid ""
 "  -P, --physical          physical walk, do not follow symbolic links\n"
 "  -t, --tabular           use tabular output format\n"
 "  -n, --numeric           print numeric user/group identifiers\n"
-"      --one-file-system   skip files on different filesystems\n"
+"      --one-file-system   don't descend into directories on other "
+"filesystems\n"
 "  -p, --absolute-names    don't strip leading '/' in pathnames\n"
 msgstr ""
 "  -a, --access            wyświetlenie tylko listy kontroli dostępu do "
@@ -361,3 +251,156 @@ msgstr ""
 "                            użytkowników/grup\n"
 "      --one-file-system   pomijanie plików na innych systemach plików\n"
 "      --absolute-names    nieusuwanie wiodącego '/' z nazw plików\n"
+
+#: tools/getfacl.c:626 tools/setfacl.c:385
+#, c-format
+msgid ""
+"  -v, --version           print version and exit\n"
+"  -h, --help              this help text\n"
+msgstr ""
+"  -v, --version           wyświetlenie informacji o wersji i zakończenie\n"
+"  -h, --help              ten tekst pomocy\n"
+
+#: tools/getfacl.c:772 tools/setfacl.c:402
+#, c-format
+msgid "%s: Standard input: %s\n"
+msgstr "%s: Standardowe wejście: %s\n"
+
+#: tools/getfacl.c:787 tools/setfacl.c:798
+#, c-format
+msgid "Try `%s --help' for more information.\n"
+msgstr "`%s --help' wyświetli więcej informacji.\n"
+
+#: tools/setfacl.c:155
+#, c-format
+msgid "%s: %s: No filename found in line %d, aborting\n"
+msgstr "%s: %s: Nie znaleziono nazwy pliku w linii %d, przerwanie pracy\n"
+
+#: tools/setfacl.c:160
+#, c-format
+msgid "%s: No filename found in line %d of standard input, aborting\n"
+msgstr ""
+"%s: Nie znaleziono nazwy pliku w linii %d standardowego wejścia, przerwanie "
+"pracy\n"
+
+#: tools/setfacl.c:181
+#, c-format
+msgid "%s: %s: %s in line %d\n"
+msgstr "%s: %s: %s w linii %d\n"
+
+#: tools/setfacl.c:192
+#, c-format
+msgid ""
+"Warning: option --restore=file is unsafe without option -P (--physical) as "
+"it traverses symbolic links in pathnames\n"
+msgstr ""
+
+#: tools/setfacl.c:228
+#, c-format
+msgid "%s: lookup of directory %s without following symlinks: %s\n"
+msgstr ""
+
+#: tools/setfacl.c:274
+#, c-format
+msgid "%s: %s: Cannot change owner/group: %s\n"
+msgstr "%s: %s: Nie można zmienić właściciela/grupy: %s\n"
+
+#: tools/setfacl.c:296
+#, c-format
+msgid "%s: %s: Cannot change mode: %s\n"
+msgstr "%s: %s: Nie można zmienić uprawnień: %s\n"
+
+#: tools/setfacl.c:346
+#, c-format
+msgid "%s %s -- set file access control lists\n"
+msgstr "%s %s -- ustawianie list kontroli dostępu do plików (ACL-i)\n"
+
+#: tools/setfacl.c:348 tools/setfacl.c:796
+#, c-format
+msgid "Usage: %s %s\n"
+msgstr "Składnia: %s %s\n"
+
+#: tools/setfacl.c:357
+#, c-format
+msgid ""
+"  -m, --modify=acl        modify the current ACL(s) of file(s)\n"
+"  -M, --modify-file=file  read ACL entries to modify from file\n"
+"  -x, --remove=acl        remove entries from the ACL(s) of file(s)\n"
+"  -X, --remove-file=file  read ACL entries to remove from file\n"
+"  -b, --remove-all        remove all extended ACL entries\n"
+"  -k, --remove-default    remove the default ACL\n"
+msgstr ""
+"  -m, --modify=acl        zmiana aktualnego(ych) ACL(-i) pliku(ów)\n"
+"  -M, --modify-file=plik  odczyt z pliku pozycji ACL do zmodyfikowania\n"
+"  -x, --remove=acl        usunięcie wpisów z ACL(-i) pliku(ów)\n"
+"  -X, --remove-file=plik  odczyt z pliku pozycji ACL do usunięcia\n"
+"  -b, --remove-all        usunięcie wszystkich rozszerzonych pozycji ACL\n"
+"  -k, --remove-default    usunięcie domyślnego ACL\n"
+
+#: tools/setfacl.c:366
+#, c-format
+msgid ""
+"      --set=acl           set the ACL of file(s), replacing the current ACL\n"
+"      --set-file=file     read ACL entries to set from file\n"
+"      --mask              do recalculate the effective rights mask\n"
+msgstr ""
+"      --set=acl           ustawienie ACL pliku(ów), zastępując aktualne\n"
+"      --set-file=plik     odczytanie z pliku pozycji ACL do ustawienia\n"
+"      --mask              przeliczenie maski efektywnych uprawnień\n"
+
+#: tools/setfacl.c:372
+#, c-format
+msgid ""
+"  -n, --no-mask           don't recalculate the effective rights mask\n"
+"  -d, --default           operations apply to the default ACL\n"
+msgstr ""
+"  -n, --no-mask           nieprzeliczanie maski efektywnych uprawnień\n"
+"  -d, --default           wykonywanie operacji na domyślnym ACL\n"
+
+#: tools/setfacl.c:377
+#, c-format
+msgid ""
+"  -R, --recursive         recurse into subdirectories\n"
+"  -L, --logical           logical walk, follow symbolic links\n"
+"  -P, --physical          physical walk, do not follow symbolic links\n"
+"      --restore=file      restore ACLs (inverse of `getfacl -R')\n"
+"      --test              test mode (ACLs are not modified)\n"
+msgstr ""
+"  -R, --recursive         rekurencyjne wchodzenie do katalogów\n"
+"  -L, --logical           przechodzenie logiczne, podążanie za dowiązaniami\n"
+"                            symbolicznymi\n"
+"  -P, --physical          przechodzenie fizyczne, niepodążanie za "
+"dowiązaniami\n"
+"                            symbolicznymi\n"
+"      --restore=plik      odtworzenie ACL-i (odwrotność `getfacl -R')\n"
+"      --test              tryb testowy (ACL-e nie są modyfikowane)\n"
+
+#: tools/setfacl.c:559
+#, c-format
+msgid "%s: Option -%c incomplete\n"
+msgstr "%s: Opcja -%c niekompletna\n"
+
+#: tools/setfacl.c:564
+#, c-format
+msgid "%s: Option -%c: %s near character %d\n"
+msgstr "%s: Opcja -%c: %s obok znaku %d\n"
+
+#: tools/setfacl.c:643
+#, c-format
+msgid "%s: %s in line %d of file %s\n"
+msgstr "%s: %s w linii %d pliku %s\n"
+
+#: tools/setfacl.c:651
+#, c-format
+msgid "%s: %s in line %d of standard input\n"
+msgstr "%s: %s w linii %d standardowego wejścia\n"
+
+#, fuzzy, c-format
+#~| msgid "Usage: %s %s\n"
+#~ msgid "%s: %s\n"
+#~ msgstr "Składnia: %s %s\n"
+
+#, fuzzy, c-format
+#~| msgid "Usage: %s %s\n"
+#~ msgid "%s: %s: %s\n"
+#~ msgstr "Składnia: %s %s\n"
