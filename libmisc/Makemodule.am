@@ -22,3 +22,10 @@ if NEED_XATTRAT
 libmisc_la_SOURCES += \
 	libmisc/xattrat.c
 endif
+
+if USE_OPENAT2
+if !HAVE_OPENAT2
+libmisc_la_SOURCES += \
+	libmisc/openat2.c
+endif
+endif

@@ -34,6 +34,20 @@ AC_SYS_LARGEFILE
 AM_PROG_AR
 LT_INIT
 
+AC_CHECK_FUNCS(openat2)
+AC_CHECK_HEADERS([linux/openat2.h])
+AC_CHECK_DECL([__NR_openat2], [], [], [[#include <sys/syscall.h>]])
+if test "x$ac_cv_have_decl___NR_openat2" = xyes -a \
+	"x$ac_cv_header_linux_openat2_h" = xyes; then
+	use_openat2=yes
+else
+	use_openat2=no
+fi
+AM_CONDITIONAL([USE_OPENAT2], [test "x$use_openat2" = xyes])
+AM_CONDITIONAL([HAVE_OPENAT2], [test "x$ac_cv_func_openat2" = xyes])
+AS_IF([test "x$use_openat2" = xyes],
+      [AC_DEFINE([USE_OPENAT2], [1], [Define to use openat2 syscall])])
+
 AC_CHECK_FUNCS(getxattrat setxattrat listxattrat removexattrat)
 AM_CONDITIONAL([NEED_XATTRAT],
 	       [test "x$ac_cv_func_getxattrat" = xno -o \
