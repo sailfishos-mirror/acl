@@ -35,16 +35,19 @@
 #include "parse.h"
 #include "do_set.h"
 #include "walk_tree.h"
+#include "openat2.h"
+#include "fchmodat_compat.h"
 
 #define POSIXLY_CORRECT_STR "POSIXLY_CORRECT"
 
 /* '-' stands for `process non-option arguments in loop' */
 #if !POSIXLY_CORRECT
 #  define CMD_LINE_OPTIONS "-:bkndvhm:M:x:X:RLP"
-#  define CMD_LINE_SPEC "[-bkndRLP] { -m|-M|-x|-X ... } file ..."
+#  define CMD_LINE_SPEC1 "[-bkndRLP] { -m|-M|-x|-X ... } file ..."
+#  define CMD_LINE_SPEC2 "[-P] --restore=file"
 #endif
 #define POSIXLY_CMD_LINE_OPTIONS "-:bkndvhm:M:x:X:"
-#define POSIXLY_CMD_LINE_SPEC "[-bknd] {-m|-M|-x|-X ... } file ..."
+#define POSIXLY_CMD_LINE_SPEC1 "[-bknd] {-m|-M|-x|-X ... } file ..."
 
 static const struct option long_options[] = {
 #if !POSIXLY_CORRECT
@@ -115,7 +118,8 @@ has_any_of_type(
 static int
 restore(
 	FILE *file,
-	const char *filename)
+	const char *filename,
+	enum walk_flags walk_flags)
 {
 	char *path_p;
 	struct stat st;
@@ -126,6 +130,12 @@ restore(
 	int lineno = 0, backup_line;
 	int error, status = 0;
 	int chmod_required = 0;
+	int dirfd = -1;
+	char *dirname = NULL, *pathname;
+	int at_flags = (walk_flags & WALK_TREE_PHYSICAL) ? AT_SYMLINK_NOFOLLOW : 0;
+#ifdef UNSAFE_RESTORE_WARNINGS
+	static int non_physical_restore_warning;
+#endif
 
 	memset(&st, 0, sizeof(st));
 
@@ -175,15 +185,75 @@ restore(
 			goto getout;
 		}
 
-		error = stat(path_p, &st);
-		if (opt_test && error != 0) {
+#ifdef UNSAFE_RESTORE_WARNINGS
+		if (!(walk_flags & WALK_TREE_PHYSICAL) &&
+		    !non_physical_restore_warning) {
+			fprintf(stderr,
+				_("Warning: option --restore=file is unsafe "
+				  "without option -P (--physical) as it "
+				  "traverses symbolic links in pathnames\n"));
+			non_physical_restore_warning = 1;
+		}
+#endif
+
+		/* find the last pathname component */
+		pathname = path_p + strlen(path_p);
+		while (pathname > path_p && pathname[-1] == '/')
+			pathname--;
+		while (pathname > path_p && pathname[-1] != '/')
+			pathname--;
+
+		if ((walk_flags & WALK_TREE_PHYSICAL) && pathname != path_p) {
+			dirname = malloc(pathname - path_p + 1);
+			if (dirname == NULL) {
+				fprintf(stderr, "%s: %s\n",
+					progname, strerror(errno));
+				status = 1;
+				goto getout;
+			}
+			memcpy(dirname, path_p, pathname - path_p);
+			dirname[pathname - path_p] = '\0';
+#ifdef USE_OPENAT2
+			struct open_how how = {
+				.flags = O_PATH | O_DIRECTORY,
+				.resolve = RESOLVE_NO_SYMLINKS,
+			};
+			dirfd = openat2(AT_FDCWD, dirname, &how, sizeof(how));
+#else
+			errno = ENOSYS;
+			dirfd = -1;
+#endif
+			if (dirfd == -1) {
+				fprintf(stderr,
+					_("%s: lookup of directory %s without "
+					  "following symlinks: %s\n"),
+					progname,
+					xquote(dirname, "\n\r"),
+					strerror(errno));
+				status = 1;
+				goto resume;
+			}
+		} else {
+			dirfd = AT_FDCWD;
+			dirname = "";
+			pathname = path_p;
+		}
+
+		error = fstatat(dirfd, pathname, &st, at_flags);
+		if (error == 0 && S_ISLNK(st.st_mode)) {
+			errno = ELOOP;
+			error = -1;
+		}
+		if (error != 0) {
 			fprintf(stderr, "%s: %s: %s\n", progname,
 				xquote(path_p, "\n\r"), strerror(errno));
 			status = 1;
+			goto resume;
 		}
 
 		args.mode = 0;
-		error = do_set(AT_FDCWD, "", path_p, DT_UNKNOWN, WALK_TREE_PHYSICAL, &args);
+		error = do_set(dirfd, dirname, pathname, DT_UNKNOWN,
+			       walk_flags | WALK_TREE_TOPLEVEL, &args);
 		if (error != 0) {
 			status = 1;
 			goto resume;
@@ -199,7 +269,8 @@ restore(
 			st.st_gid = -1;
 		if (!opt_test &&
 		    (st.st_uid != -1 || st.st_gid != -1)) {
-			if (chown(path_p, st.st_uid, st.st_gid) != 0) {
+			if (fchownat(dirfd, pathname, st.st_uid, st.st_gid,
+				     at_flags) != 0) {
 				fprintf(stderr, _("%s: %s: Cannot change "
 					          "owner/group: %s\n"),
 					progname, xquote(path_p, "\n\r"),
@@ -220,7 +291,8 @@ restore(
 			if (!args.mode)
 				args.mode = st.st_mode;
 			args.mode &= (S_IRWXU | S_IRWXG | S_IRWXO);
-			if (chmod(path_p, flags | args.mode) != 0) {
+			if (fchmodat(dirfd, pathname, flags | args.mode,
+				     at_flags) != 0) {
 				fprintf(stderr, _("%s: %s: Cannot change "
 					          "mode: %s\n"),
 					progname, xquote(path_p, "\n\r"),
@@ -229,6 +301,14 @@ restore(
 			}
 		}
 resume:
+		if (dirfd != -1 && dirfd != AT_FDCWD) {
+			close(dirfd);
+			dirfd = -1;
+		}
+		if (dirname && *dirname) {
+			free(dirname);
+			dirname = NULL;
+		}
 		if (path_p) {
 			free(path_p);
 			path_p = NULL;
@@ -267,6 +347,12 @@ static void help(void)
 		progname, VERSION);
 	printf(_("Usage: %s %s\n"),
 		progname, cmd_line_spec);
+#if !POSIXLY_CORRECT
+	if (!posixly_correct) {
+		printf("       %s %s\n",
+		      progname, CMD_LINE_SPEC2);
+	}
+#endif
 	printf(_(
 "  -m, --modify=acl        modify the current ACL(s) of file(s)\n"
 "  -M, --modify-file=file  read ACL entries to modify from file\n"
@@ -330,6 +416,9 @@ static int next_file(const char *arg, seq_t seq)
 
 int main(int argc, char *argv[])
 {
+	enum { UNDEFINED_MODE, SET_MODE, RESTORE_MODE } mode = UNDEFINED_MODE;
+	char **restore_args = NULL;
+	int opt_restore_count = 0;
 	int opt;
 	int saw_files = 0;
 	int status = 0, status2;
@@ -344,16 +433,16 @@ int main(int argc, char *argv[])
 
 #if POSIXLY_CORRECT
 	cmd_line_options = POSIXLY_CMD_LINE_OPTIONS;
-	cmd_line_spec = _(POSIXLY_CMD_LINE_SPEC);
+	cmd_line_spec = POSIXLY_CMD_LINE_SPEC1;
 #else
 	if (getenv(POSIXLY_CORRECT_STR))
 		posixly_correct = 1;
 	if (!posixly_correct) {
 		cmd_line_options = CMD_LINE_OPTIONS;
-		cmd_line_spec = _(CMD_LINE_SPEC);
+		cmd_line_spec = CMD_LINE_SPEC1;
 	} else {
 		cmd_line_options = POSIXLY_CMD_LINE_OPTIONS;
-		cmd_line_spec = _(POSIXLY_CMD_LINE_SPEC);
+		cmd_line_spec = POSIXLY_CMD_LINE_SPEC1;
 	}
 #endif
 
@@ -383,6 +472,9 @@ int main(int argc, char *argv[])
 
 		switch (opt) {
 			case 'b':  /* remove all extended entries */
+				if (mode == RESTORE_MODE)
+					goto synopsis;
+				mode = SET_MODE;
 				if (seq_append_cmd(seq, CMD_REMOVE_EXTENDED_ACL,
 				                        ACL_TYPE_ACCESS) ||
 				    seq_append_cmd(seq, CMD_REMOVE_ACL,
@@ -391,20 +483,32 @@ int main(int argc, char *argv[])
 				break;
 
 			case 'k':  /* remove default ACL */
+				if (mode == RESTORE_MODE)
+					goto synopsis;
+				mode = SET_MODE;
 				if (seq_append_cmd(seq, CMD_REMOVE_ACL,
 				                        ACL_TYPE_DEFAULT))
 					ERRNO_ERROR(1);
 				break;
 
 			case 'n':  /* do not recalculate mask */
+				if (mode == RESTORE_MODE)
+					goto synopsis;
+				mode = SET_MODE;
 				opt_recalculate = -1;
 				break;
 
 			case 'r':  /* force recalculate mask */
+				if (mode == RESTORE_MODE)
+					goto synopsis;
+				mode = SET_MODE;
 				opt_recalculate = 1;
 				break;
 
 			case 'd':  /*  operations apply to default ACL */
+				if (mode == RESTORE_MODE)
+					goto synopsis;
+				mode = SET_MODE;
 				opt_promote = 1;
 				break;
 
@@ -440,6 +544,9 @@ int main(int argc, char *argv[])
 				goto set_modify_delete;
 
 			set_modify_delete:
+				if (mode == RESTORE_MODE)
+					goto synopsis;
+				mode = SET_MODE;
 				if (!posixly_correct)
 					parse_mode |= SEQ_PARSE_DEFAULT;
 				if (opt_promote)
@@ -498,6 +605,9 @@ int main(int argc, char *argv[])
 				goto set_modify_delete_from_file;
 
 			set_modify_delete_from_file:
+				if (mode == RESTORE_MODE)
+					goto synopsis;
+				mode = SET_MODE;
 				if (!posixly_correct)
 					parse_mode |= SEQ_PARSE_DEFAULT;
 				if (opt_promote)
@@ -551,6 +661,9 @@ int main(int argc, char *argv[])
 
 
 			case '\1':  /* file argument */
+				if (mode == RESTORE_MODE)
+					goto synopsis;
+				mode = SET_MODE;
 				if (seq_empty(seq))
 					goto synopsis;
 				saw_files = 1;
@@ -561,36 +674,31 @@ int main(int argc, char *argv[])
 				break;
 
 			case 'B':  /* restore ACL backup */
-				saw_files = 1;
-
-				if (strcmp(optarg, "-") == 0)
-					file = stdin;
-				else {
-					file = fopen(optarg, "r");
-					if (file == NULL) {
-						fprintf(stderr, "%s: %s: %s\n",
-							progname,
-							xquote(optarg, "\n\r"),
-							strerror(errno));
-						status = 2;
-						goto cleanup;
-					}
-				}
-
-				status = restore(file,
-				               (file == stdin) ? NULL : optarg);
-
-				if (file != stdin)
-					fclose(file);
-				if (status != 0)
+				if (mode == SET_MODE)
+					goto synopsis;
+				mode = RESTORE_MODE;
+				opt_restore_count++;
+				restore_args = realloc(restore_args,
+					opt_restore_count * sizeof(*restore_args));
+				if (!restore_args) {
+					fprintf(stderr, "%s: %s\n", progname, strerror(errno));
+					status = 1;
 					goto cleanup;
+				}
+				restore_args[opt_restore_count - 1] = optarg;
 				break;
 
 			case 'R':  /* recursive */
+				if (mode == RESTORE_MODE)
+					goto synopsis;
+				mode = SET_MODE;
 				walk_flags |= WALK_TREE_RECURSIVE;
 				break;
 
 			case 'L':  /* follow symlinks */
+				if (mode == RESTORE_MODE)
+					goto synopsis;
+				mode = SET_MODE;
 				walk_flags |= WALK_TREE_LOGICAL;
 				walk_flags &= ~WALK_TREE_PHYSICAL;
 				break;
@@ -636,7 +744,42 @@ int main(int argc, char *argv[])
 				seq_delete_cmd(seq, seq_remove_default_acl_cmd);
 		}
 	}
+
+	if (mode == RESTORE_MODE) {
+		if (walk_flags & WALK_TREE_LOGICAL)
+			goto synopsis;
+
+		for (opt = 0; opt < opt_restore_count; opt++) {
+			if (strcmp(restore_args[opt], "-") == 0)
+				file = stdin;
+			else {
+				file = fopen(restore_args[opt], "r");
+				if (file == NULL) {
+					fprintf(stderr, "%s: %s: %s\n",
+						progname,
+						xquote(restore_args[opt], "\n\r"),
+						strerror(errno));
+					status = 2;
+					goto cleanup;
+				}
+			}
+
+			status2 = restore(file,
+			               (file == stdin) ? NULL : restore_args[opt],
+			               walk_flags);
+
+			if (file != stdin)
+				fclose(file);
+			if (status == 0)
+				status = status2;
+		}
+		free(restore_args);
+	}
+
 	while (optind < argc) {
+		if (mode == RESTORE_MODE)
+			goto synopsis;
+		mode = SET_MODE;
 		if(!seq)
 			goto synopsis;
 		if (seq_empty(seq))
@@ -647,7 +790,7 @@ int main(int argc, char *argv[])
 		if (status == 0)
 			status = status2;
 	}
-	if (!saw_files)
+	if (mode == SET_MODE && !saw_files)
 		goto synopsis;
 
 	goto cleanup;

@@ -30,7 +30,7 @@ setfacl \- set file access control lists
 [\-bkndRLPvh] [{\-m|\-x} acl_spec] [{\-M|\-X} acl_file] file ...
 
 .B setfacl
-\-\-restore={file|-}
+[\-P] \-\-restore={file|-}
 
 .SH DESCRIPTION
 This utility sets Access Control Lists (ACLs) of files and directories.
@@ -113,25 +113,27 @@ of a complete directory subtree are restored using this mechanism. If the input
 contains owner comments or group comments, setfacl attempts to restore the
 owner and owning group. If the input contains flags comments (which define the setuid,
 setgid, and sticky bits), setfacl sets those three bits accordingly; otherwise,
-it clears them. This option cannot be mixed with other options except `\-\-test'.
-If the file specified is '\fB-\fP', then it will be read from standard input.
+it clears them. This option cannot be combined with any other options except
+`\-P' and `\-\-test'.  When combined with `\-P', setfacl will not follow
+symlinks when resolving pathnames.  If the file specified is '\fB-\fP', then it
+will be read from standard input.
 .TP 4
 .I \-\-test
 Test mode. Instead of changing the ACLs of any files, the resulting ACLs are listed.
 .TP 4
 .I \-R, \-\-recursive
-Apply operations to all files and directories recursively. This option cannot be mixed with `\-\-restore'.
+Apply operations to all files and directories recursively. This option cannot
+be combined with `\-\-restore'.
 .TP 4
 .I \-L, \-\-logical
 Logical walk, follow symbolic links to directories. The default behavior is to follow
 symbolic link arguments, and skip symbolic links encountered in subdirectories.
 Only effective in combination with \-R.
-This option cannot be mixed with `\-\-restore'.
+This option cannot be combined with `\-\-restore'.
 .TP 4
 .I \-P, \-\-physical
 Physical walk, do not follow symbolic links to directories.
-Only effective in combination with \-R.
-This option cannot be mixed with `\-\-restore'.
+Only effective in combination with \-R or \-\-restore.
 .TP 4
 .I \-v, \-\-version
 Print the version of setfacl and exit.

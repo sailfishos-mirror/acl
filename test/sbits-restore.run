@@ -12,7 +12,7 @@ Ensure setting of SUID/SGID/sticky via --restore works
 	$ mkdir d
 	$ touch d/g
 	$ touch d/u
-	$ setfacl --restore d.acl
+	$ setfacl --restore=d.acl --physical
 	$ ls -dl d | awk '{print $1}' | sed 's/\\.$//g'
 	> drwxr-xr-t
 	$ ls -dl d/u | awk '{print $1}' | sed 's/\\.$//g'

@@ -9,6 +9,6 @@ NAME_MAX.
        $ mkdir -p $UPATH/$UPATH/$UPATH
        $ touch $UPATH/$UPATH/$UPATH/$UPATH
        $ getfacl $UPATH/$UPATH/$UPATH/$UPATH > utf8-filenames.acl
-       $ setfacl  --restore=utf8-filenames.acl
+       $ setfacl  --restore=utf8-filenames.acl --physical
        $ rm -R $UPATH
        $ rm utf8-filenames.acl

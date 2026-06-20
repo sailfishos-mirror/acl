@@ -1,3 +1,24 @@
+        $ mkdir d
+        $ touch d/f
+        $ ln -s f d/l
+        $ getfacl -RP d > physical
+        $ getfacl -RL d > logical
+
+Restoring a physical backup should work:
+
+        $ setfacl --restore=physical --physical
+
+Restoring a backup non-physically should produce the following warning:
+
+        $ setfacl --restore=physical
+	> Warning: option --restore=file is unsafe without option -P (--physical) as it traverses symbolic links in pathnames
+
+
+Restoring a logical backup can fail:
+
+        $ setfacl --restore=logical --physical
+        > setfacl: d/l: Too many levels of symbolic links
+
 Malformed restore file
 
 	$ echo "# owner: root" > dump

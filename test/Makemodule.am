@@ -10,15 +10,19 @@ TESTS = \
 	test/getfacl-recursive.run \
 	test/malformed-restore.run \
 	test/misc.run \
-	test/restore.run \
-	test/sbits-restore.run \
 	test/setfacl-X.run \
-	test/utf8-filenames.run \
 	test/root/getfacl.run \
 	test/root/permissions.run \
 	test/root/restore.run \
 	test/root/setfacl.run \
 	$(XFAIL_TESTS)
+
+if UNSAFE_RESTORE_WARNINGS
+TESTS += \
+	test/restore.run \
+	test/sbits-restore.run \
+	test/utf8-filenames.run
+endif
 
 EXTRA_DIST += \
 	test/make-tree \

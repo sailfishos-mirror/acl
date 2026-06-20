@@ -48,6 +48,15 @@ AM_CONDITIONAL([HAVE_OPENAT2], [test "x$ac_cv_func_openat2" = xyes])
 AS_IF([test "x$use_openat2" = xyes],
       [AC_DEFINE([USE_OPENAT2], [1], [Define to use openat2 syscall])])
 
+AC_ARG_ENABLE([unsafe-restore-warnings],
+	[AS_HELP_STRING([--disable-unsafe-restore-warnings], [Disable warnings about unsafe restore operations])])
+if test "x$use_openat2" = xno; then
+	enable_unsafe_restore_warnings=no
+fi
+AM_CONDITIONAL([UNSAFE_RESTORE_WARNINGS], [test "x$enable_unsafe_restore_warnings" != xno])
+AS_IF([test "x$enable_unsafe_restore_warnings" != xno],
+      [AC_DEFINE([UNSAFE_RESTORE_WARNINGS], [1], [Define to enable unsafe restore warnings])])
+
 AC_CHECK_FUNCS(getxattrat setxattrat listxattrat removexattrat)
 AM_CONDITIONAL([NEED_XATTRAT],
 	       [test "x$ac_cv_func_getxattrat" = xno -o \
