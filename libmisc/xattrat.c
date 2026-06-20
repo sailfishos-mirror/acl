@@ -21,6 +21,11 @@
 #include <linux/xattr.h>
 #include <sys/syscall.h>
 #include <unistd.h>
+#include <errno.h>
+
+#include "xattrat.h"
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 #include "xattrat.h"
 

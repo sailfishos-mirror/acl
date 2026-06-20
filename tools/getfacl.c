@@ -72,7 +72,6 @@ static const struct option long_options[] = {
 const char *progname;
 static const char *cmd_line_options;
 
-static enum walk_flags walk_flags = 0;
 static int opt_print_acl;
 static int opt_print_default_acl;
 static int opt_strip_leading_slash = 1;
@@ -448,7 +447,7 @@ flagstr(mode_t mode)
 
 static int do_print(int dirfd, const char *dirname, const char *pathname,
 		    unsigned char dirtype, enum walk_flags walk_flags,
-		    void *unused)
+		    unused void *arg)
 {
 	static char *__fullname;
 	const char *fullname;
@@ -630,6 +629,7 @@ static void help(void)
 
 int main(int argc, char *argv[])
 {
+	enum walk_flags walk_flags = 0;
 	int opt;
 	char *line;
 

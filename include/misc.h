@@ -22,6 +22,8 @@
 #include <sys/types.h>
 #include "include/visibility-hidden.h"
 
+#define unused __attribute__ ((unused))
+
 hidden int __acl_high_water_alloc(void **buf, size_t *bufsize, size_t newsize);
 
 hidden const char *__acl_quote(const char *str, const char *quote_chars);

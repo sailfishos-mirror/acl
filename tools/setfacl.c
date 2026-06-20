@@ -126,7 +126,7 @@ restore(
 	uid_t uid;
 	gid_t gid;
 	mode_t mask, flags;
-	struct do_set_args args = { };
+	struct do_set_args args = { .seq = NULL };
 	int lineno = 0, backup_line;
 	int error, status = 0;
 	int chmod_required = 0;
@@ -268,7 +268,7 @@ restore(
 		else
 			st.st_gid = -1;
 		if (!opt_test &&
-		    (st.st_uid != -1 || st.st_gid != -1)) {
+		    (st.st_uid != (uid_t)-1 || st.st_gid != (gid_t)-1)) {
 			if (fchownat(dirfd, pathname, st.st_uid, st.st_gid,
 				     at_flags) != 0) {
 				fprintf(stderr, _("%s: %s: Cannot change "

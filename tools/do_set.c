@@ -121,7 +121,6 @@ static void
 print_test(
 	FILE *file,
 	const char *fullname,
-	const struct stat *st,
 	const acl_t acl,
 	const acl_t default_acl)
 {
@@ -367,8 +366,6 @@ do_set(
 				ent = find_entry(*xacl, cmd->c_tag, cmd->c_id);
 				if (ent)
 					acl_delete_entry(*xacl, ent);
-				else
-					/* ignore */;
 				break;
 
 			case CMD_REMOVE_EXTENDED_ACL:
@@ -493,8 +490,7 @@ do_set(
 
 	/* update the file system */
 	if (opt_test) {
-		print_test(stdout, fullname, &st,
-		           acl, default_acl);
+		print_test(stdout, fullname, acl, default_acl);
 		goto cleanup;
 	}
 	if (acl) {

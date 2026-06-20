@@ -25,6 +25,8 @@
 #include "byteorder.h"
 #include "acl_ea.h"
 
+#include "libacl/__acl_to_xattr.h"
+
 
 char *
 __acl_to_xattr(const acl_obj *acl_obj_p, size_t *size)
