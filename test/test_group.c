@@ -1,5 +1,4 @@
 #include "config.h"
-#include <assert.h>
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
@@ -118,7 +117,11 @@ int getgrnam_r(const char *name, struct group *grp, char *buf, size_t buflen,
 {
 	static size_t last_buflen = -1;
 
-	assert(last_buflen == -1 || buflen > last_buflen);
+	if (last_buflen != (size_t)-1 && buflen <= last_buflen) {
+		fprintf(stderr, "%s: buflen %zu not increasing from %zu",
+			__func__, buflen, last_buflen);
+		abort();
+	}
 	if (buflen < 170000) {
 		last_buflen = buflen;
 		*result = NULL;
