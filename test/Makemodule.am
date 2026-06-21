@@ -10,6 +10,7 @@ TESTS = \
 	test/getfacl-recursive.run \
 	test/malformed-restore.run \
 	test/misc.run \
+	test/restore.run \
 	test/sbits-restore.run \
 	test/setfacl-X.run \
 	test/utf8-filenames.run \

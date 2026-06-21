@@ -494,9 +494,3 @@ Handle escaped literal characters by octal code (bin)
 	> other::r--
 	> 
 	$ rm -R d
-
-Malformed restore file
-
-	$ echo "# owner: root" > f
-	$ setfacl --restore=f 2>&1
-	>setfacl: f: No filename found in line 0, aborting
