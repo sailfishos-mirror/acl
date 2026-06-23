@@ -72,6 +72,12 @@ value.
 .El
 .Sh STANDARDS
 IEEE Std 1003.1e draft 17 (\(lqPOSIX.1e\(rq, abandoned)
+.Pp
+In the Linux implementation,
+.Va perm
+is a bitwise set of permissions that
+.Fn acl_add_perm
+will all add at once.  This use is not portable.
 .Sh SEE ALSO
 .Xr acl_clear_perms 3 ,
 .Xr acl_delete_perm 3 ,
