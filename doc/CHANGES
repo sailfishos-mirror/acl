@@ -1,3 +1,99 @@
+acl 2.4.0 (29 June 2026)
+========================
+* Major security and robustness improvements:
+  - Fix multiple security vulnerabilities: CVE-2026-54369 and CVE-2026-54370
+  - Harden setfacl, getfacl, and chacl against malicious input
+  - Prevent NULL pointer dereferences and memory corruption
+  - Fix setfacl --restore for pathnames beginning with whitespace
+  - Prevent setfacl --restore --test from changing file permissions
+* New library functions:
+  - Add acl_get_file_at(), acl_set_file_at(), acl_delete_def_file_at() for
+    safer file operations using file descriptors and to control symlink
+    following
+  - acl_delete_def_file_at() allows removing default ACLs via file descriptor
+* API improvements and bug fixes:
+  - Remove libacl dependency on libattr
+  - Reject invalid numeric UIDs and GIDs in libacl
+  - Fix memory wasting loop when user does not exist
+  - Retry harder in acl_get_file/acl_get_fd operations
+  - Improve errno handling in acl permission functions
+  - Fix compiler warnings and sequence point issues
+* Build system and code organization:
+  - Rename internal symbols with __acl_ prefix to avoid conflicts
+  - Internalize walk_tree API and replace with hardened version
+  - Mark local variables and functions static where appropriate
+  - Remove unnecessary dependencies and dead code
+* Test suite improvements:
+  - Fix test compatibility issues with getpwnam/getgrnam functions
+  - Add comprehensive restore.run test for --restore functionality
+  - Fix shell quoting errors in test scripts
+  - Improve test lookup library accessibility
+* Documentation updates:
+  - Clarify symlink following behavior in manual pages
+  - Document new _at function variants
+  - Clarify that on Linux, acl_perm_t is a bitset
+* Translation updates:
+  - German translation update
+
+acl 2.3.2 (23 January 2024)
+==========
+* Licensing fixes: clean up LGPL boilerplate for library code
+* Build system updates: require automake 1.15+, modernize autotools usage
+* Build fixes: cross-compilation improvements on musl-based systems
+
+acl 2.3.1 (16 March 2021)
+==========
+* Fix libtool library versioning regression from 2.3.0
+
+acl 2.3.0 (15 March 2021)
+==========
+* Major security and robustness improvements:
+  - Add acl_extended_file_nofollow() function for secure ACL checking
+  - Prevent setfacl --restore from SIGSEGV on malformed input
+  - Fix symlink handling in recursive operations (-R option)
+  - Add hardening against buffer overflows and null pointer dereferences
+* Build system modernization:
+  - Switch to modern autotools configuration
+  - Add pkg-config support for libacl
+  - Improve parallel and out-of-tree build support
+  - Remove obsolete packaging logic
+* API improvements and fixes:
+  - Add _at function variants for safer file operations
+  - Improve error handling and errno setting consistency
+  - Fix memory leaks in getfacl operations
+  - Better handling of large file support
+* Documentation enhancements:
+  - Updated manual pages with clearer examples
+  - Document pitfalls with negative permissions and user namespaces
+  - Add references to mount(8) for ACL mount options
+* Translation updates:
+  - Georgian translation added
+  - French translation updates
+* Test suite improvements:
+  - Enhanced test coverage for edge cases
+  - Better handling of SELinux environments
+  - Fixed test portability issues
+
+acl 2.2.53
+==========
+* setfacl --restore fixes: handle S_ISUID bit correctly when changing owner
+* Error message improvements in setfacl restore operations
+
+acl 2.2.52
+==========
+* Respect DESTDIR when installing
+* Fix static build installation issues
+
+acl 2.2.51
+==========
+* walk_tree improvements: proper symlink handling with -h option
+* Test suite fixes for SELinux environments
+
+acl 2.2.50
+==========
+* Various build system fixes and improvements
+* Test suite enhancements
+
 acl 2.2.49 (19 November 2009)
 ==========
 * Add missing files to tarball: tests/sort-getfacl-output and examples/copyperm.c
