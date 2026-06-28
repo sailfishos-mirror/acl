@@ -115,7 +115,7 @@ owner and owning group. If the input contains flags comments (which define the s
 setgid, and sticky bits), setfacl sets those three bits accordingly; otherwise,
 it clears them. This option cannot be combined with any other options except
 `\-P' and `\-\-test'.  When combined with `\-P', setfacl will not follow
-symlinks when resolving pathnames.  If the file specified is '\fB-\fP', then it
+symlinks when resolving pathnames.  If the file given is '\fB-\fP', then it
 will be read from standard input.
 .TP 4
 .I \-\-test
@@ -126,14 +126,16 @@ Apply operations to all files and directories recursively. This option cannot
 be combined with `\-\-restore'.
 .TP 4
 .I \-L, \-\-logical
-Logical walk, follow symbolic links to directories. The default behavior is to follow
-symbolic link arguments, and skip symbolic links encountered in subdirectories.
-Only effective in combination with \-R.
+Logical walk, follow symbolic links.
+The default behavior is to follow symbolic links given on the
+command line, and skip symbolic links encountered in subdirectories.
 This option cannot be combined with `\-\-restore'.
 .TP 4
 .I \-P, \-\-physical
-Physical walk, do not follow symbolic links to directories.
-Only effective in combination with \-R or \-\-restore.
+Physical walk, do not follow symbolic links.
+Symbolic links given on the command line are rejected.
+(For pathnames given on the command line, this option applies only to the final
+component; preceding path components may still be symbolic links.)
 .TP 4
 .I \-v, \-\-version
 Print the version of setfacl and exit.
