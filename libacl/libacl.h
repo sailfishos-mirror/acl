@@ -129,7 +129,7 @@ struct acl_obj_tag {
 /* external ACL representation */
 struct __acl {
 	size_t			x_size;
-	struct __acl_entry	x_entries[0];
+	struct __acl_entry	x_entries[];
 };
 
 extern int __acl_reorder_entry_obj_p(acl_entry_obj *acl_entry_obj_p) hidden;

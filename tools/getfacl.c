@@ -101,7 +101,7 @@ static const char *xquote(const char *str, const char *quote_chars)
 
 struct name_list {
 	struct name_list *next;
-	char name[0];
+	char name[];
 };
 
 static void free_list(struct name_list *names)

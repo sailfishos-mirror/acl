@@ -78,7 +78,7 @@ typedef struct string_obj_tag string_obj;
 /* string object */
 struct string_obj_tag {
 	obj_prefix		o_prefix;
-	char			s_str[0];
+	char			s_str[];
 };
 
 /* object creation, destruction, conversion and validation */

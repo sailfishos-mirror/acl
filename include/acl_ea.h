@@ -32,7 +32,7 @@ typedef struct {
 
 typedef struct {
 	u_int32_t	a_version;
-	acl_ea_entry	a_entries[0];
+	acl_ea_entry	a_entries[];
 } acl_ea_header;
 
 static inline size_t acl_ea_size(int count)
